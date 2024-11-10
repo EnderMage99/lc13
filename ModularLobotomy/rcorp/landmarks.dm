@@ -22,6 +22,8 @@ GLOBAL_LIST_INIT(easysupport, list(
 	/mob/living/simple_animal/hostile/abnormality/der_freischutz,
 	/mob/living/simple_animal/hostile/abnormality/better_memories,
 	/mob/living/simple_animal/hostile/abnormality/voiddream,
+	/mob/living/simple_animal/hostile/abnormality/laetitia,
+	/mob/living/simple_animal/hostile/abnormality/contract,
 ))
 
 GLOBAL_LIST_INIT(easytank, list(
@@ -32,6 +34,7 @@ GLOBAL_LIST_INIT(easytank, list(
 	/mob/living/simple_animal/hostile/abnormality/golden_apple,
 	/mob/living/simple_animal/hostile/abnormality/porccubus,
 	/mob/living/simple_animal/hostile/abnormality/black_swan,
+	/mob/living/simple_animal/hostile/abnormality/so_that_no_cry,
 ))
 
 GLOBAL_LIST_INIT(hardcombat, list(
@@ -50,6 +53,7 @@ GLOBAL_LIST_INIT(hardsupport, list(/mob/living/simple_animal/hostile/abnormality
 	/mob/living/simple_animal/hostile/abnormality/yin,
 	/mob/living/simple_animal/hostile/abnormality/pygmalion,
 	/mob/living/simple_animal/hostile/abnormality/big_bird,
+	/mob/living/simple_animal/hostile/abnormality/babayaga,
 ))
 
 GLOBAL_LIST_INIT(hardtank, list(/mob/living/simple_animal/hostile/abnormality/melting_love,
