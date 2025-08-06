@@ -186,6 +186,9 @@
 	user.put_in_hands(chosen_arms, forced = TRUE)
 	hammer_present = FALSE
 	hammer_used = TRUE
+	// Achievement for activating Hammer of Light
+	if(user.client)
+		user.client.player_details.achievements.unlock(/datum/award/achievement/lc13/activate_hammer, user)
 	playsound(get_turf(src), "[pick(pickup_sounds)]", 75, 0, -9)
 	user.hairstyle = "Bald"
 	user.update_hair()
