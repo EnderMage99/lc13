@@ -132,6 +132,20 @@
 	abno_breach_damage_type = "Red"
 	abno_breach_damage_count = "Low"
 
+//Eternal Prospector
+/obj/item/paper/fluff/info/teth/eternal_prospector
+	abno_type = /mob/living/simple_animal/hostile/abnormality/eternal_prospector
+	abno_code = "O-05-61"
+	abno_info = list(
+		"When the Eternal Prospector was offered ahn holochips, they eagerly accepted the bribe. Work success rates temporarily increased by 1% per 10 ahn offered.",
+		"Each time the Eternal Prospector accepted a bribe, the damage dealt during work increased. This persisted until a work ended in failure.",
+		"When the work result was Normal, the Qliphoth Counter lowered with a low probability.",
+		"When the work result was Bad, the Qliphoth Counter decreased.",
+		"Employees struck by the Eternal Prospector were marked with 'Ruin'. When attacked while marked, there was a chance of triggering a devastating hit.",
+		"When damaged, the Eternal Prospector had a chance to enter a defensive stance. Attacking them in this state triggered a devastating counter-attack.")
+	abno_breach_damage_type = "Red"
+	abno_breach_damage_count = "Low"
+
 //Today's Shy Look
 /obj/item/paper/fluff/info/teth/shy
 	abno_type = /mob/living/simple_animal/hostile/abnormality/shy_look

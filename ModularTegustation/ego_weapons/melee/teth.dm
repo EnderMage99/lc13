@@ -142,6 +142,28 @@
 	swingstyle = WEAPONSWING_LARGESWEEP
 	hitsound = 'sound/weapons/slashmiss.ogg'
 
+/obj/item/ego_weapon/greed
+	name = "greed"
+	desc = "A weathered pickaxe that seems to hunger for more than just ore. Each strike leaves a mark that invites greater misfortune."
+	special = "This weapon inflicts Ruin on hit."
+	icon_state = "greed"
+	force = 25
+	damtype = RED_DAMAGE
+	attack_verb_continuous = list("strikes", "picks", "mines", "gouges")
+	attack_verb_simple = list("strike", "pick", "mine", "gouge")
+	hitsound = 'sound/weapons/ego/hammer.ogg'
+	var/ruin_stacks = 1
+
+/obj/item/ego_weapon/greed/attack(mob/living/target, mob/living/user)
+	. = ..()
+	if(isliving(target))
+		var/mob/living/L = target
+		var/datum/status_effect/ruin/R = L.has_status_effect(/datum/status_effect/ruin)
+		if(R)
+			R.add_stacks(ruin_stacks)
+		else
+			L.apply_status_effect(/datum/status_effect/ruin, ruin_stacks)
+
 /obj/item/ego_weapon/mini/trick
 	name = "hat trick"
 	desc = "Imagination is the only weapon in the war with reality."

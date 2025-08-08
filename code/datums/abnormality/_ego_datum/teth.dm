@@ -117,6 +117,15 @@
 	item_path = /obj/item/clothing/suit/armor/ego_gear/teth/cute
 	cost = 20
 
+// Eternal Prospector - Greed
+/datum/ego_datum/weapon/greed
+	item_path = /obj/item/ego_weapon/greed
+	cost = 20
+
+/datum/ego_datum/armor/greed
+	item_path = /obj/item/clothing/suit/armor/ego_gear/teth/greed
+	cost = 20
+
 // Today's Shy Look - Today's Expression
 /datum/ego_datum/weapon/shy
 	item_path = /obj/item/ego_weapon/ranged/pistol/shy

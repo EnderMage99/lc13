@@ -104,9 +104,15 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 
 /obj/item/clothing/suit/armor/ego_gear/teth/cute
 	name = "SO CUTE!!!"
-	desc = "Ppodae is oh so fluffy and soft. It’s so sweet it could cure your depression."
+	desc = "Ppodae is oh so fluffy and soft. It's so sweet it could cure your depression."
 	icon_state = "cute"
 	armor = list(RED_DAMAGE = 30, WHITE_DAMAGE = -20, BLACK_DAMAGE = 10, PALE_DAMAGE = 0) // 20
+
+/obj/item/clothing/suit/armor/ego_gear/teth/greed
+	name = "greed"
+	desc = "Heavy prospector's gear stained with the dust of countless excavations. The weight of avarice makes each step echo with purpose."
+	icon_state = "greed"
+	armor = list(RED_DAMAGE = 20, WHITE_DAMAGE = -30, BLACK_DAMAGE = 30, PALE_DAMAGE = 0) // 20
 
 /obj/item/clothing/suit/armor/ego_gear/teth/shy
 	name = "todays expression"
