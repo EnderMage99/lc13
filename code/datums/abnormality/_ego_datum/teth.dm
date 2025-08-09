@@ -386,3 +386,12 @@
 	item_path = /obj/item/clothing/suit/armor/ego_gear/teth/white_gossypium
 	cost = 20
 
+// Common Dinner Chair - Liminal
+/datum/ego_datum/weapon/liminal
+	item_path = /obj/item/ego_weapon/liminal
+	cost = 20
+
+/datum/ego_datum/armor/liminal
+	item_path = /obj/item/clothing/suit/armor/ego_gear/teth/liminal
+	cost = 20
+

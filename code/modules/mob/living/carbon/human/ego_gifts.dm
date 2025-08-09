@@ -599,6 +599,13 @@
 	temperance_bonus = 2
 	slot = LEFTBACK
 
+/datum/ego_gifts/liminal
+	name = "Liminal Space"
+	icon_state = "liminal"
+	prudence_bonus = 3
+	temperance_bonus = 1
+	slot = EYE
+
 /datum/ego_gifts/fluid_sac
 	name = "Fluid Sac"
 	icon_state = "fluid_sac"

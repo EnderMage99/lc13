@@ -290,3 +290,9 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 	icon_state = "white_gossypium"
 	armor = list(RED_DAMAGE = 30, WHITE_DAMAGE = 30, BLACK_DAMAGE = -40, PALE_DAMAGE = 0, FIRE = 0) //20. Made out of flammable cotton so fire resist sucks ass.
 
+/obj/item/clothing/suit/armor/ego_gear/teth/liminal
+	name = "liminal space"
+	desc = "A worn and stained suit that smells of old carpet and fluorescent lights. You feel like you've been here before."
+	icon_state = "liminal"
+	armor = list(RED_DAMAGE = -20, WHITE_DAMAGE = 30, BLACK_DAMAGE = 10, PALE_DAMAGE = 0) // 20
+

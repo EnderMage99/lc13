@@ -737,3 +737,17 @@
 	combo += 1
 	force = initial(force)
 	hitsound = initial(hitsound)
+
+/obj/item/ego_weapon/liminal
+	name = "liminal passage"
+	desc = "A simple wooden chair leg that seems to phase in and out of reality. Looking at it makes you feel like you're falling."
+	icon = 'icons/obj/chairs.dmi'
+	icon_state = "wooden_chair_toppled"
+	inhand_icon_state = "woodenchair"
+	lefthand_file = 'icons/mob/inhands/misc/chairs_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/misc/chairs_righthand.dmi'
+	force = 30
+	damtype = WHITE_DAMAGE
+	attack_verb_continuous = list("bashes", "phases", "displaces")
+	attack_verb_simple = list("bash", "phase", "displace")
+	hitsound = 'sound/weapons/genhit1.ogg'
