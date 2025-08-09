@@ -32,6 +32,83 @@
 // All HE joke E.G.O
 
 // All WAW joke E.G.O
+
+/obj/item/ego_weapon/mustard
+	name = "condiment of wrath"
+	desc = "A mustard dispenser that has achieved enlightenment through sheer intensity. Squeeze with conviction."
+	special = "This weapon can spray mustard in a cone, dealing WHITE damage and applying a slow."
+	icon_state = "mustard"
+	icon = 'ModularTegustation/Teguicons/joke_abnos/joke_weapons.dmi'
+	lefthand_file = 'ModularTegustation/Teguicons/joke_abnos/joke_lefthand.dmi'
+	righthand_file = 'ModularTegustation/Teguicons/joke_abnos/joke_righthand.dmi'
+	force = 55
+	attack_speed = 1.4
+	damtype = WHITE_DAMAGE
+	attack_verb_continuous = list("squirts", "slathers", "drowns")
+	attack_verb_simple = list("squirt", "slather", "drown")
+	hitsound = 'sound/effects/splat.ogg'
+	attribute_requirements = list(
+		TEMPERANCE_ATTRIBUTE = 60,
+		JUSTICE_ATTRIBUTE = 60
+	)
+	var/mustard_cooldown = 0
+	var/mustard_cooldown_time = 6 SECONDS
+
+/obj/item/ego_weapon/mustard/attack_self(mob/user)
+	if(mustard_cooldown > world.time)
+		to_chat(user, span_warning("[src] is still recharging!"))
+		return
+	mustard_cooldown = world.time + mustard_cooldown_time
+	
+	user.visible_message(span_danger("[user] aims [src] and shouts!"))
+	user.say("MUSTAAAAARD!")
+	playsound(src, 'sound/weapons/ego/mustard.ogg', 75, TRUE) // Play the scream when using the special ability
+	
+	// Cone attack
+	var/turf/origin = get_turf(user)
+	var/list/turfs_to_hit = list()
+	var/facing = user.dir
+	
+	// Create a cone of mustard
+	for(var/i = 1 to 4)
+		var/turf/T = get_step(origin, facing)
+		if(!T)
+			break
+		origin = T
+		turfs_to_hit += T
+		// Add side turfs for cone effect
+		if(i > 1)
+			var/turf/left = get_step(T, turn(facing, 90))
+			if(left)
+				turfs_to_hit += left
+			var/turf/right = get_step(T, turn(facing, -90))
+			if(right)
+				turfs_to_hit += right
+	
+	// Apply effects to all turfs
+	for(var/turf/T in turfs_to_hit)
+		new /obj/effect/temp_visual/mustard_wave(T)
+		for(var/mob/living/L in T)
+			if(L == user)
+				continue
+			L.apply_damage(40, WHITE_DAMAGE, null, L.run_armor_check(null, WHITE_DAMAGE))
+			L.Knockdown(20) // Knockdown instead of slowdown
+			L.color = "#FFDB58"
+			addtimer(CALLBACK(L, TYPE_PROC_REF(/atom, update_atom_colour)), 15 SECONDS)
+			to_chat(L, span_warning("You're drenched in mustard!"))
+
+/obj/effect/temp_visual/mustard_wave
+	name = "mustard wave"
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "smoke"
+	duration = 8
+	color = "#FFDB58"
+
+/obj/effect/temp_visual/mustard_wave/Initialize()
+	. = ..()
+	transform = matrix() * 1.5
+	animate(src, alpha = 0, transform = matrix() * 2, time = duration)
+
 /obj/item/ego_weapon/pro_skub
 	name = "pro-skub"
 	desc = "A battle-sign powered by ferverent love for one's skub."
@@ -50,6 +127,43 @@
 	crit_multiplier = 1.5
 
 // All ALEPH joke E.G.O
+
+/obj/item/ego_weapon/shield/gojo_fish
+	name = "limitless"
+	desc = "Throughout heaven and earth, I alone am the honored one."
+	special = "This weapon has a perfect parry that negates all damage for a brief moment."
+	icon_state = "gojo_fish"
+	icon = 'ModularTegustation/Teguicons/joke_abnos/joke_weapons.dmi'
+	lefthand_file = 'ModularTegustation/Teguicons/joke_abnos/joke_lefthand.dmi'
+	righthand_file = 'ModularTegustation/Teguicons/joke_abnos/joke_righthand.dmi'
+	force = 100
+	attack_speed = 1.2
+	damtype = BLACK_DAMAGE
+	attack_verb_continuous = list("erases", "voids", "obliterates")
+	attack_verb_simple = list("erase", "void", "obliterate")
+	hitsound = 'sound/magic/lightningshock.ogg'
+	attribute_requirements = list(
+		PRUDENCE_ATTRIBUTE = 100,
+		JUSTICE_ATTRIBUTE = 100,
+		FORTITUDE_ATTRIBUTE = 100,
+		TEMPERANCE_ATTRIBUTE = 100
+	)
+	// Shield variables for Infinity
+	reductions = list(100, 100, 100, 100) // Perfect block
+	projectile_block_duration = 2 SECONDS
+	block_duration = 2 SECONDS
+	block_cooldown = 10 SECONDS
+	block_sound = 'sound/magic/forcewall.ogg'
+	block_message = "You activate Infinity!"
+	hit_message = "is protected by Infinity!"
+	block_cooldown_message = "Infinity needs time to recharge."
+	projectile_block_message = "Infinity repels the projectile!"
+
+/obj/item/ego_weapon/shield/gojo_fish/AnnounceBlock(mob/living/carbon/human/source, damage, damagetype, def_zone)
+	to_chat(source, span_userdanger("Infinity completely negates the attack!"))
+	source.visible_message(span_danger("[source] is completely unharmed by the attack!"))
+	playsound(source, 'sound/magic/repulse.ogg', 75, TRUE)
+	return ..()
 //The Chaos Dunk
 /obj/item/ego_weapon/chaosdunk
 	name = "chaos dunk"

@@ -21,6 +21,36 @@
 
 // All WAW joke E.G.O
 
+/obj/item/clothing/suit/armor/ego_gear/waw/mustard
+	name = "intensity manifest"
+	desc = "Armor that radiates pure, unbridled enthusiasm for condiments."
+	icon_state = "mustard"
+	icon = 'ModularTegustation/Teguicons/joke_abnos/joke_armor.dmi'
+	worn_icon = 'ModularTegustation/Teguicons/joke_abnos/joke_worn.dmi'
+	armor = list(RED_DAMAGE = 20, WHITE_DAMAGE = 70, BLACK_DAMAGE = 40, PALE_DAMAGE = 20) // 150 total, high white resist
+	attribute_requirements = list(
+		TEMPERANCE_ATTRIBUTE = 60,
+		JUSTICE_ATTRIBUTE = 60
+	)
+
+/obj/item/clothing/suit/armor/ego_gear/waw/mustard/equipped(mob/living/carbon/human/user, slot)
+	. = ..()
+	if(slot != ITEM_SLOT_OCLOTHING)
+		return
+	RegisterSignal(user, COMSIG_MOB_SAY, PROC_REF(OnSpeak))
+	to_chat(user, span_notice("You feel an overwhelming urge to speak with INTENSITY!"))
+
+/obj/item/clothing/suit/armor/ego_gear/waw/mustard/dropped(mob/living/carbon/human/user)
+	. = ..()
+	UnregisterSignal(user, COMSIG_MOB_SAY)
+
+/obj/item/clothing/suit/armor/ego_gear/waw/mustard/proc/OnSpeak(mob/living/carbon/human/user, msg)
+	SIGNAL_HANDLER
+	// 30% chance to add MUSTARD to their speech
+	if(prob(30))
+		user.say("[msg] MUSTAAAAARD!")
+		return COMPONENT_CANCEL_MOB_SPEECH
+
 /obj/item/clothing/suit/armor/ego_gear/waw/pro_skub
 	name = "pro-skub"
 	desc = "Skub!"
@@ -44,6 +74,21 @@
 							)
 
 // All ALEPH joke E.G.O
+
+/obj/item/clothing/suit/armor/ego_gear/aleph/gojo_fish
+	name = "six eyes"
+	desc = "The pinnacle of jujutsu sorcery, condensed into fashionable attire. You feel untouchable."
+	icon_state = "gojo_fish"
+	icon = 'ModularTegustation/Teguicons/joke_abnos/joke_armor.dmi'
+	worn_icon = 'ModularTegustation/Teguicons/joke_abnos/joke_worn.dmi'
+	armor = list(RED_DAMAGE = 70, WHITE_DAMAGE = 90, BLACK_DAMAGE = 40, PALE_DAMAGE = 60) // 260 total, high white resist
+	attribute_requirements = list(
+		PRUDENCE_ATTRIBUTE = 100,
+		JUSTICE_ATTRIBUTE = 100,
+		FORTITUDE_ATTRIBUTE = 100,
+		TEMPERANCE_ATTRIBUTE = 100
+	)
+
 /obj/item/clothing/suit/armor/ego_gear/aleph/chaosdunk
 	name = "chaos dunk"
 	desc = "You either slam with the best or jam with the rest."
