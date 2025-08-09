@@ -146,7 +146,11 @@
 	name = "greed"
 	desc = "A weathered pickaxe that seems to hunger for more than just ore. Each strike leaves a mark that invites greater misfortune."
 	special = "This weapon inflicts Ruin on hit."
-	icon_state = "greed"
+	icon = 'icons/obj/mining.dmi'
+	icon_state = "crusher"
+	inhand_icon_state = "crusher0"
+	lefthand_file = 'icons/mob/inhands/weapons/hammers_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/weapons/hammers_righthand.dmi'
 	force = 25
 	damtype = RED_DAMAGE
 	attack_verb_continuous = list("strikes", "picks", "mines", "gouges")

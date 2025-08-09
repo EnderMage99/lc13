@@ -284,6 +284,35 @@
 	Your requests have been accepted.<br>
 	P.S. In your next message, please make sure you attach 5 different photos of The Goodest Boy in the World Ppodae. Thank you in advance."}
 
+//Eternal Prospector
+/obj/item/paper/fluff/lore/teth/eternal_prospector
+	name = "O-05-61"
+	info = {"<h2><center>O-05-61</center></h2>	<br>
+	Eternal Prospector	<br>
+	"Subject O-05-61, designated 'Eternal Prospector,' manifests as a decaying humanoid figure dressed in worn patchwork overalls and a prospector's helmet that obscures the upper portion of its face. The entity perpetually carries a severely weathered pickaxe that appears on the verge of structural failure."<br>
+
+	"The Abnormality exhibits compulsive verbal patterns, continuously muttering fragmented phrases centered on themes of seeking, breaking, and loss. Audio analysis has documented the following recurring statements:<br>
+	• 'Break, Seek, Loss... These three words are all I hear while I seek...'<br>
+	• 'I worked years and years for that dastardly queen... There must be an end to this all.'<br>
+	• 'Where is it... I sold my body and fought like a rabid beast in that war... TO EARN THIS!?'"<br>
+
+	"O-05-61 demonstrates a pathological fixation on currency. When presented with ahn holochips, the entity exhibits increased cooperation coupled with heightened agitation. Each successive bribe amplifies its desperate behavior, suggesting a compulsive cycle that cannot be satisfied through material gain alone."<br>
+
+	"Historical analysis indicates the entity may have been a military veteran from an unidentified conflict, eternally pursuing a treasure promised as compensation for service. References to 'the queen' and 'hungry cave monsters' remain unsubstantiated, though the Abnormality's combat proficiency and tactical awareness corroborate claims of military experience."<br>
+
+	<h3><center>Containment Unit Audio Log #0561-23</center></h3><br>
+	"Employee: I'm here to perform Insight work.<br>
+	Prospector: Wait, what was that? Treasure? At long last? No... another delusion born of fleeting sight...<br>
+	Employee: Sir, I need you to—<br>
+	Prospector: I found many obstacles in my path... Hungry cave monsters, lost travelers seeking refuge... All of them are behind me now. What is the point in caring if they don't affect my goal?<br>
+	Employee: `Sound of holochip being placed` Perhaps this will help?<br>
+	Prospector: `Excited muttering` Yes... yes! Closer... always closer... But never enough. The old fools took me away... Is this another ploy by the queen?<br>
+	Employee: The work is complete.<br>
+	Prospector: I just need to reach this one treasure, then I can finally rest from my tireless journey... I shall not lose it all..."<br>
+
+	"Advisory: Personnel report experiencing intrusive thoughts related to avarice and desperation following extended interaction with O-05-61. Mandatory psychological evaluation is required for all employees within 24 hours of contact."<br>
+	"}
+
 //Today's Shy Look
 /obj/item/paper/fluff/lore/teth/shy_look
 	name = "O-01-92"
