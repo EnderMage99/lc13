@@ -2,12 +2,15 @@
 	name = "Eternal Prospector"
 	desc = "A weathered figure in tattered prospecting gear, forever clutching ancient mining tools. Their eyes gleam with an insatiable greed that transcends death itself."
 	icon = 'ModularTegustation/Teguicons/32x32.dmi'
-	icon_state = "680_ham_actor"
-	icon_living = "680_ham_actor"
+	icon_state = "eternal_prospector"
+	icon_living = "eternal_prospector"
 	portrait = "eternal_prospector"
 	maxHealth = 1000
 	health = 1000
 	threat_level = TETH_LEVEL
+	light_range = 2
+	light_power = 0.5
+	light_color = "#FFEEAA"
 	work_chances = list(
 		ABNORMALITY_WORK_INSTINCT = 10,
 		ABNORMALITY_WORK_INSIGHT = 45,
@@ -181,11 +184,18 @@
 	playsound(src, 'sound/weapons/ego/gasharpoon_queeblock.ogg', 75, TRUE)
 	visible_message("<span class='danger'>[src] enters a defensive stance!</span>")
 
+	// Add visual effects for parry mode
+	filters += filter(type = "outline", size = 2, color = "#FFD700")
+
 	addtimer(CALLBACK(src, PROC_REF(EndParry)), parry_duration)
 
 /mob/living/simple_animal/hostile/abnormality/eternal_prospector/proc/EndParry()
 	parrying = FALSE
 	icon_state = initial(icon_state)
+
+	// Remove visual effects
+	filters = null
+
 	addtimer(CALLBACK(src, PROC_REF(ResetParry)), parry_cooldown)
 
 /mob/living/simple_animal/hostile/abnormality/eternal_prospector/proc/ResetParry()
@@ -202,7 +212,7 @@
 	playsound(src, 'sound/weapons/fixer/hana_slash.ogg', 100, TRUE)
 
 	for(var/turf/T in range(2, src))
-		new /obj/effect/temp_visual/explosion(T)
+		new /obj/effect/temp_visual/smash_effect(T)
 		for(var/mob/living/L in T)
 			if(L == src)
 				continue
@@ -312,6 +322,7 @@
 /datum/status_effect/ruin/on_apply()
 	RegisterSignal(owner, COMSIG_MOB_APPLY_DAMGE, PROC_REF(on_damage))
 	owner.apply_status_effect(/datum/status_effect/devastation, 1)
+	update_alert()
 	return TRUE
 
 /datum/status_effect/ruin/on_remove()
@@ -335,10 +346,16 @@
 /datum/status_effect/ruin/proc/add_stacks(amount)
 	stacks = clamp(stacks + amount, 1, max_stacks)
 	owner.apply_status_effect(/datum/status_effect/devastation, amount)
+	update_alert()
+
+/datum/status_effect/ruin/proc/update_alert()
+	linked_alert?.name = "Ruin ([stacks]/[max_stacks])"
+	linked_alert?.desc = "You're marked with ruin. Attacks have a [stacks * 5]% chance to trigger devastating hits."
 
 /atom/movable/screen/alert/status_effect/ruin
 	name = "Ruin"
 	desc = "You're marked with ruin. Attacks have a chance to trigger devastating hits."
+	icon = 'ModularTegustation/Teguicons/status_ruin.dmi'
 	icon_state = "ruin"
 
 /datum/status_effect/devastation
@@ -356,6 +373,7 @@
 
 /datum/status_effect/devastation/on_apply()
 	owner.apply_status_effect(/datum/status_effect/ruin, 1)
+	update_alert()
 	return TRUE
 
 /datum/status_effect/devastation/proc/add_stacks(amount)
@@ -363,10 +381,16 @@
 	var/datum/status_effect/ruin/R = owner.has_status_effect(/datum/status_effect/ruin)
 	if(R)
 		R.add_stacks(amount)
+	update_alert()
+
+/datum/status_effect/devastation/proc/update_alert()
+	linked_alert?.name = "Devastation ([stacks]/[max_stacks])"
+	linked_alert?.desc = "You're building up devastating damage. You'll take [stacks * 10] bonus damage from devastating hits."
 
 /atom/movable/screen/alert/status_effect/devastation
 	name = "Devastation"
 	desc = "You're building up devastating damage. The higher the stacks, the more damage you'll take from devastating hits."
+	icon = 'ModularTegustation/Teguicons/status_ruin.dmi'
 	icon_state = "devastation"
 
 /datum/ego_gifts/greed
