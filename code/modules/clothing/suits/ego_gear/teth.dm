@@ -293,6 +293,6 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 /obj/item/clothing/suit/armor/ego_gear/teth/liminal
 	name = "liminal space"
 	desc = "A worn and stained suit that smells of old carpet and fluorescent lights. You feel like you've been here before."
-	icon_state = "liminal"
+	icon_state = "white_gossypium" //Debug Icon
 	armor = list(RED_DAMAGE = -20, WHITE_DAMAGE = 30, BLACK_DAMAGE = 10, PALE_DAMAGE = 0) // 20
 
