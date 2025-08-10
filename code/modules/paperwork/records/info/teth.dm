@@ -450,3 +450,15 @@
 		"When the work result was Bad, the Qliphoth Counter lowered by 1."
 	)
 
+//Common Dinner Chair
+/obj/item/paper/fluff/info/teth/dinner_chair
+	abno_type = /mob/living/simple_animal/hostile/abnormality/dinner_chair
+	abno_code = "F-05-114"
+	abno_info = list(
+		"When Insight work was performed, the Qliphoth Counter increased by 2.",
+		"When any work other than Insight or Repression was performed, the Qliphoth Counter decreased by 1.",
+		"When the work result was Bad on any work except Repression, there was a 70% chance the employee would experience severe spatial distortion.",
+		"Employees who experienced spatial distortion reported being transported to a liminal space with yellow walls and moldy carpets. They remained trapped there until rescued.",
+		"When Repression work was performed, any employees trapped in the liminal space were returned to reality.",
+		"When the Qliphoth Counter reached 0, 1-3 random facility personnel experienced violent spatial distortion and were transported to the liminal space."
+	)

@@ -93,7 +93,48 @@
 	trapped_employees += H
 	original_locations[H] = get_turf(H)
 
-	to_chat(H, span_userdanger("You suddenly feel yourself falling through the chair..."))
+	to_chat(H, span_userdanger("The chair begins to twist reality around you!"))
+	playsound(get_turf(H), 'sound/abnormalities/dinner_chair/ragdoll_effect.ogg', 75, TRUE)
+
+	// Apply violent spinning effect
+	INVOKE_ASYNC(src, PROC_REF(ViolentSpin), H)
+
+	// Wait for the spinning to finish before teleporting
+	addtimer(CALLBACK(src, PROC_REF(FinishTeleport), H), 12 SECONDS)
+
+/mob/living/simple_animal/hostile/abnormality/dinner_chair/proc/ViolentSpin(mob/living/M)
+	if(!M)
+		return
+
+	var/matrix/initial_matrix = matrix(M.transform)
+	// 10x more extreme than disco dance
+	for(var/i in 1 to 120) // 12 seconds worth at 0.1 second intervals
+		if(!M || QDELETED(M))
+			return
+
+		// Violent rotation
+		initial_matrix = matrix(M.transform)
+		initial_matrix.Turn(rand(45, 180)) // Random violent turns
+
+		// Extreme position changes
+		var/x_shift = rand(-10, 10)
+		var/y_shift = rand(-10, 10)
+		initial_matrix.Translate(x_shift, y_shift)
+
+		animate(M, transform = initial_matrix, time = 1, loop = 0, easing = pick(LINEAR_EASING, SINE_EASING, CIRCULAR_EASING))
+
+		// Rapid direction changes
+		M.setDir(pick(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST))
+
+		sleep(1)
+
+	// Reset transformation
+	animate(M, transform = null, time = 5, loop = 0)
+
+/mob/living/simple_animal/hostile/abnormality/dinner_chair/proc/FinishTeleport(mob/living/carbon/human/H)
+	if(!H || !(H in trapped_employees))
+		return
+
 	to_chat(H, span_warning("You find yourself in a space between realities. The walls are yellow and damp, the carpet is moldy and endless."))
 	to_chat(H, span_warning("You can hear a faint buzzing of fluorescent lights that shouldn't exist here."))
 
