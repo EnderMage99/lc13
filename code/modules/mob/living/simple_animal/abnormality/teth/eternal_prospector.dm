@@ -1,7 +1,7 @@
 /mob/living/simple_animal/hostile/abnormality/eternal_prospector
 	name = "Eternal Prospector"
 	desc = "A weathered figure in tattered prospecting gear, forever clutching ancient mining tools. Their eyes gleam with an insatiable greed that transcends death itself."
-	icon = 'ModularTegustation/Teguicons/32x32.dmi'
+	icon = 'ModularTegustation/Teguicons/prospector.dmi'
 	icon_state = "eternal_prospector"
 	icon_living = "eternal_prospector"
 	portrait = "eternal_prospector"
