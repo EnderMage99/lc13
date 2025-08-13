@@ -39,7 +39,7 @@
 	/// For storing our tackler datum so we can remove it after
 	var/datum/component/tackler
 	/// See: [/datum/component/tackler/var/stamina_cost]
-	var/tackle_stam_cost = 75
+	var/tackle_stam_cost = 20
 	/// See: [/datum/component/tackler/var/base_knockdown]
 	var/base_knockdown = 1 SECONDS
 	/// See: [/datum/component/tackler/var/range]
@@ -69,7 +69,7 @@
 /mob/living/carbon/human/species/cuckoospawn/Initialize()
 	. = ..()
 	head_immunity_start = world.time + head_immunity_duration
-	adjust_attribute_buff(FORTITUDE_ATTRIBUTE, 100)
+	adjust_attribute_buff(FORTITUDE_ATTRIBUTE, 150)
 	AddComponent(/datum/component/footstep, FOOTSTEP_MOB_CLAW, 1, -6)
 	RegisterSignal(src, COMSIG_MOVABLE_PRE_MOVE, PROC_REF(CheckSpace))
 	AddComponent(/datum/component/tackler/cuckoo, stamina_cost=tackle_stam_cost, base_knockdown = base_knockdown, range = tackle_range, speed = tackle_speed, skill_mod = skill_mod, min_distance = min_distance)
@@ -149,6 +149,11 @@
 
 	if(T.stat != DEAD && prob(30))
 		var/obj/item/bodypart/chest/LC = T.get_bodypart(BODY_ZONE_CHEST)
+		if(T.getorgan(/obj/item/organ/body_egg/cuckoospawn_embryo))
+			var/obj/item/organ/body_egg/cuckoospawn_embryo/current_embryo = T.getorgan(/obj/item/organ/body_egg/cuckoospawn_embryo)
+			current_embryo.stage += 1
+			to_chat(S, span_nicegreen("You speed up the growth of [T]'s embryo, soon a new niaojia-ren bird shall grow..."))
+
 		if((!LC || LC.status != BODYPART_ROBOTIC) && !T.getorgan(/obj/item/organ/body_egg/cuckoospawn_embryo) && !HAS_TRAIT(T, TRAIT_XENO_IMMUNE))
 			to_chat(S, span_nicegreen("You implant [T], soon a new niaojia-ren bird shall grow..."))
 			new /obj/item/organ/body_egg/cuckoospawn_embryo(T)
