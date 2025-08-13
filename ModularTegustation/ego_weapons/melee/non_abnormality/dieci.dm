@@ -18,6 +18,7 @@
 
 	var/combo_time
 	var/combo_wait = 10
+	var/in_sequence = FALSE
 
 
 /obj/item/ego_weapon/city/dieci/examine(mob/user)
@@ -115,18 +116,23 @@
 		chain=0
 		to_chat(user, "<span class='danger'>Your chain is reset.</span>")
 		activated = FALSE
-	force = initial(force)
+	if(!in_sequence)
+		force = initial(force)
 	hitsound = initial(hitsound)
 
 
 /obj/item/ego_weapon/city/dieci/proc/beatdown(mob/living/target, mob/living/user)
+	in_sequence = TRUE
 	for(var/i = 1 to 20)
 		chain = 0
 		attack(target, user)
 		sleep(0.5)
+	in_sequence = FALSE
+	force = initial(force)
 
 
 /obj/item/ego_weapon/city/dieci/proc/grabattack(mob/living/target, mob/living/user)
+	in_sequence = TRUE
 	//Punch 'em
 	for(var/i = 1 to 5)
 		chain = 0
@@ -151,9 +157,12 @@
 	if(!target.anchored)
 		var/whack_speed = (prob(60) ? 1 : 4)
 		target.throw_at(throw_target, rand(6, 9), whack_speed, user)
+	in_sequence = FALSE
+	force = initial(force)
 
 
 /obj/item/ego_weapon/city/dieci/proc/smallbeatdown(mob/living/target, mob/living/user)
+	in_sequence = TRUE
 	for(var/i = 1 to 5)
 		chain = 0
 		attack(target, user)
@@ -162,15 +171,23 @@
 	if(!target.anchored)
 		var/whack_speed = (prob(60) ? 1 : 4)
 		target.throw_at(throw_target, rand(3, 5), whack_speed, user)
+	in_sequence = FALSE
+	force = initial(force)
 
 /obj/item/ego_weapon/city/dieci/proc/noknockback(mob/living/target, mob/living/user)
+	in_sequence = TRUE
 	for(var/i = 1 to 5)
 		chain = 0
 		attack(target, user)
 		sleep(1)
+	in_sequence = FALSE
+	force = initial(force)
 
 /obj/item/ego_weapon/city/dieci/proc/twohit(mob/living/target, mob/living/user)
+	in_sequence = TRUE
 	for(var/i = 1 to 2)
 		chain = 0
 		attack(target, user)
 		sleep(2)
+	in_sequence = FALSE
+	force = initial(force)
