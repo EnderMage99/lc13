@@ -401,6 +401,33 @@
 	I don’t want to know anything anymore.<br>
 	Please, eat my dreams."}
 
+//Door to Nowhere
+/obj/item/paper/fluff/lore/teth/door_to_nowhere
+	name = "F-05-114"
+	info = {"<h2><center>F-05-114</center></h2>	<br>
+	Door to Nowhere	<br>
+	"A door wrapped in rusted chains, floating unnaturally in the air. It has no frame, no wall to support it - just a weathered wooden door bound shut, as if desperate to keep something locked away."<br>
+	
+	"The chains pulse with a rhythmic tightening, like a heartbeat of regret. Behind the door, if one listens closely, there are whispers - fragments of conversations never had, apologies never given, confessions that died in throats too proud or too afraid to speak."<br>
+	
+	<h3><center>Recovered Employee Journal - Day 23</center></h3><br>
+	"I've been assigned to the new anomaly. At first glance, it's just a floating door. But there's something deeply unsettling about it. When I approach, I can hear... things. Memories I thought I'd buried. That argument with my mother before she passed. The words I never said to her. They echo from behind that door like they're trapped there."<br>
+	
+	<h3><center>Incident Report T-8923</center></h3><br>
+	"Employee Marcus failed his work with F-05-114 today. One moment he was standing before the door, the next... the chains burst open and he was pulled through. We could hear him screaming about 'the hallway of doors' and 'each one holding someone's shame.' When Agent Nina performed Repression work, Marcus returned, but he hasn't spoken since. He just stares at walls, tracing door frames with his fingers."<br>
+	
+	<h3><center>Research Notes - Dr. Yoon</center></h3><br>
+	"The realm beyond the door appears to be a liminal space constructed entirely from human regret. Each person trapped inside reports the same thing: endless corridors lined with doors, each one chained shut, each one containing a memory someone desperately wanted to forget. The victims wander these halls, forced to witness not just their own sealed regrets, but those of everyone who ever passed through."<br>
+	
+	"What's most disturbing is that the door seems to feed on these sealed memories. The more regrets it collects, the tighter its chains become, as if it's desperately trying to prevent all that accumulated shame from escaping back into our world."<br>
+	
+	<h3><center>Final Note - Anonymous</center></h3><br>
+	"They say everyone has something they wish they could forget. A moment of weakness, a cruel word, a chance not taken. This door collects them all. It's not malicious - it's almost merciful, in a way. It offers to take our regrets and lock them away forever."<br>
+	
+	"But nothing stays locked forever. And when those chains finally break, when all those sealed regrets come flooding back into the world... I wonder if we'll recognize ourselves in them, or if we've already become strangers to our own shame."<br>
+	
+	"I've started hearing my father's voice behind the door. He's been dead for ten years, but I never told him I forgave him. Now that door knows, and it won't let me forget."}
+
 //Meat Lantern
 /obj/item/paper/fluff/lore/teth/meatlantern
 	name = "D-02-107"

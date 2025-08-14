@@ -25,6 +25,13 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"aS" = (
+/obj/structure/chair/comfy/brown{
+	dir = 1
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "bd" = (
 /obj/structure/flora/icestalactite{
 	pixel_x = -18;
@@ -82,6 +89,11 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"cb" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/effect/spawner/lootdrop/grille_or_trash,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "ci" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
@@ -117,6 +129,35 @@
 	},
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"cp" = (
+/obj/structure/mineral_door/wood,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"cq" = (
+/mob/living/simple_animal/pet/penguin/baby,
+/turf/open/floor/holofloor/snow,
+/area/shelter)
+"cL" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/sign/painting/library{
+	pixel_y = 32
+	},
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"cN" = (
+/obj/structure/sign/painting/library{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"cT" = (
+/obj/structure/regret_door{
+	pixel_x = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
 "dm" = (
 /obj/structure/flora/icestalactite/small,
 /obj/effect/areaflavor_snow,
@@ -141,6 +182,13 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"dz" = (
+/obj/effect/landmark/backrooms_spawn,
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "dL" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 1
@@ -183,10 +231,7 @@
 /obj/effect/overlay/light_cone{
 	color = "#E1E17D"
 	},
-/turf/open/floor/plating/sandy_dirt{
-	name = "dirty carpet";
-	desc = "Upon closer examination, it's still a dirty carpet"
-	},
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "eG" = (
 /obj/machinery/light/small{
@@ -200,12 +245,28 @@
 /obj/structure/closet/crate/pcorp/shelter,
 /turf/open/floor/shelter,
 /area/shelter)
+"eV" = (
+/turf/open/floor/carpet/blue,
+/area/fishboat/backrooms)
 "eY" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 9
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"eZ" = (
+/turf/open/floor/carpet/royalblack,
+/area/fishboat/backrooms)
+"fa" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/obj/structure/sign/painting/library{
+	pixel_y = 32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "fd" = (
 /obj/structure/flora/icegrave{
 	pixel_x = 22;
@@ -233,10 +294,10 @@
 	set_luminosity = 50;
 	light_color = "#E1E17D"
 	},
-/turf/open/floor/plating/sandy_dirt{
-	name = "dirty carpet";
-	desc = "Upon closer examination, it's still a dirty carpet"
+/obj/structure/regret_door{
+	pixel_x = 32
 	},
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "fJ" = (
 /obj/effect/turf_decal/weather/snow/corner{
@@ -251,15 +312,42 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"fM" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "fR" = (
 /turf/closed/mineral/snowmountain/cavern{
 	layer = 3.3
 	},
 /area/snowqueen)
+"gc" = (
+/obj/effect/spawner/lootdrop/grille_or_trash,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "gw" = (
 /obj/item/reagent_containers/glass/bucket/wooden,
 /turf/open/floor/wood,
 /area/fishboat)
+"hh" = (
+/obj/item/trash/plate,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"hp" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/closed/indestructible/wood,
+/area/fishboat/backrooms)
 "hs" = (
 /turf/closed/indestructible/rock,
 /area/shelter)
@@ -269,6 +357,16 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"iC" = (
+/obj/structure/mineral_door/wood,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"iL" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/floor/carpet/royalblack,
+/area/fishboat/backrooms)
 "iO" = (
 /obj/structure/flora/icestalagmite,
 /obj/effect/areaflavor_snow,
@@ -280,6 +378,20 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"iT" = (
+/obj/effect/landmark/backrooms_spawn,
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "iV" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 4
@@ -289,6 +401,18 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"jd" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/table/wood/fancy/red,
+/obj/item/toy/plush/gebura,
+/turf/open/floor/carpet/red,
+/area/fishboat/backrooms)
 "jh" = (
 /obj/structure/aquarium,
 /turf/open/floor/wood,
@@ -304,6 +428,18 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"ju" = (
+/obj/structure/sign/plaques/kiddie/perfect_drone{
+	pixel_y = -32
+	},
+/obj/structure/table/reinforced,
+/obj/item/organ/heart/cybernetic/tier4,
+/obj/structure/window/reinforced/spawner/east,
+/obj/structure/window/reinforced/spawner/west,
+/obj/structure/window/reinforced/spawner/north,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "jS" = (
 /obj/structure/railing{
 	dir = 9;
@@ -317,6 +453,17 @@
 	},
 /turf/closed/indestructible/wood,
 /area/fishboat)
+"ki" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
 "kj" = (
 /obj/structure/flora/icestalactite{
 	pixel_x = 2;
@@ -332,10 +479,11 @@
 	set_luminosity = 50;
 	light_color = "#E1E17D"
 	},
-/turf/open/floor/plating/sandy_dirt{
-	name = "dirty carpet";
-	desc = "Upon closer examination, it's still a dirty carpet"
-	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"kX" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "lf" = (
 /obj/effect/turf_decal/weather/snow/corner{
@@ -351,16 +499,24 @@
 	},
 /area/snowqueen)
 "ll" = (
-/turf/closed/indestructible/crystal_wall{
-	name = "old drywall";
-	desc = "A very dry wall"
+/turf/closed/indestructible/wood,
+/area/fishboat/backrooms)
+"lG" = (
+/obj/structure/regret_door{
+	pixel_y = -32
 	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"lN" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/table/wood/fancy/black,
+/obj/item/ego_weapon/ranged/pistol/nightshade,
+/obj/item/clothing/suit/armor/ego_gear/zayin/nightshade,
+/turf/open/floor/holofloor/grass,
 /area/fishboat/backrooms)
 "lV" = (
-/turf/open/floor/plating/sandy_dirt{
-	name = "dirty carpet";
-	desc = "Upon closer examination, it's still a dirty carpet"
-	},
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "lW" = (
 /obj/effect/turf_decal/weather/snow/corner{
@@ -412,6 +568,20 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"np" = (
+/obj/effect/landmark/backrooms_spawn,
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "nz" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
@@ -421,6 +591,19 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"nC" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "nZ" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 4
@@ -450,6 +633,31 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"oD" = (
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"pk" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/floor/carpet/blue,
+/area/fishboat/backrooms)
+"pz" = (
+/obj/structure/sign/painting/library{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/effect/spawner/lootdrop/grille_or_trash,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"pX" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
 "qd" = (
 /obj/structure/flora/icestalactite{
 	pixel_y = -34
@@ -495,6 +703,18 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"qK" = (
+/obj/structure/chess/blackknight,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"ra" = (
+/obj/structure/flora/icestalagmite,
+/turf/open/floor/holofloor/snow,
+/area/shelter)
+"rh" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
 "rl" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 10
@@ -514,6 +734,13 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"rq" = (
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
 "rL" = (
 /obj/structure/flora/icestalactite{
 	pixel_x = 9;
@@ -525,6 +752,11 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"rV" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/flora/ausbushes/brflowers,
+/turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
 "sx" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 6
@@ -583,6 +815,9 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"sZ" = (
+/turf/open/floor/holofloor/snow,
+/area/shelter)
 "td" = (
 /obj/structure/flora/icestalagmite{
 	pixel_x = 6;
@@ -614,6 +849,17 @@
 "uk" = (
 /turf/closed/indestructible/reinforced,
 /area/shelter)
+"uU" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/plastitanium/red/brig,
+/area/fishboat/backrooms)
 "vf" = (
 /obj/effect/landmark/snowqueen_teleport,
 /obj/effect/areaflavor_snow,
@@ -639,6 +885,17 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"vx" = (
+/obj/structure/statue/snow/snowman,
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/turf/open/floor/holofloor/snow,
+/area/shelter)
 "vz" = (
 /obj/structure/table/wood,
 /obj/item/storage/box/fishing,
@@ -651,6 +908,28 @@
 /obj/item/fishing_rod,
 /turf/open/floor/wood,
 /area/fishboat)
+"vG" = (
+/obj/structure/sign/painting/library{
+	pixel_y = 32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"vS" = (
+/obj/structure/mineral_door/wood,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/plastitanium/red/brig,
+/area/fishboat/backrooms)
+"wd" = (
+/obj/structure/sign/departments/training,
+/turf/closed/indestructible/wood,
+/area/fishboat/backrooms)
+"wq" = (
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "wy" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 9
@@ -695,6 +974,18 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"xl" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/table/wood/fancy/black,
+/obj/item/bouquet/sunflower,
+/turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
+"xw" = (
+/obj/structure/table/wood/fancy/orange,
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/item/kitchen/knife,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "xG" = (
 /obj/structure/flora/icestalagmite{
 	layer = 3;
@@ -710,6 +1001,12 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"ye" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/floor/carpet/red,
+/area/fishboat/backrooms)
 "yg" = (
 /obj/effect/light_emitter{
 	light_power = 4;
@@ -745,6 +1042,12 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"yr" = (
+/obj/structure/regret_door{
+	pixel_x = 32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "yu" = (
 /obj/structure/flora/icestalagmite/small{
 	pixel_x = -3;
@@ -752,6 +1055,12 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"yR" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/table/wood/fancy/black,
+/obj/item/paper/fluff/joey/letter,
+/turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
 "zz" = (
 /obj/structure/flora/iceshards{
 	pixel_y = 15
@@ -765,6 +1074,13 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"zA" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/plastitanium/red/brig,
+/area/fishboat/backrooms)
 "zS" = (
 /obj/structure/flora/icestalagmite{
 	pixel_x = -9;
@@ -798,6 +1114,13 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"Ah" = (
+/obj/structure/chair/comfy/brown{
+	dir = 4
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Aq" = (
 /obj/structure/flora/icestalagmite{
 	pixel_x = 8;
@@ -826,6 +1149,13 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"Az" = (
+/obj/structure/barricade/wooden/crude/snow,
+/turf/closed/indestructible/fakeglass,
+/area/fishboat/backrooms)
+"AO" = (
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "AP" = (
 /obj/structure/flora/icestalagmite/small{
 	pixel_x = -13;
@@ -865,10 +1195,30 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"BZ" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Cq" = (
 /obj/effect/shelter_forcefield,
 /turf/open/floor/shelter,
 /area/shelter)
+"Cv" = (
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/obj/item/toy/plush/binah,
+/turf/open/floor/carpet/royalblack,
+/area/fishboat/backrooms)
 "CI" = (
 /obj/effect/turf_decal/weather/snow/corner,
 /obj/effect/areaflavor_snow,
@@ -880,6 +1230,11 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"CN" = (
+/obj/item/trash/plate,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "CP" = (
 /obj/structure/railing/corner{
 	dir = 1
@@ -893,6 +1248,13 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"DU" = (
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "En" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 10
@@ -942,6 +1304,12 @@
 /obj/structure/closet/crate/pcorp/shelter,
 /turf/open/floor/shelter,
 /area/shelter)
+"Fv" = (
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "FC" = (
 /obj/structure/flora/icestalagmite/small{
 	pixel_x = -13;
@@ -949,6 +1317,19 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"FJ" = (
+/turf/open/floor/carpet/red,
+/area/fishboat/backrooms)
+"FV" = (
+/obj/structure/mineral_door/iron,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
+"Gc" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/flora/ausbushes/ywflowers,
+/turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
 "Gd" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 10
@@ -966,6 +1347,10 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"GC" = (
+/obj/structure/flora/icestalagmite/small,
+/turf/open/floor/holofloor/snow,
+/area/shelter)
 "GO" = (
 /obj/structure/flora/icechunk/alt{
 	pixel_x = 5;
@@ -986,10 +1371,11 @@
 /area/snowqueen)
 "GP" = (
 /obj/effect/landmark/backrooms_spawn,
-/turf/open/floor/plating/sandy_dirt{
-	name = "dirty carpet";
-	desc = "Upon closer examination, it's still a dirty carpet"
+/obj/structure/regret_door{
+	pixel_y = 32
 	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/plastitanium/red/brig,
 /area/fishboat/backrooms)
 "Ha" = (
 /obj/structure/flora/icechunk{
@@ -1019,6 +1405,19 @@
 /obj/item/reagent_containers/food/drinks/soda_cans/wellcheers_red,
 /turf/open/floor/wood,
 /area/fishboat)
+"Hj" = (
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"HH" = (
+/obj/structure/sign/painting/library{
+	pixel_y = 32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "HS" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 6
@@ -1034,6 +1433,14 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"Ib" = (
+/obj/structure/sign/painting/library{
+	pixel_y = 32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/effect/spawner/lootdrop/grille_or_trash,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "IC" = (
 /obj/structure/flora/iceshards{
 	pixel_x = -15;
@@ -1045,6 +1452,13 @@
 /obj/effect/turf_decal/siding/wood,
 /turf/open/floor/wood,
 /area/fishboat)
+"Jk" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/stone,
+/area/fishboat/backrooms)
 "JI" = (
 /obj/machinery/door/airlock/snowqueen{
 	pixel_y = -7;
@@ -1052,6 +1466,11 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"JL" = (
+/obj/structure/mineral_door/wood,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Kd" = (
 /obj/structure/flora/rock/pile/icy{
 	pixel_x = -13
@@ -1069,6 +1488,9 @@
 /obj/machinery/fish_market,
 /turf/open/floor/wood,
 /area/fishboat)
+"Kr" = (
+/turf/closed/indestructible/rock/snow/ice/ore,
+/area/shelter)
 "Ks" = (
 /obj/structure/flora/rock/icy{
 	pixel_x = 18
@@ -1102,6 +1524,14 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"KK" = (
+/mob/living/simple_animal/pet/penguin/emperor,
+/turf/open/floor/holofloor/snow,
+/area/shelter)
+"KU" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "Lr" = (
 /obj/structure/flora/iceslab{
 	pixel_x = 49;
@@ -1189,6 +1619,18 @@
 /obj/effect/landmark/shrimpship,
 /turf/open/floor/wood,
 /area/fishboat)
+"Ni" = (
+/obj/structure/sign/plaques/kiddie/perfect_man{
+	step_y = 32
+	},
+/obj/structure/table/reinforced,
+/obj/item/organ/heart,
+/obj/structure/window/reinforced/spawner/east,
+/obj/structure/window/reinforced/spawner/west,
+/obj/structure/window/reinforced/spawner,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Nj" = (
 /obj/structure/flora/icechunk{
 	pixel_x = 12;
@@ -1218,6 +1660,18 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"Ny" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/statue/uranium/nuke,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"NB" = (
+/obj/structure/sign/painting/library{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "NP" = (
 /obj/structure/flora/icestalactite/small{
 	pixel_x = -18;
@@ -1225,6 +1679,16 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"Ob" = (
+/obj/structure/flora/icestalactite/small,
+/turf/open/floor/holofloor/snow,
+/area/shelter)
+"OS" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/table/wood/fancy/red,
+/obj/item/paint/red,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "Pn" = (
 /obj/item/storage/box/pcorp,
 /obj/item/storage/box/pcorp,
@@ -1254,6 +1718,16 @@
 /obj/structure/railing/corner,
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"PS" = (
+/obj/structure/table/wood/fancy/orange,
+/obj/item/food/cake/birthday,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"PW" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/plastitanium/red/brig,
+/area/fishboat/backrooms)
 "Qt" = (
 /obj/structure/railing{
 	name = "invincible railing";
@@ -1286,12 +1760,22 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"Rv" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "RB" = (
 /obj/machinery/light/small{
 	dir = 1
 	},
 /obj/effect/shelter_forcefield,
 /turf/open/floor/shelter,
+/area/shelter)
+"RK" = (
+/mob/living/simple_animal/pet/penguin/emperor/shamebrero,
+/turf/open/floor/holofloor/snow,
 /area/shelter)
 "Sd" = (
 /obj/structure/railing{
@@ -1303,12 +1787,39 @@
 	},
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"Si" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
+"SH" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/turf/open/floor/holofloor/snow,
+/area/shelter)
 "SJ" = (
 /obj/structure/railing/corner{
 	dir = 8
 	},
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"SP" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "Tl" = (
 /obj/effect/turf_decal/siding/wood/corner{
 	dir = 4
@@ -1341,6 +1852,27 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"Uk" = (
+/obj/structure/regret_door{
+	pixel_x = -32
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"UA" = (
+/obj/effect/landmark/backrooms_spawn,
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = 32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "UF" = (
 /obj/structure/frozensword,
 /obj/effect/areaflavor_snow,
@@ -1352,6 +1884,20 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"UM" = (
+/obj/effect/landmark/backrooms_spawn,
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "UO" = (
 /obj/effect/areaflavor_snow,
 /turf/open/floor/plasteel/dark{
@@ -1386,6 +1932,9 @@
 	},
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"Vz" = (
+/turf/closed/indestructible/iron,
+/area/fishboat/backrooms)
 "VJ" = (
 /obj/structure/flora/icegrave,
 /obj/effect/areaflavor_snow,
@@ -1397,6 +1946,10 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"VK" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/closed/indestructible/iron,
+/area/fishboat/backrooms)
 "VZ" = (
 /obj/structure/railing{
 	dir = 6;
@@ -1413,18 +1966,44 @@
 	},
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"WF" = (
+/obj/structure/statue/snow/snowman,
+/turf/open/floor/holofloor/snow,
+/area/shelter)
+"WP" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "WU" = (
 /obj/effect/turf_decal/siding/wood{
 	dir = 8
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"Xa" = (
+/obj/structure/mineral_door/wood,
+/turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
 "Xt" = (
 /turf/open/floor/wood,
 /area/fishboat)
 "Xy" = (
 /turf/closed/indestructible/rock,
 /area/fishboat)
+"XF" = (
+/obj/structure/sign/painting/library{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/effect/spawner/lootdrop/grille_or_trash,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "XK" = (
 /obj/structure/railing{
 	dir = 1
@@ -1465,6 +2044,11 @@
 	},
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
+"Ym" = (
+/obj/structure/table/wood/fancy/orange,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
 "Yw" = (
 /obj/structure/flora/icestalagmite/small,
 /obj/effect/areaflavor_snow,
@@ -1534,6 +2118,13 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"Zl" = (
+/obj/structure/chair/comfy/brown{
+	dir = 8
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "ZI" = (
 /obj/effect/areaflavor_snow,
 /turf/open/floor/plasteel/dark{
@@ -1544,6 +2135,18 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"ZP" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 50;
+	light_color = "#E1E17D"
+	},
+/obj/item/toy/plush/chesed,
+/obj/structure/table/wood/fancy/blue,
+/turf/open/floor/carpet/blue,
+/area/fishboat/backrooms)
 "ZU" = (
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
@@ -1561,44 +2164,44 @@ XL
 XL
 XL
 XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
+Kr
 XL
 XL
 XL
@@ -1763,44 +2366,44 @@ XL
 XL
 XL
 XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
+Kr
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+vx
+sZ
+sZ
+sZ
+sZ
+sZ
+Ob
+sZ
+sZ
+SH
+sZ
+sZ
+GC
+sZ
+sZ
+SH
+sZ
+sZ
+sZ
+ra
+sZ
+sZ
+SH
+KK
+sZ
+sZ
+sZ
+sZ
+Kr
 XL
 XL
 XL
@@ -1965,44 +2568,44 @@ XL
 XL
 XL
 XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
+Kr
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+GC
+sZ
+cq
+sZ
+WF
+sZ
+sZ
+sZ
+cq
+sZ
+KK
+sZ
+sZ
+sZ
+RK
+WF
+sZ
+sZ
+sZ
+sZ
+sZ
+cq
+sZ
+cq
+sZ
+sZ
+sZ
+sZ
+Kr
 XL
 XL
 XL
@@ -2167,44 +2770,44 @@ XL
 XL
 XL
 XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
+Kr
+sZ
+sZ
+sZ
+sZ
+sZ
+cq
+sZ
+sZ
+sZ
+KK
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+cq
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+cq
+sZ
+KK
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+Kr
 XL
 XL
 XL
@@ -2369,44 +2972,44 @@ XL
 XL
 XL
 XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
-XL
+Kr
+sZ
+sZ
+sZ
+ra
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+sZ
+WF
+sZ
+sZ
+Ob
+sZ
+sZ
+sZ
+sZ
+GC
+sZ
+sZ
+sZ
+sZ
+sZ
+ra
+sZ
+sZ
+sZ
+sZ
+Kr
 XL
 XL
 XL
@@ -2580,6 +3183,8 @@ ll
 ll
 ll
 ll
+Az
+Az
 ll
 ll
 ll
@@ -2587,22 +3192,20 @@ ll
 ll
 ll
 ll
+Az
+Az
+ll
+ll
+ll
+Az
+Az
 ll
 ll
 ll
 ll
 ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+Az
+Az
 ll
 ll
 ll
@@ -2800,27 +3403,27 @@ lV
 lV
 lV
 lV
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
+Uk
 lV
 ll
 lV
 lV
+iC
 lV
 lV
 lV
+lV
+lV
+lV
+lV
+lV
+lV
+ll
+gc
+kX
+Ah
+kX
+gc
 ll
 ll
 ll
@@ -2982,11 +3585,11 @@ lV
 lV
 lV
 lV
+iC
 lV
 lV
 lV
-lV
-lV
+yr
 ll
 lV
 lV
@@ -3018,11 +3621,11 @@ lV
 eC
 lV
 ll
-lV
-lV
-lV
-lV
-lV
+kX
+KU
+xw
+hh
+kX
 ll
 ll
 ll
@@ -3091,7 +3694,7 @@ lV
 lV
 lV
 lV
-GP
+dz
 ll
 XL
 XL
@@ -3220,11 +3823,11 @@ lV
 kJ
 lV
 ll
-lV
-lV
-lV
-lV
-lV
+DU
+Ym
+PS
+Ym
+aS
 ll
 ll
 ll
@@ -3242,7 +3845,7 @@ ll
 eC
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -3422,11 +4025,11 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
-lV
-lV
+kX
+KU
+Ym
+KU
+gc
 ll
 ll
 ll
@@ -3624,11 +4227,11 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
-lV
-lV
+CN
+kX
+Zl
+kX
+kX
 ll
 lV
 lV
@@ -3830,7 +4433,7 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
 lV
 lV
@@ -3843,7 +4446,7 @@ lV
 lV
 lV
 lV
-kJ
+BZ
 ll
 lV
 lV
@@ -3851,8 +4454,6 @@ lV
 ll
 lV
 lV
-ll
-ll
 ll
 ll
 ll
@@ -3869,7 +4470,9 @@ ll
 ll
 ll
 ll
-lV
+ll
+ll
+iC
 ll
 lV
 lV
@@ -3882,18 +4485,18 @@ lV
 lV
 lV
 lV
+iC
 lV
 lV
 lV
-lV
-lV
+Hj
 ll
 ll
 ll
 ll
 ll
 ll
-lV
+iC
 ll
 ll
 ll
@@ -4469,7 +5072,7 @@ lV
 lV
 lV
 ll
-lV
+vS
 ll
 ll
 ll
@@ -4489,7 +5092,7 @@ kJ
 lV
 lV
 ll
-lV
+iC
 ll
 ll
 ll
@@ -4671,9 +5274,9 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+PW
+PW
+PW
 ll
 lV
 lV
@@ -4795,7 +5398,7 @@ ll
 lV
 lV
 ll
-lV
+iC
 ll
 ll
 ll
@@ -4859,7 +5462,7 @@ lV
 lV
 lV
 ll
-lV
+wq
 lV
 lV
 kJ
@@ -4873,9 +5476,9 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+Ni
+PW
+ju
 ll
 lV
 lV
@@ -5075,9 +5678,9 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+PW
+PW
+PW
 ll
 lV
 lV
@@ -5089,7 +5692,7 @@ ll
 lV
 lV
 ll
-lV
+iC
 ll
 ll
 ll
@@ -5277,28 +5880,28 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+PW
+PW
+PW
 ll
 ll
 ll
-lV
-ll
-lV
-lV
+iC
 ll
 lV
 lV
 ll
 lV
 lV
+ll
 lV
 lV
 lV
 lV
 lV
 lV
+lV
+iC
 lV
 lV
 lV
@@ -5421,7 +6024,7 @@ lV
 lV
 lV
 ll
-lV
+wq
 kJ
 lV
 lV
@@ -5452,6 +6055,23 @@ lV
 lV
 lV
 lV
+iC
+lV
+lV
+lV
+lV
+ll
+lV
+lV
+ll
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
 lV
 lV
 lV
@@ -5460,28 +6080,11 @@ lV
 ll
 lV
 lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
 lV
 ll
-lV
-lV
-lV
-ll
-lV
-eC
-lV
+PW
+zA
+PW
 ll
 lV
 lV
@@ -5681,9 +6284,9 @@ lV
 lV
 lV
 ll
-lV
-kJ
-lV
+Ni
+uU
+ju
 ll
 lV
 lV
@@ -5883,12 +6486,12 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+PW
+PW
+PW
 ll
-lV
-lV
+AO
+AO
 lV
 ll
 lV
@@ -6085,22 +6688,14 @@ eC
 lV
 lV
 ll
-lV
-lV
+PW
+PW
+PW
+ll
+AO
+AO
 lV
 ll
-lV
-lV
-lV
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-lV
-lV
 lV
 lV
 ll
@@ -6111,6 +6706,14 @@ lV
 lV
 lV
 lV
+ll
+lV
+lV
+ll
+lV
+lV
+lV
+lV
 lV
 ll
 lV
@@ -6118,7 +6721,7 @@ lV
 lV
 lV
 ll
-kJ
+nC
 lV
 lV
 lV
@@ -6287,12 +6890,12 @@ kJ
 lV
 lV
 ll
-lV
-lV
-lV
+PW
+PW
+PW
 ll
-lV
-lV
+AO
+AO
 lV
 ll
 lV
@@ -6490,13 +7093,13 @@ lV
 lV
 ll
 GP
-lV
-lV
+PW
+PW
 ll
+Fv
+AO
 lV
-lV
-lV
-lV
+iC
 lV
 lV
 ll
@@ -6649,7 +7252,7 @@ ll
 ll
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -6866,9 +7469,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-eC
+cp
+KU
+WP
 ll
 lV
 lV
@@ -7037,7 +7640,7 @@ lV
 ll
 lV
 ll
-lV
+iC
 ll
 ll
 ll
@@ -7068,9 +7671,9 @@ lV
 lV
 lV
 lV
-ll
-lV
-kJ
+wd
+KU
+fM
 ll
 lV
 lV
@@ -7271,8 +7874,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+cL
+OS
 ll
 lV
 lV
@@ -7473,35 +8076,35 @@ lV
 lV
 lV
 ll
+KU
+KU
+wd
 lV
 lV
-ll
-lV
-lV
-lV
-lV
-ll
-ll
-ll
-lV
-lV
-ll
 lV
 lV
 ll
 ll
 ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+lV
+lV
 ll
 lV
+lV
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+iC
 ll
 lV
 lV
@@ -7530,7 +8133,7 @@ lV
 lV
 lV
 ll
-kJ
+nC
 lV
 lV
 lV
@@ -7675,9 +8278,9 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+cL
+KU
+cp
 lV
 lV
 lV
@@ -7923,7 +8526,7 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
 ll
 ll
@@ -8045,7 +8648,7 @@ ll
 lV
 lV
 ll
-lV
+iC
 ll
 lV
 lV
@@ -8494,7 +9097,7 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
 lV
 ll
@@ -8648,7 +9251,7 @@ lV
 lV
 ll
 ll
-fy
+np
 lV
 lV
 lV
@@ -8671,7 +9274,7 @@ ll
 ll
 ll
 ll
-lV
+ll
 lV
 lV
 ll
@@ -8869,11 +9472,11 @@ ll
 ll
 ll
 ll
-lV
-lV
-lV
-lV
-lV
+Ny
+kX
+Gc
+kX
+iC
 lV
 lV
 ll
@@ -9049,7 +9652,7 @@ lV
 lV
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -9071,10 +9674,10 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
-lV
+kX
+KU
+KU
+Si
 ll
 lV
 lV
@@ -9135,7 +9738,7 @@ lV
 lV
 lV
 ll
-lV
+iC
 ll
 lV
 lV
@@ -9273,10 +9876,10 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
-lV
+kX
+KU
+Si
+yR
 ll
 lV
 lV
@@ -9325,7 +9928,7 @@ lV
 lV
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -9475,10 +10078,10 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
-lV
+kX
+rV
+lN
+xl
 ll
 lV
 lV
@@ -9554,7 +10157,7 @@ lV
 lV
 lV
 ll
-lV
+yr
 lV
 ll
 XL
@@ -9641,7 +10244,7 @@ ll
 ll
 ll
 lV
-lV
+Hj
 ll
 lV
 lV
@@ -9675,10 +10278,10 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
-lV
-lV
+Xa
+ll
 ll
 ll
 ll
@@ -10058,7 +10661,7 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
 lV
 lV
@@ -10262,7 +10865,7 @@ eC
 lV
 lV
 ll
-lV
+iC
 ll
 ll
 ll
@@ -10563,9 +11166,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+AO
+AO
+AO
 ll
 XL
 XL
@@ -10765,9 +11368,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-eC
+AO
+AO
+Rv
 ll
 XL
 XL
@@ -10963,13 +11566,13 @@ lV
 lV
 lV
 lV
-lV
+iC
 lV
 lV
 ll
-lV
-lV
-fy
+AO
+AO
+UM
 ll
 XL
 XL
@@ -11478,9 +12081,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+cp
+AO
+AO
 ll
 lV
 lV
@@ -11680,10 +12283,10 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
-ll
+hp
+AO
+AO
+hp
 lV
 lV
 lV
@@ -11883,8 +12486,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+Fv
+oD
 ll
 lV
 lV
@@ -12085,8 +12688,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+AO
+AO
 ll
 lV
 lV
@@ -12286,16 +12889,16 @@ ll
 ll
 lV
 lV
+hp
+AO
+AO
+hp
+lV
+lV
+lV
 ll
-lV
-lV
 ll
-lV
-lV
-lV
-ll
-ll
-lV
+iC
 ll
 lV
 lV
@@ -12468,7 +13071,7 @@ XL
 ll
 ll
 ll
-lV
+yr
 lV
 lV
 lV
@@ -12489,8 +13092,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+Fv
+oD
 ll
 lV
 lV
@@ -12567,7 +13170,7 @@ lV
 lV
 lV
 lV
-lV
+iC
 lV
 lV
 ll
@@ -12691,8 +13294,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+AO
+AO
 ll
 lV
 lV
@@ -12755,7 +13358,7 @@ lV
 lV
 lV
 lV
-fy
+iT
 ll
 lV
 lV
@@ -12873,9 +13476,9 @@ ll
 lV
 lV
 lV
-lV
-lV
-lV
+AO
+AO
+AO
 ll
 lV
 lV
@@ -12892,10 +13495,10 @@ ll
 ll
 lV
 lV
-ll
-lV
-lV
-ll
+hp
+AO
+AO
+hp
 lV
 lV
 lV
@@ -13075,9 +13678,9 @@ ll
 lV
 lV
 lV
-lV
-lV
-lV
+AO
+AO
+SP
 ll
 lV
 lV
@@ -13095,8 +13698,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+Fv
+oD
 ll
 lV
 lV
@@ -13277,9 +13880,9 @@ ll
 lV
 lV
 lV
-lV
-lV
-lV
+AO
+AO
+AO
 ll
 eC
 lV
@@ -13297,8 +13900,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+AO
+AO
 ll
 lV
 lV
@@ -13382,7 +13985,7 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
 XL
 XL
@@ -13476,8 +14079,8 @@ XL
 XL
 XL
 ll
-lV
-lV
+iC
+ll
 ll
 ll
 ll
@@ -13498,10 +14101,10 @@ lV
 ll
 lV
 lV
-ll
-lV
-lV
-ll
+hp
+AO
+AO
+hp
 lV
 lV
 lV
@@ -13570,8 +14173,8 @@ ll
 ll
 ll
 ll
-lV
-lV
+iC
+iC
 ll
 ll
 ll
@@ -13701,8 +14304,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+Fv
+oD
 ll
 lV
 lV
@@ -13903,9 +14506,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+AO
+AO
+ll
 lV
 lV
 lV
@@ -14105,14 +14708,14 @@ ll
 lV
 eC
 ll
-lV
-lV
-lV
+AO
+AO
+cp
 lV
 lV
 lV
 ll
-lV
+iC
 ll
 ll
 lV
@@ -14284,7 +14887,7 @@ XL
 XL
 XL
 ll
-lV
+iC
 ll
 lV
 lV
@@ -14353,7 +14956,7 @@ lV
 lV
 lV
 lV
-fy
+iT
 ll
 lV
 lV
@@ -14718,7 +15321,7 @@ lV
 lV
 lV
 ll
-fy
+np
 lV
 lV
 lV
@@ -14751,11 +15354,11 @@ lV
 lV
 lV
 lV
-lV
-eC
+eV
+pk
 ll
-eC
-lV
+ye
+FJ
 lV
 lV
 lV
@@ -14953,11 +15556,11 @@ lV
 lV
 lV
 lV
-lV
-kJ
+eV
+ZP
 ll
-kJ
-lV
+jd
+FJ
 lV
 lV
 lV
@@ -15138,6 +15741,7 @@ lV
 lV
 lV
 lV
+iC
 lV
 lV
 lV
@@ -15154,12 +15758,11 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eV
+eV
 ll
-lV
-lV
+FJ
+FJ
 lV
 lV
 lV
@@ -15700,7 +16303,7 @@ XL
 ll
 lV
 ll
-fy
+np
 lV
 lV
 lV
@@ -15908,7 +16511,7 @@ ll
 ll
 ll
 ll
-lV
+iC
 ll
 lV
 ll
@@ -15983,7 +16586,7 @@ lV
 lV
 lV
 ll
-lV
+iC
 ll
 ll
 ll
@@ -16176,7 +16779,7 @@ lV
 lV
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -16518,7 +17121,7 @@ lV
 lV
 lV
 ll
-lV
+wq
 lV
 lV
 kJ
@@ -16808,7 +17411,7 @@ ll
 lV
 lV
 ll
-lV
+wq
 lV
 lV
 lV
@@ -16918,11 +17521,11 @@ lV
 lV
 lV
 lV
+iC
 lV
 lV
 lV
-lV
-lV
+Uk
 ll
 lV
 lV
@@ -16944,7 +17547,7 @@ lV
 ll
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -17581,7 +18184,7 @@ lV
 lV
 lV
 lV
-lV
+iC
 lV
 lV
 lV
@@ -17801,7 +18404,7 @@ lV
 lV
 lV
 ll
-lV
+wq
 lV
 lV
 lV
@@ -17810,7 +18413,7 @@ lV
 ll
 ll
 ll
-lV
+iC
 ll
 lV
 lV
@@ -18168,10 +18771,10 @@ lV
 lV
 lV
 lV
+qK
 lV
 lV
-lV
-lV
+qK
 lV
 lV
 lV
@@ -18361,28 +18964,28 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+FV
+FV
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
 ll
 ll
 ll
@@ -18553,7 +19156,7 @@ lV
 lV
 lV
 lV
-lV
+Uk
 ll
 lV
 lV
@@ -18563,36 +19166,28 @@ eC
 lV
 lV
 lV
-ll
-eC
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-eC
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
+VK
+cT
+rh
+rh
+rh
+cT
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+VK
+cT
+Jk
+VK
+VK
+cT
+rh
+VK
 lV
 lV
 lV
@@ -18604,6 +19199,14 @@ lV
 lV
 lV
 lV
+lV
+lV
+lV
+ll
+lV
+lV
+lV
+lV
 ll
 lV
 lV
@@ -18617,7 +19220,7 @@ lV
 lV
 ll
 lV
-lV
+Hj
 ll
 ll
 lV
@@ -18765,28 +19368,28 @@ kJ
 lV
 lV
 lV
-ll
-kJ
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-kJ
-ll
-ll
-lV
-lV
-ll
+VK
+ki
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+VK
+rh
+ki
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 lV
@@ -18967,28 +19570,28 @@ lV
 lV
 lV
 lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 eC
@@ -19154,43 +19757,43 @@ lV
 ll
 lV
 lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-lV
-lV
+iC
 lV
 lV
 lV
 lV
 lV
 ll
+yr
 lV
 lV
-ll
-ll
 lV
 lV
-ll
 lV
 lV
-ll
-ll
 lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 kJ
@@ -19371,28 +19974,28 @@ ll
 ll
 lV
 lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 lV
@@ -19441,8 +20044,8 @@ ll
 kJ
 lV
 lV
-lV
-lV
+kX
+kX
 ll
 XL
 XL
@@ -19536,7 +20139,7 @@ XL
 XL
 XL
 ll
-lV
+iC
 ll
 lV
 lV
@@ -19573,41 +20176,28 @@ lV
 lV
 lV
 lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 lV
@@ -19625,6 +20215,19 @@ lV
 lV
 lV
 lV
+lV
+lV
+ll
+lV
+lV
+lV
+lV
+lV
+lV
+yr
+lV
+lV
+lV
 ll
 lV
 lV
@@ -19644,7 +20247,7 @@ ll
 ll
 ll
 ll
-lV
+JL
 ll
 XL
 XL
@@ -19775,78 +20378,78 @@ lV
 lV
 lV
 lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-lV
-ll
-lV
-lV
-ll
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-lV
-ll
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 lV
 ll
 lV
 lV
+ll
+iC
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+iC
+ll
+ll
+ll
+ll
+ll
+ll
+lV
+lV
+ll
 lV
 lV
 lV
+ll
+kX
+kX
+cb
+kX
+lG
 ll
 XL
 XL
@@ -19976,29 +20579,29 @@ ll
 lV
 lV
 lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
-lV
-lV
-ll
-ll
-lV
-lV
-ll
+qK
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
+rh
+rh
+VK
+VK
+rh
+rh
+VK
 lV
 lV
 lV
@@ -20044,11 +20647,11 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
-lV
-lV
+Ib
+KU
+KU
+KU
+NB
 ll
 XL
 XL
@@ -20179,6 +20782,40 @@ eC
 lV
 lV
 lV
+FV
+rh
+rh
+rh
+rh
+rh
+rh
+VK
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+VK
+lV
+lV
+lV
+ll
+lV
+lV
+ll
+lV
+lV
+lV
+ll
+lV
 lV
 lV
 lV
@@ -20197,42 +20834,8 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
 ll
-lV
-lV
-lV
-ll
-lV
-lV
-ll
-lV
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-kJ
+nC
 lV
 lV
 lV
@@ -20246,11 +20849,11 @@ lV
 lV
 lV
 ll
-lV
-lV
+kX
+KU
 ll
-lV
-lV
+KU
+kX
 ll
 XL
 XL
@@ -20377,32 +20980,32 @@ lV
 lV
 ll
 ll
-fy
+np
 lV
 lV
 lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
+FV
+rh
+rh
+rh
+rh
+rh
+rq
+VK
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+rh
+VK
 lV
 lV
 lV
@@ -20448,11 +21051,11 @@ lV
 lV
 lV
 ll
-lV
-lV
+HH
+cN
 ll
-lV
-lV
+vG
+NB
 ll
 XL
 XL
@@ -20583,47 +21186,39 @@ ll
 ll
 ll
 ll
-ll
-ll
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-ll
-lV
-lV
-lV
-ll
-lV
-lV
-ll
+VK
+VK
+pX
+VK
+VK
+VK
+VK
+VK
+VK
+FV
+FV
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+VK
+FV
+VK
 lV
 lV
 lV
 ll
 lV
 lV
-lV
-kJ
-lV
+ll
 lV
 lV
-lV
+Hj
+ll
 lV
 lV
 lV
@@ -20631,30 +21226,38 @@ kJ
 lV
 lV
 lV
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+lV
+lV
+lV
+lV
+kJ
+lV
 lV
 lV
 ll
-lV
-lV
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+ll
+HH
+XF
+ll
+vG
+NB
 ll
 XL
 XL
@@ -20748,6 +21351,15 @@ XL
 XL
 XL
 ll
+iL
+eZ
+eZ
+lV
+lV
+lV
+lV
+lV
+ll
 eC
 lV
 lV
@@ -20755,15 +21367,6 @@ lV
 lV
 lV
 lV
-lV
-ll
-eC
-lV
-lV
-lV
-lV
-lV
-lV
 ll
 lV
 lV
@@ -20785,28 +21388,28 @@ ll
 ll
 ll
 ll
-ll
-ll
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+Vz
+Vz
+rh
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
 lV
 lV
+qK
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+qK
+lV
+qK
 lV
 lV
 lV
@@ -20852,11 +21455,11 @@ lV
 lV
 eC
 ll
-lV
-lV
+kX
+KU
 ll
-lV
-lV
+KU
+kX
 ll
 XL
 XL
@@ -20950,6 +21553,15 @@ XL
 XL
 XL
 ll
+Cv
+eZ
+eZ
+lV
+lV
+lV
+lV
+lV
+ll
 kJ
 lV
 lV
@@ -20957,15 +21569,6 @@ lV
 lV
 lV
 lV
-lV
-ll
-kJ
-lV
-lV
-lV
-lV
-lV
-lV
 ll
 lV
 lV
@@ -20987,15 +21590,15 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
-ll
-ll
-ll
-ll
-ll
-ll
+FV
+rh
+rh
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
 lV
 lV
 lV
@@ -21054,11 +21657,11 @@ lV
 lV
 kJ
 ll
-eC
-lV
-lV
-lV
-lV
+fa
+KU
+KU
+KU
+pz
 ll
 XL
 XL
@@ -21152,6 +21755,76 @@ XL
 XL
 XL
 ll
+eZ
+eZ
+eZ
+lV
+lV
+lV
+lV
+lV
+ll
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+ll
+lV
+lV
+iC
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+FV
+rh
+rh
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+lV
+ll
+lV
+lV
+ll
+lV
+lV
+lV
+iC
 lV
 lV
 lV
@@ -21177,35 +21850,6 @@ lV
 lV
 lV
 lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
 lV
 lV
 lV
@@ -21215,52 +21859,11 @@ lV
 lV
 lV
 ll
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-lV
-ll
-fy
-lV
-lV
-lV
-lV
+UA
+kX
+cb
+kX
+kX
 ll
 XL
 XL
@@ -21391,15 +21994,15 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
+Vz
 ll
 ll
 ll

@@ -295,4 +295,77 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 	desc = "A worn and stained suit that smells of old carpet and fluorescent lights. You feel like you've been here before."
 	icon_state = "white_gossypium" //Debug Icon
 	armor = list(RED_DAMAGE = -20, WHITE_DAMAGE = 30, BLACK_DAMAGE = 10, PALE_DAMAGE = 0) // 20
+	var/used_emergency_escape = FALSE
+
+/obj/item/clothing/suit/armor/ego_gear/teth/liminal/equipped(mob/living/carbon/human/user, slot)
+	. = ..()
+	if(slot != ITEM_SLOT_OCLOTHING)
+		return
+	RegisterSignal(user, COMSIG_HUMAN_INSANE, PROC_REF(on_insanity))
+
+/obj/item/clothing/suit/armor/ego_gear/teth/liminal/dropped(mob/living/carbon/human/user)
+	. = ..()
+	UnregisterSignal(user, COMSIG_HUMAN_INSANE)
+
+/obj/item/clothing/suit/armor/ego_gear/teth/liminal/proc/on_insanity(mob/living/carbon/human/panicked_user)
+	SIGNAL_HANDLER
+
+	if(used_emergency_escape)
+		return
+
+	// Check if Door to Nowhere exists
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/door = null
+	for(var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/D in GLOB.abnormality_mob_list)
+		door = D
+		break
+
+	if(!door)
+		return
+
+	// Mark as used
+	used_emergency_escape = TRUE
+
+	// Notify the user
+	to_chat(panicked_user, span_warning("The liminal suit resonates with your panic, pulling you into a familiar yet alien space..."))
+
+	// Find a backrooms location
+	var/list/backrooms_locations = list()
+	for(var/obj/effect/landmark/backrooms_spawn/L in GLOB.landmarks_list)
+		backrooms_locations += get_turf(L)
+
+	// Fallback if no landmarks exist
+	if(!LAZYLEN(backrooms_locations))
+		var/turf/T = locate(1, 1, panicked_user.z)
+		if(T)
+			backrooms_locations += T
+		else
+			return
+
+	// Teleport without animation
+	var/turf/destination = pick(backrooms_locations)
+	panicked_user.forceMove(destination)
+	playsound(get_turf(panicked_user), 'sound/effects/podwoosh.ogg', 50, TRUE)
+
+	// Add them to the door's trapped employees list
+	door.trapped_employees |= panicked_user
+	door.original_locations[panicked_user] = get_turf(src)
+
+	// Apply backrooms status effect
+	var/datum/status_effect/backrooms_ambience/B = panicked_user.apply_status_effect(/datum/status_effect/backrooms_ambience)
+	if(B && door)
+		door.backrooms_effects[panicked_user] = B
+
+	to_chat(panicked_user, span_warning("You are now trapped in the realm of sealed regrets. Someone must perform Repression work to free you."))
+	
+	// Un-panic the user after 1 second by dealing white damage
+	addtimer(CALLBACK(src, PROC_REF(cure_panic), panicked_user), 10)
+
+/obj/item/clothing/suit/armor/ego_gear/teth/liminal/proc/cure_panic(mob/living/carbon/human/H)
+	if(!H || QDELETED(H))
+		return
+	
+	// Deal 999 white damage to cure the panic
+	H.adjustWhiteLoss(999, updating_health = TRUE, forced = TRUE, white_healable = TRUE)
+	
+	to_chat(H, span_notice("The panic fades as you find yourself in the liminal space. The suit feels oddly comfortable here, like it belongs."))
 

@@ -452,15 +452,15 @@
 		"When the work result was Bad, the Qliphoth Counter lowered by 1."
 	)
 
-//Common Dinner Chair
-/obj/item/paper/fluff/info/teth/dinner_chair
-	abno_type = /mob/living/simple_animal/hostile/abnormality/dinner_chair
+//Door to Nowhere
+/obj/item/paper/fluff/info/teth/door_to_nowhere
+	abno_type = /mob/living/simple_animal/hostile/abnormality/door_to_nowhere
 	abno_code = "F-05-114"
 	abno_info = list(
-		"When Insight work was performed, the Qliphoth Counter increased by 2.",
+		"When Insight work was performed, the Qliphoth Counter increased by 2. The chains seemed to tighten, keeping the memories locked away.",
 		"When any work other than Insight or Repression was performed, the Qliphoth Counter decreased by 1.",
-		"When the work result was Bad on any work except Repression, there was a 70% chance the employee would experience severe spatial distortion.",
-		"Employees who experienced spatial distortion reported being transported to a liminal space with yellow walls and moldy carpets. They remained trapped there until rescued.",
-		"When Repression work was performed, any employees trapped in the liminal space were returned to reality.",
-		"When the Qliphoth Counter reached 0, 1-3 random facility personnel experienced violent spatial distortion and were transported to the liminal space."
+		"When the work result was Bad on any work except Repression, there was a 70% chance the employee would be pulled through the door into a realm of sealed regrets.",
+		"Employees who passed through the door reported being trapped in a liminal space filled with forgotten memories and unspoken regrets, each one sealed behind its own chained door.",
+		"When Repression work was performed, any employees lost in the realm of regrets were pulled back through the door to reality.",
+		"When the Qliphoth Counter reached 0, the chains burst open momentarily and 1-3 random facility personnel were dragged through the door into that forsaken realm."
 	)
