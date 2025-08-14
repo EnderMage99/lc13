@@ -72,7 +72,7 @@ GLOBAL_VAR_INIT(wcorp_enemy_faction, "") //decides which faction WCorp will be u
 				addtimer(CALLBACK(src, PROC_REF(endround)), 70 MINUTES)
 				to_chat(world, span_userdanger("Shift will last 70 minutes."))
 
-			//Limbus Labs
+			//R-Corp Expedition
 			if("rcorp_factory")
 				SSgamedirector.SetTimes(100 MINUTES, 120 MINUTES)
 				to_chat(world, span_userdanger("Destroy the Heart of Greed within two hours!"))

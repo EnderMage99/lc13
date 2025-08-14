@@ -23,7 +23,6 @@
 
 /mob/living/simple_animal/hostile/megafauna/xcorp_heart/Initialize()
 	. = ..()
-	AddElement(/datum/element/point_of_interest)
 	return INITIALIZE_HINT_LATELOAD
 
 /mob/living/simple_animal/hostile/megafauna/xcorp_heart/LateInitialize()
