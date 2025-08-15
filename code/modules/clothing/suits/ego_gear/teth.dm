@@ -356,17 +356,17 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 		door.backrooms_effects[panicked_user] = B
 
 	to_chat(panicked_user, span_warning("You are now trapped in the realm of sealed regrets. Someone must perform Repression work to free you."))
-	
+
 	// Un-panic the user after 1 second by dealing white damage
 	addtimer(CALLBACK(src, PROC_REF(cure_panic), panicked_user), 10)
 
 /obj/item/clothing/suit/armor/ego_gear/teth/liminal/proc/cure_panic(mob/living/carbon/human/H)
 	if(!H || QDELETED(H))
 		return
-	
+
 	// Deal 999 white damage to cure the panic
 	H.adjustWhiteLoss(999, updating_health = TRUE, forced = TRUE, white_healable = TRUE)
-	
+
 	to_chat(H, span_notice("The panic fades as you find yourself in the liminal space. The suit feels oddly comfortable here, like it belongs."))
 
 /obj/item/clothing/suit/armor/ego_gear/teth/patch
@@ -374,5 +374,5 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 	desc = "A white labcoat stained lightly with blood."
 	icon_state = "patch"
 	armor = list(RED_DAMAGE = 0, WHITE_DAMAGE = -40, BLACK_DAMAGE = 40, PALE_DAMAGE = 0) //20. Made out of flammable cotton so fire resist sucks ass.
-  
+
 
