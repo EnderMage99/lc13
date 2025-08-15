@@ -12,8 +12,8 @@
 	to_chat(user, span_warning("The tape feels unnaturally cold to the touch..."))
 	return ..()
 
-// The Historian's Regret
-/obj/item/tape/door_regret/historian
+// A Liar's Burden
+/obj/item/tape/door_regret/false_hope
 	name = "tape labeled '■■■■■■■■■'"
 	desc = "A tape that seems to whisper when you hold it. The label has been scratched away, leaving only marks."
 	storedinfo = list(
@@ -34,8 +34,8 @@
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54)
 
-// The Weaver's Regret
-/obj/item/tape/door_regret/weaver
+// Silent Complicity
+/obj/item/tape/door_regret/hidden_truth
 	name = "tape labeled '■■■■■■■'"
 	desc = "The tape is wrapped in threads that seem to move on their own. Something is written but heavily scratched."
 	storedinfo = list(
@@ -57,8 +57,8 @@
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
 
-// The Tinkerer's Regret
-/obj/item/tape/door_regret/tinkerer
+// Leading to Slaughter
+/obj/item/tape/door_regret/failed_promise
 	name = "tape labeled 'M■chine ■■■■'"
 	desc = "The tape sparks occasionally. The label is burned and mostly illegible."
 	storedinfo = list(
@@ -80,8 +80,8 @@
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
 
-// Head Priest's Regret
-/obj/item/tape/door_regret/priest
+// Becoming the Monster
+/obj/item/tape/door_regret/lost_humanity
 	name = "tape labeled 'Tem■le ■■■■■■'"
 	desc = "The tape reeks of formaldehyde. The label is mostly destroyed."
 	storedinfo = list(
@@ -103,8 +103,8 @@
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
 
-// Elliot's Regret
-/obj/item/tape/door_regret/elliot
+// Frozen in Fear
+/obj/item/tape/door_regret/coward_friend
 	name = "tape labeled 'Sch■lar's ■■■■'"
 	desc = "The tape is stained with what might be oil... or tears. The label is mostly illegible."
 	storedinfo = list(
@@ -126,8 +126,8 @@
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
 
-// The Warlord's Regret
-/obj/item/tape/door_regret/warlord
+// The First Mistake
+/obj/item/tape/door_regret/ancient_error
 	name = "tape labeled '■■■■■■■■■■■■■■■'"
 	desc = "Ancient tape, corroded beyond recognition. The magnetic coating is peeling off in sheets."
 	storedinfo = list(
@@ -151,8 +151,8 @@
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
 
-// Joshua's Regret
-/obj/item/tape/door_regret/joshua
+// Understanding Too Late
+/obj/item/tape/door_regret/final_realization
 	name = "tape labeled 'Hum■n ■■■■'"
 	desc = "The tape is covered in dried blood. The label is mostly destroyed."
 	storedinfo = list(
@@ -172,5 +172,140 @@
 		span_game_say(span_name("■■■■■■■■■") + span_message(" fading,") + " \"■■■■■■... You could have been... more human than... any of us...\""),
 		span_game_say(span_name("Sil■nce") + span_message(" ") + " \"...\""),
 		"The tape ends with a flatline sound..."
+	)
+	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
+
+// The Price of Escape
+/obj/item/tape/door_regret/traded_life
+	name = "tape labeled 'L-C■rp Ag■nt ■■■■'"
+	desc = "A corporate-issued tape, water damaged. The L-Corp logo is barely visible."
+	storedinfo = list(
+		"Sound of emergency alarms blaring in the distance...",
+		span_game_say(span_name("Shaking V■ice") + span_message(" whispers,") + " \"The manager... he's g■ne... He actually did it...\""),
+		span_game_say(span_name("■■■■■") + span_message(" panicking,") + " \"The facility is burr■wing... We're going to be trapped forever...\""),
+		"Sound of papers rustling frantically...",
+		span_game_say(span_name("■■■■■") + span_message(" reading,") + " \"'Get better soon, Love, your coworker...' She wrote this after I saved her br■ther...\""),
+		span_game_say(span_name("Desperate V■ice") + span_message(" sobbing,") + " \"I can't make decisions... I need someone to tell me what to d■...\""),
+		"Sound of a pen scratching on paper...",
+		span_game_say(span_name("■■■■■") + span_message(" shakily,") + " \"The Contract... It's offering me a way out... But the c■st...\""),
+		span_game_say(span_name("■■■■■") + span_message(" breaking,") + " \"Two employees... It wants two employees to stay behind...\""),
+		"Sound of something being signed...",
+		span_game_say(span_name("Broken V■ice") + span_message(" whispering,") + " \"It wants her... It specifically wants M■r■sa... After everything she...\""),
+		span_game_say(span_name("■■■■■") + span_message(" screaming,") + " \"SHE TRUSTED ME! She called me brave! And the Contract kn■ws!\""),
+		"Sound of reality warping, teleportation initiating...",
+		span_game_say(span_name("■■■■■") + span_message(" sobbing,") + " \"I saved her brother just to c■ndemn her... I'm not brave... I'm a c■ward...\""),
+		span_game_say(span_name("Fading V■ice") + span_message(" whispering,") + " \"M■risa... You wanted to meet at HamHamPangPang... I'm s■rry...\""),
+		span_game_say(span_name("■■■■■") + span_message(" breaking completely,") + " \"The Contract knew what it wanted... It made the choice for me... But I still signed...\""),
+		"The tape ends with the sound of someone crying alone..."
+	)
+	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 74)
+
+// Failed Protection
+/obj/item/tape/door_regret/vengeance_incomplete
+	name = "tape labeled 'Ch■f's ■■■■■■'"
+	desc = "A blood-stained tape. The label reads 'Midnight's ■■■■■■■' in elegant script, now smeared."
+	storedinfo = list(
+		"Sound of kitchen knives being sharpened obsessively...",
+		span_game_say(span_name("Guttural V■ice") + span_message(" growls,") + " \"Van■ssa... My beloved... They t■re you apart...\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" sobbing,") + " \"I wasn't there... I couldn't protect you... I was too w■ak...\""),
+		"Sound of meat being butchered violently...",
+		span_game_say(span_name("■■■■■■■") + span_message(" snarling,") + " \"I sent the boy... Just a tool... But he only got the girl...\""),
+		span_game_say(span_name("Monstr■us V■ice") + span_message(" raging,") + " \"Ch■ster still lives! Still bre■thes while you rot!\""),
+		"Sound of a cleaver slamming into wood...",
+		span_game_say(span_name("■■■■■■■") + span_message(" screaming,") + " \"I should have done it myself! Should have t■rn him apart!\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" whispering,") + " \"You fed in that alley... Alone... I should have been there...\""),
+		"Sound of plates shattering...",
+		span_game_say(span_name("Broken V■ice") + span_message(" sobbing,") + " \"I failed you... Failed to protect... Failed to avenge...\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" growling,") + " \"The boy was weak... Couldn't even finish the j■b...\""),
+		span_game_say(span_name("Fading V■ice") + span_message(" whispering,") + " \"Van■ssa... I'm still too weak... Too c■wardly to face him myself...\""),
+		"The tape ends with the sound of a cleaver hitting a cutting board repeatedly..."
+	)
+	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66)
+
+// Lost Innocence
+/obj/item/tape/door_regret/child_weapon
+	name = "tape labeled 'S■n's ■■■■■'"
+	desc = "A small tape in a U-Corp evidence box. Blood seeps through the plastic."
+	storedinfo = list(
+		"Sound of a young voice humming nervously...",
+		span_game_say(span_name("Young V■ice") + span_message(" whispering,") + " \"Her name was... was... I can't even say it...\""),
+		span_game_say(span_name("■■■■") + span_message(" crying,") + " \"She liked butterflies... She showed me her collection...\""),
+		"Sound of footsteps in an alley...",
+		span_game_say(span_name("■■■■") + span_message(" breaking,") + " \"Father said it was for m■ther... But she smiled at me...\""),
+		span_game_say(span_name("Child's V■ice") + span_message(" sobbing,") + " \"We were friends... Real friends... She trusted me...\""),
+		"Sound of a knife being drawn...",
+		span_game_say(span_name("■■■■") + span_message(" screaming,") + " \"The look in her eyes when I... When the knife...\""),
+		span_game_say(span_name("■■■■") + span_message(" whimpering,") + " \"She asked 'Why?' I couldn't answ■r...\""),
+		"Sound of something being placed in a box...",
+		span_game_say(span_name("Broken V■ice") + span_message(" whispering,") + " \"I had to put her... in pieces... in the b■x...\""),
+		span_game_say(span_name("■■■■") + span_message(" sobbing,") + " \"Father was proud... But I see her face every night...\""),
+		span_game_say(span_name("■■■■") + span_message(" fading,") + " \"I became the m■nster... Just like the ones who killed m■ther...\""),
+		"The tape ends with a child crying alone..."
+	)
+	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
+
+// Blind Hatred's Cost
+/obj/item/tape/door_regret/failed_guardian
+	name = "tape labeled 'Fix■r Op■rator ■■■'"
+	desc = "A professional recording tape, now cracked. The Hemorrhage Fixers logo is visible but faded."
+	storedinfo = list(
+		"Sound of office papers being shuffled...",
+		span_game_say(span_name("Professional V■ice") + span_message(" coldly,") + " \"Contract complete. All bl■■dfiends in Sector 7 eliminated...\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" proudly,") + " \"We made an example of that female... Left her in pieces as a warning...\""),
+		"Sound of a phone ringing urgently...",
+		span_game_say(span_name("■■■■■■■") + span_message(" confused,") + " \"My sister? What about my sist■r?\""),
+		span_game_say(span_name("Shaking V■ice") + span_message(" denying,") + " \"No... No, she was at home... She was s■fe...\""),
+		"Sound of footsteps running...",
+		span_game_say(span_name("■■■■■■■") + span_message(" raging,") + " \"That kid... That bl■■dfiend brat! I should have killed him when I had the ch■nce!\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" screaming,") + " \"SHE TRUSTED HIM! She befriended that m■nster!\""),
+		"Sound of something being thrown violently...",
+		span_game_say(span_name("Broken V■ice") + span_message(" sobbing,") + " \"I failed her... Should have seen it coming... Should have protected her...\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" growling,") + " \"I let my guard down... Let them get close... Never again...\""),
+		span_game_say(span_name("■■■■■■■") + span_message(" whispering coldly,") + " \"Every last one of them... I'll hunt every last bl■■dfiend... For her...\""),
+		"The tape ends with the sound of weapons being loaded..."
+	)
+	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62)
+
+// Left Behind to Watch
+/obj/item/tape/door_regret/helpless_witness
+	name = "tape labeled 'W-C■rp Cl■anup ■■■■'"
+	desc = "A tape covered in strange organic residue. Tendrils seem to have grown around it."
+	storedinfo = list(
+		"Sound of many footsteps marching in unison...",
+		span_game_say(span_name("Distorted V■ice") + span_message(" desperately,") + " \"Wait! Where are you all g■ing?!\""),
+		span_game_say(span_name("■■■■■") + span_message(" pleading,") + " \"The Library... They're sending you to the Libr■ry...\""),
+		"Sound of heavy doors closing...",
+		span_game_say(span_name("■■■■■") + span_message(" screaming,") + " \"LET ME GO WITH THEM! I can help! I CAN HELP!\""),
+		span_game_say(span_name("Multiple V■ices") + span_message(" calmly,") + " \"Stay behind, Sim■n. Orders are orders.\""),
+		"Sound of fists pounding on metal...",
+		span_game_say(span_name("■■■■■") + span_message(" sobbing,") + " \"They became b■■ks... Every last one... And I just watched...\""),
+		span_game_say(span_name("Tendril V■ice") + span_message(" whispering,") + " \"I could have saved them... If they just let me g■...\""),
+		"Sound of something organic writhing...",
+		span_game_say(span_name("■■■■■") + span_message(" breaking,") + " \"Now I try to help everyone... But they keep me hidd■n...\""),
+		span_game_say(span_name("■■■ ■■■■■") + span_message(" desperately,") + " \"I just want to help... Like I couldn't help th■m...\""),
+		span_game_say(span_name("Distorted V■ice") + span_message(" fading,") + " \"They're pages now... And I'm a m■nster who can't even pour a drink...\""),
+		"The tape ends with the sound of tendrils scraping against walls..."
+	)
+	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)
+
+// The Gentle Jailer
+/obj/item/tape/door_regret/protective_prison
+	name = "tape labeled 'Assist■nt Man■ger ■■■■'"
+	desc = "A professional recording tape with a bar's logo. It's been played too many times."
+	storedinfo = list(
+		"Sound of a lock clicking shut...",
+		span_game_say(span_name("Tired V■ice") + span_message(" sighing,") + " \"Back in the under-bar again, N■r...\""),
+		span_game_say(span_name("■■■■■■") + span_message(" whispering,") + " \"The look in his eyes... Every time I pull him back...\""),
+		"Sound of bottles clinking...",
+		span_game_say(span_name("■■■■■■") + span_message(" breaking,") + " \"He just wants to help people... To c■nnect with them...\""),
+		span_game_say(span_name("Professional V■ice") + span_message(" firmly,") + " \"But the City would tear him apart... Harvest him... Use him...\""),
+		"Sound of tendrils hitting a door gently...",
+		span_game_say(span_name("■■■■■■") + span_message(" sobbing,") + " \"I saved him from madness... Just to make him a pris■ner...\""),
+		span_game_say(span_name("■■■■■■") + span_message(" whispering,") + " \"He trusts me... Calls me friend... While I keep him c■ged...\""),
+		"Sound of customers laughing in the distance...",
+		span_game_say(span_name("Broken V■ice") + span_message(" crying,") + " \"He could make them so happy... But I can't risk losing him...\""),
+		span_game_say(span_name("■■■■■■") + span_message(" desperately,") + " \"There has to be another way... But I'm too sc■red to find it...\""),
+		span_game_say(span_name("■■■■■■") + span_message(" fading,") + " \"I'm not protecting him... I'm just another j■iler in this cruel City...\""),
+		"The tape ends with the sound of a door being locked again..."
 	)
 	timestamp = list(2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58)

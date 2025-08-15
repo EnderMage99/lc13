@@ -253,10 +253,10 @@
 	desc = "A door bound in rusted chains, keeping memories sealed away."
 	icon = 'ModularTegustation/Teguicons/chain_door.dmi'
 	icon_state = "regret_door"
-	density = TRUE
 	anchored = TRUE
 	opacity = FALSE
 	resistance_flags = INDESTRUCTIBLE
+	density = FALSE
 	var/door_name = ""
 	var/door_desc = ""
 	var/spirit_name = ""
@@ -415,6 +415,7 @@
 	speed = 2
 	maxHealth = 100
 	health = 100
+	faction = list("neutral")
 	harm_intent_damage = 0
 	melee_damage_lower = 0
 	melee_damage_upper = 0

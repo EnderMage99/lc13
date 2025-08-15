@@ -235,6 +235,19 @@
 		"When the work result was Bad, the Qliphoth Counter lowered with a high probability.",
 		"When The Lady Facing the Wall’s Qliphoth Counter hit 0, Lady Facing the Wall will yell out a scream and every employee nearby that has heard has suffered heavy WHITE damage.")
 
+//Door to Nowhere
+/obj/item/paper/fluff/info/teth/door_to_nowhere
+	abno_type = /mob/living/simple_animal/hostile/abnormality/door_to_nowhere
+	abno_code = "F-05-114"
+	abno_info = list(
+		"When Insight work was performed, the Qliphoth Counter increased by 2. The chains seemed to tighten, keeping the memories locked away.",
+		"When any work other than Insight or Repression was performed, the Qliphoth Counter decreased by 1.",
+		"When the work result was Bad on any work except Repression, there was a 70% chance the employee would be pulled through the door into a realm of sealed regrets.",
+		"Employees who passed through the door reported being trapped in a liminal space filled with forgotten memories and unspoken regrets, each one sealed behind its own chained door.",
+		"When Repression work was performed, any employees lost in the realm of regrets were pulled back through the door to reality.",
+		"When the Qliphoth Counter reached 0, the chains burst open momentarily and 1-3 random facility personnel were dragged through the door into that forsaken realm."
+	)
+
 //Book Without Pictures or Dialogue
 /obj/item/paper/fluff/info/teth/book
 	abno_type = /mob/living/simple_animal/hostile/abnormality/book
@@ -450,17 +463,4 @@
 		"An agent hexed by the abnormality took more RED and BLACK damage until the effect wore off naturally.",
 		"When the work result was Neutral, the Qliphoth Counter lowered by 1 with a high probability",
 		"When the work result was Bad, the Qliphoth Counter lowered by 1."
-	)
-
-//Door to Nowhere
-/obj/item/paper/fluff/info/teth/door_to_nowhere
-	abno_type = /mob/living/simple_animal/hostile/abnormality/door_to_nowhere
-	abno_code = "F-05-114"
-	abno_info = list(
-		"When Insight work was performed, the Qliphoth Counter increased by 2. The chains seemed to tighten, keeping the memories locked away.",
-		"When any work other than Insight or Repression was performed, the Qliphoth Counter decreased by 1.",
-		"When the work result was Bad on any work except Repression, there was a 70% chance the employee would be pulled through the door into a realm of sealed regrets.",
-		"Employees who passed through the door reported being trapped in a liminal space filled with forgotten memories and unspoken regrets, each one sealed behind its own chained door.",
-		"When Repression work was performed, any employees lost in the realm of regrets were pulled back through the door to reality.",
-		"When the Qliphoth Counter reached 0, the chains burst open momentarily and 1-3 random facility personnel were dragged through the door into that forsaken realm."
 	)
