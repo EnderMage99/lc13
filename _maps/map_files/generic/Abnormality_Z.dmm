@@ -2266,7 +2266,7 @@
 /area/fishboat)
 "Ni" = (
 /obj/structure/sign/plaques/kiddie/perfect_man{
-	step_y = 32
+	pixel_y = 32
 	},
 /obj/structure/table/reinforced,
 /obj/item/organ/heart,
