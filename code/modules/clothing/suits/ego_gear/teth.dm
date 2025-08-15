@@ -369,3 +369,10 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 	
 	to_chat(H, span_notice("The panic fades as you find yourself in the liminal space. The suit feels oddly comfortable here, like it belongs."))
 
+/obj/item/clothing/suit/armor/ego_gear/teth/patch
+	name = "patch"
+	desc = "A white labcoat stained lightly with blood."
+	icon_state = "patch"
+	armor = list(RED_DAMAGE = 0, WHITE_DAMAGE = -40, BLACK_DAMAGE = 40, PALE_DAMAGE = 0) //20. Made out of flammable cotton so fire resist sucks ass.
+  
+

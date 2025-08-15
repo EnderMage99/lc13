@@ -215,6 +215,18 @@
 	return ..()
 
 //Facility Upgrades
+//Spawn an abnormality instantly.
+/datum/facility_upgrade/spawn_abno
+	name = UPGRADE_ABNO_ARRIVAL
+	category = "Facility"
+	value = 1
+	max_value = 2
+	info = " - This upgrade causes an <b>Abnormality</b> to arrive instantly."
+
+/datum/facility_upgrade/spawn_abno/Upgrade()
+	SSabnormality_queue.SpawnAbno()
+	. = ..()
+
 /datum/facility_upgrade/regnenerator_healing
 	name = UPGRADE_REGENERATOR_HEALING
 	category = "Facility"
@@ -296,6 +308,7 @@
 
 /datum/facility_upgrade/abno_melt_time/DisplayValue()
 	return "[value] seconds"
+
 
 //Specialization//
 /datum/facility_upgrade/specialization

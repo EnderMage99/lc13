@@ -29,25 +29,9 @@
 		var/mob/living/L = attacked_target
 		if(L.stat != DEAD)
 			if(L.health <= HEALTH_THRESHOLD_DEAD && HAS_TRAIT(L, TRAIT_NODEATH))
-				devour(L)
+				SweeperDevour(L)
 		else
-			devour(L)
-
-/mob/living/simple_animal/hostile/ordeal/indigo_dawn/proc/devour(mob/living/L)
-	if(!L)
-		return FALSE
-	if(SSmaptype.maptype in SSmaptype.citymaps)
-		return FALSE
-	visible_message(
-		span_danger("[src] devours [L]!"),
-		span_userdanger("You feast on [L], restoring your health!"))
-	if(istype(L, SWEEPER_TYPES))
-		//Would have made it based on biotypes but that has its own issues.
-		adjustBruteLoss(-20)
-	else
-		adjustBruteLoss(-(maxHealth/2))
-	L.gib()
-	return TRUE
+			SweeperDevour(L)
 
 /mob/living/simple_animal/hostile/ordeal/indigo_dawn/invis
 	move_to_delay = 3	//These ones are slower because they're invisible

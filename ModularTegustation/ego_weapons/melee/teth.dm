@@ -763,3 +763,13 @@
 		for(var/mob/living/L in ohearers(3, src))
 			L.apply_damage(30, RED_DAMAGE, null, L.run_armor_check(null, RED_DAMAGE))
 		qdel(src)
+
+/obj/item/ego_weapon/mini/patch
+	name = "patch"
+	desc = "A little first aid kit."
+	icon_state = "patch"
+	force = 20
+	damtype = BLACK_DAMAGE
+	attack_verb_continuous = list("smacks", "strikes", "beats")
+	attack_verb_simple = list("smack", "strike", "beat")
+	hitsound = 'sound/weapons/fixer/generic/club3.ogg'

@@ -322,6 +322,7 @@
 	if(!do_after(user, 2 SECONDS, target, IGNORE_USER_LOC_CHANGE | IGNORE_TARGET_LOC_CHANGE, TRUE, CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(can_see), user, target, 7)))
 		return
 	check1e = FALSE
+	var/should_apply_debuff = FALSE
 	if(ishuman(target))
 		var/mob/living/carbon/human/H = target
 		var/suit = H.get_item_by_slot(ITEM_SLOT_OCLOTHING)
@@ -353,10 +354,7 @@
 			check1e = H.job
 	else
 		var/mob/living/simple_animal/mon = target
-		if(!(mon.status_flags & GODMODE))
-			if(!mon.HasDamageMod(/datum/dc_change/scanned))
-				mon.AddModifier(/datum/dc_change/scanned)
-				to_chat(user, span_nicegreen("[mon]'s weakness was analyzed!"))
+		should_apply_debuff = TRUE
 		check1a = mon.damage_coeff.getCoeff(RED_DAMAGE)
 		check1b = mon.damage_coeff.getCoeff(WHITE_DAMAGE)
 		check1c = mon.damage_coeff.getCoeff(BLACK_DAMAGE)
@@ -375,7 +373,12 @@
 	to_chat(user, span_notice("[output]"))
 	deep_scan_log = output
 	playsound(get_turf(target), 'sound/misc/box_deploy.ogg', 5, 0, 3)
-
+	if(should_apply_debuff)
+		var/mob/living/simple_animal/mon = target
+		if(!(mon.status_flags & GODMODE))
+			if(!mon.HasDamageMod(/datum/dc_change/scanned))
+				mon.AddModifier(/datum/dc_change/scanned)
+				to_chat(user, span_nicegreen("[mon]'s weakness was analyzed!"))
 
 //General Invitation
 /obj/item/invitation //intended for ordeals

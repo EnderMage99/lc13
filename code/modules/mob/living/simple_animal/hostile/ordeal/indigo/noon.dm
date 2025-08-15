@@ -1,4 +1,3 @@
-#define STATUS_EFFECT_PERSISTENCE /datum/status_effect/stacking/sweeper_persistence
 /mob/living/simple_animal/hostile/ordeal/indigo_noon
 	name = "sweeper"
 	desc = "A humanoid creature wearing metallic armor. It has bloodied hooks in its hands."
@@ -44,26 +43,9 @@
 		var/mob/living/L = attacked_target
 		if(L.stat != DEAD)
 			if(L.health <= HEALTH_THRESHOLD_DEAD && HAS_TRAIT(L, TRAIT_NODEATH))
-				devour(L)
+				SweeperDevour(L)
 		else
-			devour(L)
-
-/mob/living/simple_animal/hostile/ordeal/indigo_noon/proc/devour(mob/living/L)
-	if(!L)
-		return FALSE
-	if(SSmaptype.maptype in SSmaptype.citymaps)
-		return FALSE
-	visible_message(
-		span_danger("[src] devours [L]!"),
-		span_userdanger("You feast on [L], restoring your health!"))
-	if(faction_check_mob(L))
-		adjustBruteLoss(-40)
-	else
-		adjustBruteLoss(-(maxHealth/2))
-		GainPersistence(1)
-	L.gib()
-
-	return TRUE
+			SweeperDevour(L)
 
 /mob/living/simple_animal/hostile/ordeal/indigo_noon/PickTarget(list/Targets)
 	if(health <= maxHealth * 0.6) // If we're damaged enough
@@ -96,24 +78,6 @@
 			for(var/mob/maybe_sweeper_corpse in adjacent_turf)
 				if(faction_check_mob(maybe_sweeper_corpse) && maybe_sweeper_corpse.stat == DEAD)
 					. |= maybe_sweeper_corpse
-
-/// These two procs are being added in June 2025 as part of an Indigo Noon update, not part of original Indigo Noon code.
-/// This one is called whenever a sweeper has to gain X amount of Persistence stacks, because I didn't want to duplicate the code checking if they already had it a bunch of times.
-/mob/living/simple_animal/hostile/ordeal/indigo_noon/proc/GainPersistence(stacks_gained)
-	var/datum/status_effect/stacking/sweeper_persistence/locked_in = src.has_status_effect(STATUS_EFFECT_PERSISTENCE)
-	if(!locked_in)
-		src.apply_status_effect(STATUS_EFFECT_PERSISTENCE)
-		if(stacks_gained>1)
-			var/datum/status_effect/stacking/sweeper_persistence/just_applied = src.has_status_effect(STATUS_EFFECT_PERSISTENCE)
-			just_applied.add_stacks(stacks_gained - 1)
-
-	else
-		locked_in.add_stacks(stacks_gained)
-
-/// I use this logic a couple times in the subtypes so I'm just generalizing it here.
-/mob/living/simple_animal/hostile/ordeal/indigo_noon/proc/SweeperHealing(amount)
-	src.adjustBruteLoss(-amount)
-	new /obj/effect/temp_visual/heal(get_turf(src), "#70f54f")
 
 /// As of June 2025 Indigo Noon is being updated to have some variants.
 /// These two subtypes will show up alongside the normal old sweepers for the ordeal. They could also be reused in Dusk and Midnight.
@@ -182,8 +146,10 @@
 	if(dash_cooldown > world.time || dash_dashing || dash_preparing)
 		return ..()
 	if(!client && prob(60))
-		SweepTheBackstreets(attacked_target)
-		return
+		var/mob/living/victim = attacked_target
+		if(istype(victim) && victim.stat != DEAD)
+			SweepTheBackstreets(victim)
+			return
 	. = ..()
 
 /// OpenFire() is gonna be called fairly often since it's set as a ranged unit, we want this so they'll dash even if they're stuck behind other sweepers in a "traffic jam". Also lets possessed sweepers dash at will.
@@ -467,97 +433,3 @@
 		deltimer(extract_fuel_ongoing_timer)
 		extract_fuel_ongoing_timer = null
 
-/// Persistence Status Effect
-/// It allows them to avoid death when struck, with some VFX/SFX indicating that it was activated
-/// Every time it activates, it loses a stack, but it can also time out over a long period of time.
-/// All Sweepers gain a stack of Persistence when eating corpses. Chunky Sweepers can give themselves several stacks when on low health.
-
-/datum/status_effect/stacking/sweeper_persistence
-	id = "persistence"
-	status_type = STATUS_EFFECT_MULTIPLE
-	duration = 35 SECONDS
-	alert_type = null
-	var/mutable_appearance/overlay
-	stacks = 1
-	max_stacks = 3
-	stack_decay = 0
-	consumed_on_threshold = FALSE
-	var/base_chance = 25
-	var/health_recovery_per_stack = 40
-
-/// I don't really want it to decay, so
-/datum/status_effect/stacking/sweeper_persistence/tick()
-	if(!can_have_status())
-		qdel(src)
-
-/datum/status_effect/stacking/sweeper_persistence/on_apply()
-	. = ..()
-
-	if(!owner)
-		return
-	var/icon/sweepericon = icon(owner.icon, owner.icon_state, owner.dir)
-	var/icon_height = sweepericon.Height()
-	overlay = mutable_appearance('ModularTegustation/Teguicons/tegu_effects.dmi', "sweeper_persistence", -MUTATIONS_LAYER)
-	overlay.pixel_x = 4
-	overlay.pixel_y = icon_height - 28
-	if(icon_height == 32)
-		overlay.transform *= 0.80
-	owner.add_overlay(overlay)
-	RegisterSignal(owner, COMSIG_MOB_APPLY_DAMGE, PROC_REF(CheckDeath))
-
-/datum/status_effect/stacking/sweeper_persistence/add_stacks(stacks_added)
-	. = ..()
-	/// I don't think I have to do any further cleanup, it should get qdel'd by Process() right?
-	if(stacks <= 0)
-		if(owner)
-			owner.remove_status_effect(STATUS_EFFECT_PERSISTENCE)
-		return
-	/// Refresh the duration on Persistence after gaining or losing a stack.
-	duration = initial(duration) + world.time
-
-/datum/status_effect/stacking/sweeper_persistence/on_remove()
-	. = ..()
-	if(!owner)
-		return
-	owner.cut_overlay(overlay)
-	UnregisterSignal(src, COMSIG_MOB_APPLY_DAMGE)
-
-/// This check was taken from Welfare Core's code. Altered to work on simplemobs instead.
-/datum/status_effect/stacking/sweeper_persistence/proc/CheckDeath(datum_source, amount, damagetype, def_zone)
-	SIGNAL_HANDLER
-	if(!owner)
-		return
-	var/mob/living/simple_animal/hostile/ordeal/indigo_noon/neighbor = owner
-	/// We get the resistance from the sweeper's resistances datum.
-	var/damage_coefficient = neighbor.damage_coeff.getCoeff(damagetype)
-	/// The original damage received is given to us by the signal we're handling.
-	var/damage_taken = amount * damage_coefficient
-	/// No point in doing anything if the damage wouldn't kill the sweeper.
-	if(damage_taken <= 0)
-		return
-	/// This stores "overkill" damage to reduce the chance of Persistence proccing (60 health takes 100 damage is 40 overkill damage)
-	var/overkill_damage = damage_taken - neighbor.health
-	/// Chance to proc Persistence is calculated here based on stacks. It can't be higher than 100 because... I don't know what happens if it's higher.
-	/// Chances should be as follows (%, stack amt.): 50, 1 | 75, 2 | 100, 3
-	/// Chance is lowered by Overkill damage to make using slower weapons less of a pain.
-	var/chance = min(base_chance + stacks*25, 100)
-	/// This can result in negative chances but it hasn't runtimed in my testing so all's fine right?
-	var/final_chance = overkill_damage ? chance - (floor(overkill_damage / 5)) : chance
-
-	var/trigger_healing = health_recovery_per_stack*stacks
-	if(damage_taken >= neighbor.health)
-		/// But it refused. Persistence goes off, we heal a tiny bit and lose a stack
-		if(prob(final_chance))
-			playsound(neighbor, 'sound/effects/ordeals/indigo_start.ogg', 33)
-			INVOKE_ASYNC(neighbor, TYPE_PROC_REF(/mob/living/simple_animal/hostile/ordeal/indigo_noon, SweeperHealing), trigger_healing)
-			INVOKE_ASYNC(neighbor, TYPE_PROC_REF(/atom, visible_message), span_danger("The [neighbor.name] endures a fatal hit, some of the fuel being drained from its tank!"), span_userdanger("You suffer a lethal strike, losing some of your fuel!"))
-			src.add_stacks(-1)
-			return COMPONENT_MOB_DENY_DAMAGE
-		/// Tough luck neighbor. Persistence didn't go off so the sweeper dies here. Status should get cleaned up next time it ticks.
-		else
-			playsound(neighbor, 'sound/misc/splort.ogg', 100)
-			owner.cut_overlay(overlay)
-
-	return
-
-#undef STATUS_EFFECT_PERSISTENCE

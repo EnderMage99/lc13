@@ -2401,14 +2401,23 @@
 	qdel(src)
 	return TRUE
 
+#define STATUS_EFFECT_GAZE /datum/status_effect/stacking/contempt_weapon_gaze
+#define STATUS_EFFECT_CONTEMPT /datum/status_effect/contempt_weapon_contempt
+/// This weapon is a javelin+spear. You gain Gaze stacks by melee attacking, then throw it at an enemy to nuke them.
+/// At 6 stacks, you'll teleport to the enemy and pick the weapon back up automatically. If you get to 7 stacks, the Gaze stacks turn into Contempt, a huge debuff.
+/// You can clear your stacks of Gaze by using the weapon in-hand. It'll cost some health, though.
 /obj/item/ego_weapon/contempt
 	name = "contempt, awe"
 	desc = "From the excavated brain, geysers of hatred and contempt erupt. It's as if those feelings were inside you all along."
+	special = "Melee hits with this E.G.O. accumulate stacks of Gaze. Each stack of Gaze can be used to raise throwing damage by 15. \n\
+	After spending Gaze, you won't be able to gain any more for 8 seconds.\n\
+	Gaze can be spent by throwing this weapon at an enemy. Landing a thrown hit with 6 stacks of Gaze will teleport you to your enemy and automatically pick up this weapon.\n\
+	If you reach 7 stacks of Gaze, Gaze will transform into Contempt, temporarily slowing you down and lowering your power modifier. You can reset your Gaze stacks at the cost of 10 health by using the weapon in-hand."
 	icon_state = "contempt"
 	force = 50
 	reach = 2
 	stuntime = 5
-	throwforce = 80
+	throwforce = 60
 	throw_speed = 5
 	throw_range = 7
 	damtype = BLACK_DAMAGE
@@ -2418,47 +2427,153 @@
 	attribute_requirements = list(
 							FORTITUDE_ATTRIBUTE = 80
 							)
-	var/list/targets = list()
-	var/ranged_damage = 70
-	var/mode = FALSE
 	var/toggle_cooldown
 	var/toggle_cooldown_time = 1 SECONDS
+	/// How much throwforce each Gaze stack gives us. Remember that the most Gaze stacks we can have is 6 before they turn into Contempt.
+	var/force_per_gaze_stack = 15
+	/// The next world time at which we'll be allowed to generate Gaze stacks, after spending them.
+	var/gaze_gain_cooldown_period = 0
+	/// How long should we have to wait after spending Gaze to gain it again?
+	var/gaze_gain_cooldown_period_duration = 8 SECONDS
 
+/// This override handles generating Gaze stacks on hit. We won't generate them if we spent Gaze recently.
 /obj/item/ego_weapon/contempt/attack(mob/living/M, mob/living/user)
 	if(!CanUseEgo(user))
+		return FALSE
+	. = ..()
+	if(gaze_gain_cooldown_period < world.time)
+		var/mob/living/carbon/human/john_contempt = user
+		if(istype(john_contempt))
+			var/datum/status_effect/contempt_weapon_contempt/contempt_debuff = john_contempt.has_status_effect(STATUS_EFFECT_CONTEMPT)
+			// Do not gain Gaze stacks if we already have the Contempt debuff.
+			if(!contempt_debuff)
+				var/datum/status_effect/stacking/contempt_weapon_gaze/gaze_buff = john_contempt.has_status_effect(STATUS_EFFECT_GAZE)
+				// Stacking status effects have this quirk where you've got to check to see if you already have it, if so, add a stack, otherwise, make a new one...
+				if(gaze_buff)
+					gaze_buff.add_stacks(1)
+				else
+					john_contempt.apply_status_effect(STATUS_EFFECT_GAZE)
+
+/// This override handles the spending of gaze stacks on throwing hit.
+/obj/item/ego_weapon/contempt/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
+	throwforce = initial(throwforce)
+	var/mob/living/carbon/human/john_gaze = throwingdatum.thrower
+	if(istype(john_gaze))
+		if(!CanUseEgo(john_gaze))
+			throwforce = 5
+		if(isliving(hit_atom))
+			var/datum/status_effect/stacking/contempt_weapon_gaze/gaze_stacks = john_gaze.has_status_effect(STATUS_EFFECT_GAZE)
+			if(gaze_stacks)
+				// If we got here, the thrower is a human and has at least 1 gaze stack. We remove them all, go on cooldown, turbo-buff the throwing damage.
+				var/spent_stacks = gaze_stacks.stacks
+				gaze_stacks.add_stacks(-7)
+				gaze_gain_cooldown_period = world.time + gaze_gain_cooldown_period_duration
+				throwforce += (force_per_gaze_stack * spent_stacks)
+				. = ..()
+				throwforce = initial(throwforce)
+				// Aesthetics
+				playsound(src, 'sound/abnormalities/spiral_contempt/spiral_bleed.ogg', 100, FALSE)
+				new /obj/effect/temp_visual/contempt_blood(get_turf(hit_atom))
+				// If you did this weapon's gimmick perfectly and nuked the enemy at 6 stacks, you are now being teleported. Do not resist.
+				if(spent_stacks == 6)
+					INVOKE_ASYNC(src, PROC_REF(ThrownHitTeleport), hit_atom, john_gaze)
+				return
+		. = ..()
 		return
-
-	if(!mode)
-		if(!(M in targets))
-			targets+= M
-	if(mode)
-		if(M in targets)
-			playsound(M, 'sound/abnormalities/spiral_contempt/spiral_bleed.ogg', 100, FALSE, 4)
-			M.apply_damage(ranged_damage, BLACK_DAMAGE, null, M.run_armor_check(null, BLACK_DAMAGE), spread_damage = TRUE)
-			new /obj/effect/temp_visual/contempt_blood(get_turf(M))
-			targets -= M
-	..()
-	hitsound = initial(hitsound)
-
-/obj/item/ego_weapon/contempt/attack_self(mob/user)
+	. = ..()
+/// This override allows users to reset their gaze stacks, if they have any, at the cost of health.
+/obj/item/ego_weapon/contempt/attack_self(mob/living/user)
 	if(!CanUseEgo(user))
 		return
 	if(toggle_cooldown > world.time)//spam prevention
 		return
 	toggle_cooldown = world.time + toggle_cooldown_time
-	if(mode)
-		mode = FALSE
-		to_chat(user,span_warning("Your [src] now drips with blood."))
-		targets = list()
-		playsound(src, 'sound/abnormalities/spiral_contempt/spiral_grow.ogg', 20, FALSE)
-		return
+	var/datum/status_effect/stacking/contempt_weapon_gaze/gaze_stacks = user.has_status_effect(STATUS_EFFECT_GAZE)
+	if(gaze_stacks)
+		gaze_stacks.add_stacks(-7)
+		user.adjustBruteLoss(10)
+		playsound(src, 'sound/abnormalities/spiral_contempt/spiral_whine.ogg', 40, FALSE)
+		playsound(src, 'sound/abnormalities/spiral_contempt/spiral_bleed.ogg', 60, FALSE)
+		new /obj/effect/temp_visual/contempt_blood(get_turf(user))
+		user.visible_message(span_danger("[user] slices themselves with [src], their blood siphoning into the spikes!"), span_danger("You slice yourself, using some of your blood to avert your weapon's attentive gaze."))
 
-	if(!mode)
-		mode = TRUE
-		to_chat(user,span_warning("Your [src] now menances with spikes of gold."))
-		playsound(src, 'sound/abnormalities/spiral_contempt/spiral_whine.ogg', 20, FALSE)
-		return
+/// This proc happens when we land a throwing hit with 6 gaze stacks. You get briefly immobilized, teleport in front of the enemy, and pick the weapon back up.
+/obj/item/ego_weapon/contempt/proc/ThrownHitTeleport(mob/living/target, mob/living/carbon/human/user)
+	user.visible_message(span_danger("[user] begins to shift towards [target]..."))
+	user.Immobilize(1 SECONDS)
+	var/turf/origin = get_turf(user)
+	var/turf/destination = get_ranged_target_turf_direct(user, target, get_dist(user, target) - 1)
+	new /obj/effect/temp_visual/cult/blood/out(origin)
+	new /obj/effect/temp_visual/cult/blood(destination)
+	sleep(1 SECONDS)
+	user.forceMove(destination)
+	user.put_in_active_hand(src)
+	user.visible_message(span_danger("[user] suddenly appears in front of [target], brandishing their [src.name]!"))
 
 
 /obj/item/ego_weapon/contempt/get_clamped_volume()
 	return 25
+
+/// Gaze stacking status effect: does nothing, the weapon is the one that applies the bonuses. You start with 1 stack, and go up to 6. If you go to 7? Turns into Contempt.
+/datum/status_effect/stacking/contempt_weapon_gaze
+	id = "contempt_weapon_gaze"
+	alert_type = /atom/movable/screen/alert/status_effect/contempt_weapon_gaze
+	stacks = 1
+	max_stacks = 7
+	stack_decay = 0
+	duration = 20 SECONDS
+	stack_threshold = 7
+	consumed_on_threshold = TRUE
+
+/datum/status_effect/stacking/contempt_weapon_gaze/threshold_cross_effect()
+	owner.apply_status_effect(STATUS_EFFECT_CONTEMPT)
+	. = ..()
+
+/datum/status_effect/stacking/contempt_weapon_gaze/add_stacks(stacks_added)
+	refresh()
+	. = ..()
+
+
+/datum/status_effect/stacking/contempt_weapon_gaze/tick()
+	if(!can_have_status())
+		qdel(src)
+
+/atom/movable/screen/alert/status_effect/contempt_weapon_gaze
+	name = "Gaze"
+	icon_state = "gaze"
+	desc = "Relish the awe within their eyes as you strike them down."
+
+/// Contempt status effect. This is a super nasty debuff that guts your power modifier and movespeed (which power mod already affects).
+/datum/status_effect/contempt_weapon_contempt
+	id = "contempt_weapon_contempt"
+	alert_type = /atom/movable/screen/alert/status_effect/contempt_weapon_contempt
+	duration = 8 SECONDS
+	var/power_malus = 50
+
+/datum/status_effect/contempt_weapon_contempt/on_apply()
+	. = ..()
+	var/mob/living/carbon/human/greedy_bastard = owner
+	if(!istype(greedy_bastard))
+		return
+	greedy_bastard.add_movespeed_modifier(/datum/movespeed_modifier/contempt_weapon_contempt)
+	greedy_bastard.adjust_attribute_bonus(JUSTICE_ATTRIBUTE, -power_malus)
+
+/datum/status_effect/contempt_weapon_contempt/on_remove()
+	. = ..()
+	var/mob/living/carbon/human/greedy_bastard = owner
+	if(!istype(greedy_bastard))
+		return
+	greedy_bastard.remove_movespeed_modifier(/datum/movespeed_modifier/contempt_weapon_contempt)
+	greedy_bastard.adjust_attribute_bonus(JUSTICE_ATTRIBUTE, power_malus)
+
+/atom/movable/screen/alert/status_effect/contempt_weapon_contempt
+	name = "Contempt"
+	icon_state = "weaken"
+	desc = "But why should you get to wield such power, pathetic as you are?"
+
+/datum/movespeed_modifier/contempt_weapon_contempt
+	flags = IS_ACTUALLY_MULTIPLICATIVE
+	multiplicative_slowdown = 1.5
+
+#undef STATUS_EFFECT_GAZE
+#undef STATUS_EFFECT_CONTEMPT

@@ -358,6 +358,11 @@
 	attack_verb_simple = list("shear", "snip")
 	sharpness = SHARP_EDGED
 	custom_premium_price = PAYCHECK_MEDIUM * 14
+	var/prepare_amputation_sound = 'sound/items/ratchet.ogg'
+	var/amputation_sound = 'sound/weapons/bladeslice.ogg'
+	var/target_title = "patient"
+	var/can_sever_external_organs = FALSE
+	var/violent = FALSE
 
 /obj/item/shears/attack(mob/living/M, mob/user)
 	if(!iscarbon(M) || user.a_intent != INTENT_HELP)
@@ -369,19 +374,36 @@
 	var/mob/living/carbon/patient = M
 
 	if(HAS_TRAIT(patient, TRAIT_NODISMEMBER))
-		to_chat(user, "<span class='warning'>The patient's limbs look too sturdy to amputate.</span>")
+		to_chat(user, "<span class='warning'>The [target_title]'s limbs look too sturdy to amputate.</span>")
 		return
 
 	var/candidate_name
 	var/obj/item/organ/tail_snip_candidate
 	var/obj/item/bodypart/limb_snip_candidate
+	var/obj/item/organ/eye_cut_candidate
+	var/obj/item/organ/tongue_cut_candidate
+	var/selected_zone = user.zone_selected
 
-	if(user.zone_selected == BODY_ZONE_PRECISE_GROIN)
+	if(selected_zone == BODY_ZONE_PRECISE_GROIN)
 		tail_snip_candidate = patient.getorganslot(ORGAN_SLOT_TAIL)
 		if(!tail_snip_candidate)
 			to_chat(user, "<span class='warning'>[patient] does not have a tail.</span>")
 			return
 		candidate_name = tail_snip_candidate.name
+
+	else if(can_sever_external_organs && (selected_zone == BODY_ZONE_PRECISE_EYES || selected_zone == BODY_ZONE_PRECISE_MOUTH))
+		if(selected_zone == BODY_ZONE_PRECISE_EYES)
+			eye_cut_candidate = patient.getorganslot(ORGAN_SLOT_EYES)
+			if(!eye_cut_candidate)
+				to_chat(user, span_warning("[patient] does not have eyes."))
+				return
+			candidate_name = eye_cut_candidate.name
+		else if(selected_zone == BODY_ZONE_PRECISE_MOUTH)
+			tongue_cut_candidate = patient.getorganslot(ORGAN_SLOT_TONGUE)
+			if(!tongue_cut_candidate)
+				to_chat(user, span_warning("[patient] does not have a tongue."))
+				return
+			candidate_name = tongue_cut_candidate.name
 
 	else
 		limb_snip_candidate = patient.get_bodypart(check_zone(user.zone_selected))
@@ -392,8 +414,12 @@
 
 	var/amputation_speed_mod
 
-	patient.visible_message("<span class='danger'>[user] begins to secure [src] around [patient]'s [candidate_name].</span>", "<span class='userdanger'>[user] begins to secure [src] around your [candidate_name]!</span>")
-	playsound(get_turf(patient), 'sound/items/ratchet.ogg', 20, TRUE)
+	AmputationPrepareMessage(patient, user, candidate_name)
+	playsound(get_turf(patient), prepare_amputation_sound, 35, TRUE)
+	if(violent)
+		new /obj/effect/temp_visual/dir_setting/bloodsplatter(get_turf(patient), pick(GLOB.alldirs))
+		new /obj/effect/temp_visual/dir_setting/bloodsplatter(get_turf(patient), pick(GLOB.alldirs))
+
 	if(patient.stat >= UNCONSCIOUS || patient.IsStun()) //Stun is used by paralytics like curare it should not be confused with the more common paralyze.
 		amputation_speed_mod = 0.5
 	else if(patient.jitteriness >= 1)
@@ -401,14 +427,30 @@
 	else
 		amputation_speed_mod = 1
 
+
 	if(do_after(user,  toolspeed * 150 * amputation_speed_mod, target = patient))
-		playsound(get_turf(patient), 'sound/weapons/bladeslice.ogg', 250, TRUE)
-		if(user.zone_selected == BODY_ZONE_PRECISE_GROIN) //OwO
+		playsound(get_turf(patient), amputation_sound, 100, TRUE)
+		// I wish I could throw a switch statement here instead of all this else-if, but it wants a constant expression and I need to check if the tool should be able to target organs
+		if(selected_zone == BODY_ZONE_PRECISE_GROIN) //OwO
 			tail_snip_candidate.Remove(patient)
 			tail_snip_candidate.forceMove(get_turf(patient))
+		else if(selected_zone == BODY_ZONE_PRECISE_EYES && can_sever_external_organs)
+			eye_cut_candidate.Remove(patient)
+			eye_cut_candidate.forceMove(get_turf(patient))
+		else if(selected_zone == BODY_ZONE_PRECISE_MOUTH && can_sever_external_organs)
+			tongue_cut_candidate.Remove(patient)
+			tongue_cut_candidate.forceMove(get_turf(patient))
 		else
 			limb_snip_candidate.dismember()
-		user.visible_message("<span class='danger'>[src] violently slams shut, amputating [patient]'s [candidate_name].</span>", "<span class='notice'>You amputate [patient]'s [candidate_name] with [src].</span>")
+		AmputationSuccessMessage(patient, user, candidate_name)
+		if(violent)
+			new /obj/effect/decal/cleanable/blood/splatter(get_turf(patient))
+
+/obj/item/shears/proc/AmputationPrepareMessage(mob/living/carbon/patient, mob/living/carbon/user, candidate_name)
+	patient.visible_message("<span class='danger'>[user] begins to secure [src] around [patient]'s [candidate_name].</span>", "<span class='userdanger'>[user] begins to secure [src] around your [candidate_name]!</span>")
+
+/obj/item/shears/proc/AmputationSuccessMessage(mob/living/carbon/patient, mob/living/carbon/user, candidate_name)
+	user.visible_message("<span class='danger'>[src] violently slams shut, amputating [patient]'s [candidate_name].</span>", "<span class='notice'>You amputate [patient]'s [candidate_name] with [src].</span>")
 
 /obj/item/shears/suicide_act(mob/living/carbon/user)
 	user.visible_message("<span class='suicide'>[user] is pinching [user.p_them()]self with \the [src]! It looks like [user.p_theyre()] trying to commit suicide!</span>")
@@ -421,6 +463,30 @@
 		timer += 1 SECONDS
 	sleep(timer)
 	return BRUTELOSS
+
+/// Thumb East's custom amputation shears.
+/obj/item/shears/knife
+	name = "disciplinary knife"
+	desc = "A knife used to administer 'disciplinary action' by the Thumb. Use this on a still target to remove one of their limbs. Can also be used on their tongue or eyes."
+	icon = 'icons/obj/kitchen.dmi'
+	icon_state = "buckknife"
+	prepare_amputation_sound = 'sound/effects/butcher.ogg'
+	target_title = "victim"
+	// Goofy force values for the sake of it.
+	force = 20
+	throwforce = 30
+	toolspeed = 0.6
+	can_sever_external_organs = TRUE
+	violent = TRUE
+	attack_verb_continuous = list("slices", "cuts")
+	attack_verb_simple = list("slice", "cut")
+
+/obj/item/shears/knife/AmputationPrepareMessage(mob/living/carbon/patient, mob/living/carbon/user, candidate_name)
+	patient.visible_message(span_danger("[user] sets [src] on [patient]'s [candidate_name], preparing to administer discipline."), span_userdanger("[user] places [src] on your [candidate_name]!"))
+
+/obj/item/shears/knife/AmputationSuccessMessage(mob/living/carbon/patient, mob/living/carbon/user, candidate_name)
+	user.visible_message(span_danger("[user] cleaves [patient]'s [candidate_name] off with [src]."), span_notice("You cleave [patient]'s [candidate_name] off with [src]."))
+
 
 /obj/item/bonesetter
 	name = "bonesetter"

@@ -12,12 +12,14 @@
 	minimum_distance = 10
 	retreat_distance = 2
 	move_to_delay = 6
+	can_breach = TRUE
 	damage_coeff = list(RED_DAMAGE = 1, WHITE_DAMAGE = 2, BLACK_DAMAGE = 0.7, PALE_DAMAGE = 0.5, FIRE = 0.5)
 	stat_attack = HARD_CRIT
 	vision_range = 28 // Fit for a marksman.
 	aggro_vision_range = 40
+	del_on_death = FALSE
 	threat_level = HE_LEVEL
-	start_qliphoth = 3
+	start_qliphoth = 5
 	work_chances = list(
 		ABNORMALITY_WORK_INSTINCT = 40,
 		ABNORMALITY_WORK_INSIGHT = 50,
@@ -46,17 +48,22 @@
 	)
 
 	var/can_act = TRUE
+	var/can_move = TRUE
+	var/already_fled = FALSE
 	var/bullet_cooldown
 	var/bullet_cooldown_time = 7 SECONDS
 	var/bullet_fire_delay = 1.5 SECONDS
-	var/bullet_max_range = 50
+	var/bullet_max_range = 200
 	var/bullet_damage = 80
+	var/breach_portals_amount = 7
 	var/list/portals = list()
 	var/zoomed = FALSE
 	var/max_portals = 7
 	var/current_portal_index = 0
 	var/portal_cooldown
 	var/portal_cooldown_time = 5 SECONDS
+	var/portal_assault_firerate = 2 SECONDS // 2 seconds between each shot of the portal assault.
+	var/portal_assault_timer = 0
 
 	//PLAYABLES ATTACKS (action in this case)
 	attack_action_types = list(/datum/action/innate/abnormality_attack/toggle/der_freischutz_zoom,
@@ -207,13 +214,14 @@
 	if (!portal)
 		P = portals[current_portal_index]
 	portals.Remove(P)
-	if (client.eye == P)
-		client.eye = src
-		current_portal_index = 0
-	else
-		if (istype(client.eye, /mob/living/simple_animal/hostile/der_freis_portal))
-			var/mob/living/simple_animal/hostile/der_freis_portal/P2 = client.eye
-			current_portal_index = portals.Find(P2)
+	if(client)
+		if(client.eye == P)
+			client.eye = src
+			current_portal_index = 0
+		else
+			if (istype(client.eye, /mob/living/simple_animal/hostile/der_freis_portal))
+				var/mob/living/simple_animal/hostile/der_freis_portal/P2 = client.eye
+				current_portal_index = portals.Find(P2)
 	qdel(P)
 
 
@@ -253,9 +261,13 @@
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/IconChange(firing)
 	if(firing)
+		if(icon == 'ModularTegustation/Teguicons/96x64.dmi')
+			return
 		pixel_x -= 32
 		icon = 'ModularTegustation/Teguicons/96x64.dmi'
 		update_icon()
+		return
+	if(icon == 'ModularTegustation/Teguicons/32x64.dmi')
 		return
 	pixel_x += 32
 	icon = 'ModularTegustation/Teguicons/32x64.dmi'
@@ -271,10 +283,11 @@
 	var/list/turfs_to_check = getline(beam_start, target_turf)
 	playsound(beam_start, 'sound/abnormalities/freischutz/prepare.ogg', 35, 0, 20)
 	face_atom(target)
-	for(var/turf/T in turfs_to_check)
-		if(T.density)
-			beam_end = T
-			break
+	if(IsCombatMap())
+		for(var/turf/T in turfs_to_check)
+			if(T.density)
+				beam_end = T
+				break
 	new /datum/beam(beam_start.Beam(beam_end, "magic_bullet", time = bullet_fire_delay))
 	SLEEP_CHECK_DEATH(bullet_fire_delay)
 	FireBullet(target, beam_start, beam_end)
@@ -291,30 +304,132 @@
 	B.preparePixelProjectile(end_turf, start_turf)
 	B.range = bullet_max_range
 	B.damage = bullet_damage
+	if(!IsCombatMap()) // Teehee
+		B.hitscan = TRUE
+		B.projectile_phasing = (ALL & (~PASSMOB))
 	B.fire()
 	new /datum/beam(start_turf.Beam(end_turf, "magic_bullet_tracer", time = 3 SECONDS))
 	IconChange(firing = FALSE)
 	can_act = TRUE
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/Move()
-	if(!can_act)
+	if(!can_act || !can_move)
 		return FALSE
 	return ..()
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/PostWorkEffect(mob/living/carbon/human/user, work_type, pe, work_time)
 	if(get_attribute_level(user, JUSTICE_ATTRIBUTE) < 60)
-		datum_reference.qliphoth_change(-1)
+		HandleQli(-1)
 	return
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/FailureEffect(mob/living/carbon/human/user, work_type, pe)
-	datum_reference.qliphoth_change(-(prob(75)))
+	HandleQli(-2)
 	return ..()
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/NeutralEffect(mob/living/carbon/human/user, work_type, pe)
-	datum_reference.qliphoth_change(-(prob(50)))
+	if(prob(75))
+		HandleQli(-1)
 	return ..()
 
-/mob/living/simple_animal/hostile/abnormality/der_freischutz/ZeroQliphoth(mob/living/carbon/human/user)
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/HandleQli(amount)
+	if(amount < 0)
+		for(var/i = 1 to -(amount))
+			ContainedFireBullet()
+			SLEEP_CHECK_DEATH(2 SECONDS)
+	datum_reference.qliphoth_change(amount)
+
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/BreachEffect(mob/living/carbon/human/user, breach_type)
+	. = ..()
+	var/portal_spawns = GLOB.xeno_spawn.Copy()
+	if(!LAZYLEN(portal_spawns))
+		Machine_Gun()
+		datum_reference.qliphoth_change(start_qliphoth)
+		return
+	if(breach_type != BREACH_MINING)
+		TeleportDepartmentCenter()
+	var/mob/living/simple_animal/hostile/der_freis_portal/new_portal
+	for(var/i = 1 to breach_portals_amount)
+		if(!LAZYLEN(portal_spawns))
+			continue
+		var/turf/W = pick(portal_spawns)
+		LAZYREMOVE(portal_spawns, W)
+		new_portal = new /mob/living/simple_animal/hostile/der_freis_portal(get_turf(W))
+		new_portal.connected_abno = src
+		new_portal.bullet_damage = bullet_damage
+		LAZYADD(portals, new_portal)
+	addtimer(CALLBACK(src, PROC_REF(PortalAssault)), 5 SECONDS)
+
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/adjustHealth(amount, updating_health = TRUE, forced = FALSE)
+	. = ..()
+	if(stat == DEAD || already_fled)
+		return
+	if(health < (maxHealth / 2)) //50% health or lower
+		already_fled = TRUE
+		animate(src, alpha = 0, time = 0.5 SECONDS)
+		playsound(src, 'sound/abnormalities/freischutz/portal.ogg', 60, 0, 1)
+		SLEEP_CHECK_DEATH(0.5 SECONDS)
+		TeleportDepartmentCenter()
+		animate(src, alpha = 255, time = 0.5 SECONDS)
+
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/TeleportDepartmentCenter()
+	var/list/possible_departments = GLOB.department_centers.Copy()
+	var/list/living_agents = AllLivingAgents(TRUE)
+	var/turf/T
+	if(LAZYLEN(possible_departments))
+		for(var/turf/check in possible_departments)
+			if(LAZYLEN((range(5, check))&(living_agents)))
+				LAZYREMOVE(possible_departments, check)
+		if(LAZYLEN(possible_departments))
+			T = pick(possible_departments)
+		else
+			T = pick(GLOB.department_centers)
+	can_move = FALSE
+	if(T)
+		forceMove(T)
+
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/PortalAssault(mob/living/TargetOverride = null, extended = TRUE)
+	var/mob/living/bullet_target
+	if(TargetOverride)
+		bullet_target = TargetOverride
+	else
+		var/list/low_priority_targets
+		var/list/medium_priority_targets
+		var/list/high_priority_targets
+		for(var/mob/living/carbon/human/H in GLOB.player_list)
+			if(H.stat == DEAD || H.z != z)
+				continue
+			var/distance = (get_dist(src, H))
+			if(distance > 50)
+				LAZYADD(low_priority_targets, H)
+				continue
+			if(distance > 15)
+				LAZYADD(medium_priority_targets, H)
+				continue
+			LAZYADD(high_priority_targets, H)
+		if(LAZYLEN(high_priority_targets))
+			bullet_target = pick(high_priority_targets)
+		else if(LAZYLEN(medium_priority_targets))
+			bullet_target = pick(medium_priority_targets)
+		else if(LAZYLEN(low_priority_targets))
+			bullet_target = pick(low_priority_targets)
+		if(!bullet_target)
+			addtimer(CALLBACK(src, PROC_REF(PortalAssault)), 15 SECONDS)
+			return
+	var/shot_counter
+	for(var/mob/living/simple_animal/hostile/der_freis_portal/bullet_portal in portals)
+		shot_counter++
+		bullet_portal.assault_timer = addtimer(CALLBACK(bullet_portal, TYPE_PROC_REF(/mob/living/simple_animal/hostile, OpenFire), bullet_target), (portal_assault_firerate * shot_counter), TIMER_STOPPABLE)
+	PrepareFireBullet(bullet_target)
+	if(extended)
+		portal_assault_timer = addtimer(CALLBACK(src, PROC_REF(PortalAssault)), (portal_assault_firerate * (shot_counter + 1)), TIMER_STOPPABLE)
+
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/bullet_act(obj/projectile/P)
+	var/firer = P.firer
+	if(firer == src || LAZYFIND(portals, firer))
+		return
+	. = ..()
+
+/mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/ContainedFireBullet()
 	var/list/targets = list()
 	var/turf/targetturf
 	var/targetx
@@ -346,9 +461,7 @@
 			freidir = NORTH
 		else
 			freidir = SOUTH
-	src.fire_magic_bullet(targetturf, freidir)
-	datum_reference.qliphoth_change(3)
-	return ..()
+	fire_magic_bullet(targetturf, freidir)
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/Machine_Gun(mob/living/target = null, shots = 7)
 	for(var/i = 0 to shots)
@@ -362,7 +475,7 @@
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/proc/fire_magic_bullet(target = pick(GLOB.xeno_spawn), freidir = pick(EAST,WEST))
 	IconChange(firing = TRUE)
 	var/offset = -12
-	var/list/portals = list()
+	var/list/portal_effects = list()
 	var/turf/T = src.loc
 	var/turf/barrel = locate(T.x + 2, T.y + 1, T.z)
 	var/turf/tpos = target
@@ -382,7 +495,7 @@
 		P.icon_state = "freicircle[i]"
 		P.update_icon()
 		P.pixel_x += offset
-		portals += P
+		portal_effects += P
 		var/obj/effect/frei_magic/PX = new(T)
 		PX.dir = freidir
 		PX.icon_state = "freicircle[i]"
@@ -396,7 +509,7 @@
 		else
 			PX.pixel_y += offset
 		offset += 8
-		portals += PX
+		portal_effects += PX
 		sleep(6)
 		if(i != 4)
 			continue
@@ -406,13 +519,18 @@
 			B.dir = freidir
 			addtimer(CALLBACK(B, TYPE_PROC_REF(/obj/effect/magic_bullet, moveBullet)), 0.1)
 			IconChange(firing = FALSE)
-			for(var/obj/effect/frei_magic/Port in portals)
+			for(var/obj/effect/frei_magic/Port in portal_effects)
 				Port.fade_out()
 	return
 
 /mob/living/simple_animal/hostile/abnormality/der_freischutz/death()
+	if(portal_assault_timer)
+		deltimer(portal_assault_timer)
 	for(var/mob/living/simple_animal/hostile/der_freis_portal/P in portals)
 		P.death(FALSE)
+	density = FALSE
+	animate(src, alpha = 0, time = 10 SECONDS)
+	QDEL_IN(src, 10 SECONDS)
 	..()
 
 
@@ -440,8 +558,9 @@
 	var/bullet_cooldown
 	var/bullet_cooldown_time = 7 SECONDS
 	var/bullet_fire_delay = 1.5 SECONDS
-	var/bullet_max_range = 50
+	var/bullet_max_range = 100
 	var/bullet_damage = 150
+	var/assault_timer = 0
 
 	var/mob/living/simple_animal/hostile/abnormality/der_freischutz/connected_abno
 	var/datum/component/orbiter/self_orbiter
@@ -452,11 +571,19 @@
 	playsound(get_turf(src), 'sound/abnormalities/freischutz/portal.ogg', 100, 0, 10)
 
 /mob/living/simple_animal/hostile/der_freis_portal/death()
+	if(assault_timer)
+		deltimer(assault_timer)
 	connected_abno.RemovePortal(src)
 	..()
 
 /mob/living/simple_animal/hostile/der_freis_portal/Move()
 	return FALSE
+
+/mob/living/simple_animal/hostile/der_freis_portal/bullet_act(obj/projectile/P)
+	var/firer = P.firer
+	if(firer == connected_abno || istype(firer, /mob/living/simple_animal/hostile/der_freis_portal))
+		return
+	. = ..()
 
 /mob/living/simple_animal/hostile/der_freis_portal/AttackingTarget(atom/attacked_target)
 	return OpenFire(attacked_target)
@@ -473,10 +600,11 @@
 	var/list/turfs_to_check = getline(beam_start, target_turf)
 	playsound(beam_start, 'sound/abnormalities/freischutz/prepare.ogg', 35, 0, 20)
 	face_atom(target)
-	for(var/turf/T in turfs_to_check)
-		if(T.density)
-			beam_end = T
-			break
+	if(IsCombatMap())
+		for(var/turf/T in turfs_to_check)
+			if(T.density)
+				beam_end = T
+				break
 	new /datum/beam(beam_start.Beam(beam_end, "magic_bullet", time = bullet_fire_delay))
 	SLEEP_CHECK_DEATH(bullet_fire_delay)
 	FireBullet(target, beam_start, beam_end)
@@ -493,6 +621,9 @@
 	B.preparePixelProjectile(end_turf, start_turf)
 	B.range = bullet_max_range
 	B.damage = bullet_damage
+	if(!IsCombatMap()) // Teehee
+		B.hitscan = TRUE
+		B.projectile_phasing = (ALL & (~PASSMOB))
 	B.fire()
 	new /datum/beam(start_turf.Beam(end_turf, "magic_bullet_tracer", time = 3 SECONDS))
 
