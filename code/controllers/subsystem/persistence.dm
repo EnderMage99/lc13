@@ -34,6 +34,9 @@ SUBSYSTEM_DEF(persistence)
 	var/list/cleared_core_suppressions = list()
 	/// LOBOTOMYCORPORATION ADDITION: Button counter
 	var/rounds_since_button_pressed = 0
+	/// Door to Nowhere tape archive
+	var/list/door_to_nowhere_tapes = list()
+	var/list/obj/machinery/tape_archive/tape_archive_machines = list()
 
 /datum/controller/subsystem/persistence/Initialize()
 	LoadPoly()
@@ -52,6 +55,7 @@ SUBSYSTEM_DEF(persistence)
 	LoadRandomizedRecipes()
 	LoadPaintings()
 	load_custom_outfits()
+	LoadDoorToNowhereTapes()
 	return ..()
 
 /datum/controller/subsystem/persistence/proc/LoadPoly()
@@ -247,6 +251,7 @@ SUBSYSTEM_DEF(persistence)
 	SavePaintings()
 	SaveScars()
 	save_custom_outfits()
+	SaveDoorToNowhereTapes()
 
 /datum/controller/subsystem/persistence/proc/GetPhotoAlbums()
 	var/album_path = file("data/photo_albums.json")
@@ -582,3 +587,29 @@ SUBSYSTEM_DEF(persistence)
 	rustg_file_write("[rounds_since_button_pressed + 1]", BUTTON_COUNT_FILEPATH)
 
 #undef BUTTON_COUNT_FILEPATH
+
+// Door to Nowhere tape archive persistence
+/datum/controller/subsystem/persistence/proc/LoadDoorToNowhereTapes()
+	var/json_file = file("data/door_to_nowhere_tapes.json")
+	if(!fexists(json_file))
+		log_game("Door to Nowhere tapes: No persistence file found")
+		return
+	
+	var/list/json = json_decode(file2text(json_file))
+	if(!json || !json["tapes"])
+		log_game("Door to Nowhere tapes: Invalid or empty persistence file")
+		return
+	
+	door_to_nowhere_tapes = json["tapes"]
+	log_game("Door to Nowhere tapes: Loaded [LAZYLEN(door_to_nowhere_tapes)] tapes from persistence")
+
+/datum/controller/subsystem/persistence/proc/SaveDoorToNowhereTapes()
+	var/json_file = file("data/door_to_nowhere_tapes.json")
+	
+	// Collect all stored tapes
+	var/list/tape_data = list()
+	for(var/list/tape_info in door_to_nowhere_tapes)
+		tape_data += list(tape_info)
+	
+	fdel(json_file)
+	WRITE_FILE(json_file, json_encode(list("tapes" = tape_data)))

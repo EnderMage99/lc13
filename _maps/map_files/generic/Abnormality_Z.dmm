@@ -1,4 +1,8 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"ao" = (
+/obj/structure/regret_shrine/unspoken,
+/turf/open/indestructible/paper,
+/area/fishboat/backrooms)
 "aC" = (
 /obj/effect/turf_decal/weather/snow/corner{
 	dir = 5
@@ -119,6 +123,10 @@
 /obj/item/ammo_casing/caseless/ego_kcorp,
 /turf/open/floor/carpet/green,
 /area/fishboat/backrooms)
+"bZ" = (
+/obj/structure/fluff/paper,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "cb" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/effect/spawner/lootdrop/grille_or_trash,
@@ -167,6 +175,10 @@
 /mob/living/simple_animal/pet/penguin/baby,
 /turf/open/floor/holofloor/snow,
 /area/shelter)
+"cH" = (
+/obj/machinery/tape_archive,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "cK" = (
 /obj/machinery/door/airlock/hatch,
 /obj/effect/decal/cleanable/dirt/dust,
@@ -217,6 +229,9 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"dv" = (
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
 "dw" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/fluff/paper/stack,
@@ -267,6 +282,15 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/facility,
 /area/fishboat/backrooms)
+"em" = (
+/obj/structure/table/wood,
+/obj/item/mailpaper/junk,
+/turf/open/indestructible/paper,
+/area/fishboat/backrooms)
+"ep" = (
+/obj/structure/bookcase/random/nonfiction,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "eq" = (
 /obj/structure/chair/snowqueen,
 /obj/effect/areaflavor_snow,
@@ -290,6 +314,12 @@
 /obj/structure/barricade/wooden/crude,
 /turf/open/floor/plating/ironsand,
 /area/fishboat/backrooms)
+"eA" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/wood{
+	icon_state = "wood-broken7"
+	},
+/area/fishboat/backrooms)
 "eC" = (
 /obj/effect/overlay/light_cone{
 	color = "#E1E17D"
@@ -312,6 +342,15 @@
 /obj/structure/closet/crate/pcorp/shelter,
 /turf/open/floor/shelter,
 /area/shelter)
+"eO" = (
+/obj/structure/chair/comfy/black{
+	dir = 1
+	},
+/obj/structure/fluff/paper/stack{
+	dir = 4
+	},
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "eV" = (
 /turf/open/floor/carpet/blue,
 /area/fishboat/backrooms)
@@ -430,6 +469,16 @@
 /obj/item/reagent_containers/glass/bucket/wooden,
 /turf/open/floor/wood,
 /area/fishboat)
+"gB" = (
+/obj/structure/bookcase/random/fiction,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
+"gO" = (
+/obj/effect/turf_decal/trimline/yellow/filled/warning{
+	dir = 1
+	},
+/turf/open/floor/carpet/royalblack,
+/area/fishboat/backrooms)
 "gW" = (
 /obj/structure/sign/painting/library{
 	pixel_y = -32
@@ -479,8 +528,21 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"iy" = (
+/obj/structure/chair/comfy/black{
+	dir = 4
+	},
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "iC" = (
 /obj/structure/mineral_door/wood,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"iF" = (
+/obj/structure/fluff/paper/stack{
+	dir = 4
+	},
+/obj/structure/fluff/paper/stack,
 /turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "iL" = (
@@ -534,6 +596,15 @@
 /obj/structure/table/wood/fancy/red,
 /obj/item/toy/plush/gebura,
 /turf/open/floor/carpet/red,
+/area/fishboat/backrooms)
+"jf" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/obj/structure/fluff/paper/stack{
+	dir = 1
+	},
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "jh" = (
 /obj/structure/aquarium,
@@ -637,6 +708,12 @@
 	},
 /turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
+"kK" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/chasm/door_dimension,
+/area/fishboat/backrooms)
 "kM" = (
 /obj/structure/stone_tile/surrounding/cracked,
 /turf/open/floor/plating/ironsand,
@@ -717,6 +794,11 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
+"ms" = (
+/obj/structure/table/bronze,
+/obj/structure/statue/bronze/marx,
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
 "mt" = (
 /obj/structure/flora/iceshards{
 	pixel_x = 16;
@@ -731,6 +813,11 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"mC" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/item/toy/figure/qm,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "mQ" = (
 /obj/structure/flora/icegrave/alt{
 	pixel_x = 12;
@@ -794,11 +881,16 @@
 /turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "nM" = (
-/obj/structure/fluff/arc{
-	name = "Tomb of the Great Hero";
-	desc = "Here rests an unknown hero...\nUnknown by name or rank\nWhose acts will not be forgotten"
-	},
-/turf/open/floor/plating/ironsand,
+/obj/structure/closet/crate,
+/obj/item/tape,
+/obj/item/tape,
+/obj/item/tape,
+/obj/item/tape,
+/obj/item/tape,
+/obj/item/tape,
+/obj/item/tape,
+/obj/item/tape,
+/turf/open/floor/carpet/black,
 /area/fishboat/backrooms)
 "nO" = (
 /obj/effect/decal/cleanable/dirt/dust,
@@ -842,6 +934,10 @@
 	},
 /turf/open/floor/carpet/orange,
 /area/fishboat/backrooms)
+"oV" = (
+/obj/structure/mineral_door/paperframe,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "pc" = (
 /obj/structure/table/wood/fancy/green,
 /obj/item/gun/ballistic/automatic/pistol,
@@ -853,6 +949,13 @@
 	color = "#E1E17D"
 	},
 /turf/open/floor/carpet/blue,
+/area/fishboat/backrooms)
+"pm" = (
+/obj/structure/table/wood/fancy/royalblack,
+/obj/item/paper_bin,
+/obj/item/pen,
+/obj/item/pen/fourcolor,
+/turf/open/floor/carpet/black,
 /area/fishboat/backrooms)
 "pv" = (
 /obj/machinery/door/airlock/glass_large,
@@ -893,6 +996,22 @@
 	color = "#E1E17D"
 	},
 /turf/open/floor/carpet/orange,
+/area/fishboat/backrooms)
+"pM" = (
+/obj/structure/fluff/paper/stack{
+	dir = 1
+	},
+/obj/structure/fluff/paper,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"pS" = (
+/obj/structure/fluff/paper/stack{
+	dir = 4
+	},
+/obj/structure/fluff/paper/stack{
+	dir = 1
+	},
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "pX" = (
 /obj/effect/decal/cleanable/dirt/dust,
@@ -973,6 +1092,17 @@
 /obj/structure/chess/blackknight,
 /turf/open/floor/plating/ironsand,
 /area/fishboat/backrooms)
+"qQ" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
+"qW" = (
+/obj/structure/table/bronze,
+/obj/item/toy/clockwork_watch,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "ra" = (
 /obj/structure/flora/icestalagmite,
 /turf/open/floor/holofloor/snow,
@@ -980,6 +1110,13 @@
 "rh" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/stone,
+/area/fishboat/backrooms)
+"rj" = (
+/obj/structure/fluff/paper/stack{
+	dir = 4
+	},
+/obj/structure/fluff/paper/stack,
+/turf/open/floor/carpet/royalblack,
 /area/fishboat/backrooms)
 "rl" = (
 /obj/effect/turf_decal/weather/snow/corner{
@@ -1010,6 +1147,11 @@
 /obj/item/clothing/suit/hooded/cloak/goliath,
 /turf/open/floor/stone,
 /area/fishboat/backrooms)
+"rs" = (
+/obj/structure/table/wood/fancy/royalblack,
+/obj/item/toy/plush/binah,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "rA" = (
 /obj/structure/table/reinforced,
 /obj/effect/decal/cleanable/dirt/dust,
@@ -1034,6 +1176,11 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/flora/ausbushes/brflowers,
 /turf/open/floor/holofloor/grass,
+/area/fishboat/backrooms)
+"sc" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/closet/crate/wooden/toy,
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "sg" = (
 /obj/structure/flora/rock,
@@ -1080,6 +1227,13 @@
 	},
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/facility,
+/area/fishboat/backrooms)
+"sM" = (
+/obj/structure/regret_door{
+	pixel_y = -32
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "sO" = (
 /obj/structure/flora/iceshards{
@@ -1184,6 +1338,10 @@
 /obj/item/ammo_casing/caseless/ego_kcorp,
 /turf/open/floor/mineral/titanium/yellow,
 /area/fishboat/backrooms)
+"uw" = (
+/obj/structure/fluff/clockwork/blind_eye,
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
 "uU" = (
 /obj/effect/light_emitter{
 	light_power = 4;
@@ -1263,14 +1421,25 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/mineral/plastitanium/red/brig,
 /area/fishboat/backrooms)
+"vT" = (
+/turf/open/floor/vault,
+/area/fishboat/backrooms)
 "wa" = (
 /obj/machinery/door/airlock/hatch,
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/facility,
 /area/fishboat/backrooms)
+"wb" = (
+/obj/machinery/libraryscanner,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "wd" = (
 /obj/structure/sign/departments/training,
 /turf/closed/indestructible/wood,
+/area/fishboat/backrooms)
+"wh" = (
+/obj/structure/regret_shrine/abandoned,
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "wq" = (
 /obj/structure/regret_door{
@@ -1328,6 +1497,13 @@
 /obj/item/bouquet/sunflower,
 /turf/open/floor/holofloor/grass,
 /area/fishboat/backrooms)
+"xv" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/item/toy/figure/scientist,
+/turf/open/floor/wood{
+	icon_state = "wood-broken7"
+	},
+/area/fishboat/backrooms)
 "xw" = (
 /obj/structure/table/wood/fancy/orange,
 /obj/effect/decal/cleanable/dirt/dust,
@@ -1345,7 +1521,9 @@
 /obj/effect/overlay/light_cone{
 	color = "#E1E17D"
 	},
-/turf/closed/indestructible/iron,
+/turf/closed/indestructible/iron{
+	opacity = 1
+	},
 /area/fishboat/backrooms)
 "xG" = (
 /obj/structure/flora/icestalagmite{
@@ -1444,6 +1622,10 @@
 /obj/item/paper/fluff/joey/letter,
 /turf/open/floor/holofloor/grass,
 /area/fishboat/backrooms)
+"yV" = (
+/obj/structure/bookcase/random/religion,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "zo" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/fence/door{
@@ -1470,6 +1652,9 @@
 	},
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/mineral/plastitanium/red/brig,
+/area/fishboat/backrooms)
+"zI" = (
+/turf/closed/indestructible/reinforced/old,
 /area/fishboat/backrooms)
 "zS" = (
 /obj/structure/flora/icestalagmite{
@@ -1532,6 +1717,13 @@
 	name = "snow"
 	},
 /area/snowqueen)
+"At" = (
+/obj/structure/mineral_door/wood,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/wood{
+	icon_state = "wood-broken"
+	},
+/area/fishboat/backrooms)
 "Au" = (
 /obj/structure/flora/iceshards{
 	pixel_x = -11;
@@ -1646,11 +1838,7 @@
 /turf/open/floor/shelter,
 /area/shelter)
 "Cv" = (
-/obj/structure/regret_door{
-	pixel_y = 32
-	},
-/obj/item/toy/plush/binah,
-/turf/open/floor/carpet/royalblack,
+/turf/open/chasm/door_dimension,
 /area/fishboat/backrooms)
 "CD" = (
 /obj/structure/mineral_door/wood,
@@ -1686,6 +1874,9 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/fluff/paper,
 /turf/open/floor/stone,
+/area/fishboat/backrooms)
+"Dv" = (
+/turf/open/indestructible/paper,
 /area/fishboat/backrooms)
 "Dw" = (
 /obj/effect/decal/cleanable/dirt/dust,
@@ -1767,11 +1958,19 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"Ey" = (
+/obj/structure/regret_shrine/lost_time,
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
 "EC" = (
 /obj/structure/grille/broken,
 /obj/structure/barricade/wooden,
 /obj/structure/barricade/wooden,
 /turf/open/floor/plating/ironsand,
+/area/fishboat/backrooms)
+"EG" = (
+/obj/structure/rack,
+/turf/open/floor/vault,
 /area/fishboat/backrooms)
 "EL" = (
 /obj/item/reagent_containers/food/drinks/waterbottle/large,
@@ -1825,6 +2024,10 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"FF" = (
+/obj/structure/bookcase/random,
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "FG" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/item/trash/can,
@@ -1886,6 +2089,11 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/facility,
 /area/fishboat/backrooms)
+"Gz" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/item/toy/figure/wizard,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "GC" = (
 /obj/structure/flora/icestalagmite/small,
 /turf/open/floor/holofloor/snow,
@@ -1925,6 +2133,9 @@
 "GT" = (
 /obj/structure/stone_tile/slab/cracked,
 /turf/open/floor/plating/rust,
+/area/fishboat/backrooms)
+"GU" = (
+/turf/closed/wall/mineral/bronze,
 /area/fishboat/backrooms)
 "Ha" = (
 /obj/structure/flora/icechunk{
@@ -1986,6 +2197,12 @@
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
+"HT" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/wood{
+	icon_state = "wood-broken6"
+	},
+/area/fishboat/backrooms)
 "HZ" = (
 /obj/effect/light_emitter{
 	light_power = 4;
@@ -1995,6 +2212,13 @@
 	},
 /turf/open/floor/wood,
 /area/fishboat)
+"Ia" = (
+/obj/structure/fluff/paper/stack{
+	dir = 1
+	},
+/obj/structure/fluff/paper/stack,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Ib" = (
 /obj/structure/sign/painting/library{
 	pixel_y = 32
@@ -2010,6 +2234,10 @@
 	},
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/plating/ashplanet/rocky,
+/area/fishboat/backrooms)
+"It" = (
+/obj/machinery/bookbinder,
+/turf/open/floor/carpet/black,
 /area/fishboat/backrooms)
 "IC" = (
 /obj/structure/flora/iceshards{
@@ -2049,6 +2277,14 @@
 /obj/machinery/blackbox_recorder,
 /turf/open/floor/carpet/royalblue,
 /area/fishboat/backrooms)
+"Ja" = (
+/obj/effect/overlay/light_cone{
+	color = "#E1E17D"
+	},
+/turf/open/floor/wood{
+	icon_state = "wood-broken"
+	},
+/area/fishboat/backrooms)
 "Jk" = (
 /obj/effect/overlay/light_cone{
 	color = "#E1E17D"
@@ -2068,8 +2304,7 @@
 /area/fishboat/backrooms)
 "JI" = (
 /obj/machinery/door/airlock/snowqueen{
-	pixel_y = -7;
-	plane = 0
+	pixel_y = -7
 	},
 /turf/closed/mineral/snowmountain/cavern,
 /area/snowqueen)
@@ -2077,6 +2312,11 @@
 /obj/structure/mineral_door/wood,
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"JX" = (
+/obj/structure/table/wood/fancy/royalblack,
+/obj/item/taperecorder/empty,
+/turf/open/floor/carpet/black,
 /area/fishboat/backrooms)
 "JZ" = (
 /obj/structure/chair{
@@ -2171,6 +2411,15 @@
 	},
 /turf/open/floor/plating/ironsand,
 /area/fishboat/backrooms)
+"Lb" = (
+/obj/structure/fluff/paper/stack,
+/obj/structure/fluff/paper,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"Lm" = (
+/obj/structure/window/paperframe,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Lr" = (
 /obj/structure/flora/iceslab{
 	pixel_x = 49;
@@ -2187,6 +2436,12 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/item/reagent_containers/food/drinks/bottle/rum,
 /turf/open/floor/wood,
+/area/fishboat/backrooms)
+"LZ" = (
+/obj/item/toy/figure/mime,
+/turf/open/floor/wood{
+	icon_state = "wood-broken7"
+	},
 /area/fishboat/backrooms)
 "MA" = (
 /obj/structure/flora/icechunk{
@@ -2347,10 +2602,22 @@
 /obj/item/taperecorder/empty,
 /turf/open/floor/carpet/orange,
 /area/fishboat/backrooms)
+"OT" = (
+/obj/machinery/door/airlock/regret_archive,
+/turf/open/floor/vault,
+/area/fishboat/backrooms)
 "Pc" = (
 /turf/open/floor/wood{
 	icon_state = "wood-broken6"
 	},
+/area/fishboat/backrooms)
+"Pg" = (
+/obj/structure/table/bronze,
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
+"Pj" = (
+/obj/item/toy/figure/warden,
+/turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
 "Pn" = (
 /obj/item/storage/box/pcorp,
@@ -2402,6 +2669,13 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/indestructible/white,
 /area/fishboat/backrooms)
+"Ql" = (
+/obj/structure/table/bronze,
+/obj/item/toy/clockwork_watch,
+/turf/open/floor/wood{
+	icon_state = "wood-broken"
+	},
+/area/fishboat/backrooms)
 "Qq" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/effect/overlay/light_cone{
@@ -2452,6 +2726,12 @@
 /obj/structure/fluff/paper,
 /turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
+"Rh" = (
+/obj/structure/fluff/paper/stack{
+	dir = 4
+	},
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "Rv" = (
 /obj/effect/overlay/light_cone{
 	color = "#E1E17D"
@@ -2494,6 +2774,12 @@
 	},
 /turf/open/floor/carpet/green,
 /area/fishboat/backrooms)
+"RW" = (
+/obj/structure/chair/comfy/black{
+	dir = 1
+	},
+/turf/open/floor/carpet/black,
+/area/fishboat/backrooms)
 "Sb" = (
 /obj/effect/turf_decal/trimline/yellow/line,
 /obj/effect/decal/cleanable/dirt/dust,
@@ -2516,6 +2802,10 @@
 /obj/effect/spawner/lootdrop/grille_or_trash,
 /turf/open/floor/holofloor/wood,
 /area/fishboat/backrooms)
+"Sf" = (
+/obj/machinery/door/airlock/vault,
+/turf/open/floor/vault,
+/area/fishboat/backrooms)
 "Si" = (
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/holofloor/grass,
@@ -2523,6 +2813,11 @@
 "St" = (
 /obj/effect/decal/cleanable/oil/streak,
 /turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
+"Sz" = (
+/obj/machinery/computer/bookmanagement,
+/obj/structure/table/wood/fancy/royalblack,
+/turf/open/floor/carpet/black,
 /area/fishboat/backrooms)
 "SH" = (
 /obj/effect/light_emitter{
@@ -2566,6 +2861,11 @@
 /obj/item/tape/door_regret/traded_life,
 /turf/open/floor/holofloor/grass,
 /area/fishboat/backrooms)
+"Tc" = (
+/obj/structure/table/bronze,
+/obj/item/toy/clockwork_watch,
+/turf/open/floor/bronze,
+/area/fishboat/backrooms)
 "Ti" = (
 /obj/structure/regret_door{
 	pixel_y = 32
@@ -2605,6 +2905,12 @@
 /obj/item/silkknife,
 /obj/item/stack/sheet/silk/azure_masterpiece,
 /turf/open/floor/mineral/titanium/tiled/purple,
+/area/fishboat/backrooms)
+"TQ" = (
+/obj/item/toy/talking/owl,
+/turf/open/floor/wood{
+	icon_state = "wood-broken7"
+	},
 /area/fishboat/backrooms)
 "TR" = (
 /obj/effect/turf_decal/siding/wood{
@@ -2663,6 +2969,12 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"UL" = (
+/obj/structure/table/wood,
+/obj/item/mailpaper/junk,
+/obj/item/mailpaper/junk,
+/turf/open/floor/holofloor/wood,
+/area/fishboat/backrooms)
 "UM" = (
 /obj/effect/landmark/backrooms_spawn,
 /obj/effect/light_emitter{
@@ -2734,6 +3046,15 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/facility,
 /area/fishboat/backrooms)
+"Vs" = (
+/obj/structure/fluff/paper/stack{
+	dir = 4
+	},
+/obj/structure/fluff/paper/stack{
+	dir = 1
+	},
+/turf/open/floor/carpet/royalblack,
+/area/fishboat/backrooms)
 "Vv" = (
 /obj/structure/railing{
 	dir = 4;
@@ -2743,7 +3064,9 @@
 /turf/open/water/deep/saltwater/extradeep,
 /area/fishboat)
 "Vz" = (
-/turf/closed/indestructible/iron,
+/turf/closed/indestructible/iron{
+	opacity = 1
+	},
 /area/fishboat/backrooms)
 "VJ" = (
 /obj/structure/flora/icegrave,
@@ -2758,7 +3081,9 @@
 /area/snowqueen)
 "VK" = (
 /obj/effect/decal/cleanable/dirt/dust,
-/turf/closed/indestructible/iron,
+/turf/closed/indestructible/iron{
+	opacity = 1
+	},
 /area/fishboat/backrooms)
 "VZ" = (
 /obj/structure/railing{
@@ -2814,6 +3139,12 @@
 "Xy" = (
 /turf/closed/indestructible/rock,
 /area/fishboat)
+"XD" = (
+/obj/structure/mineral_door/wood,
+/turf/open/floor/wood{
+	icon_state = "wood-broken"
+	},
+/area/fishboat/backrooms)
 "XF" = (
 /obj/structure/sign/painting/library{
 	pixel_y = -32
@@ -2861,6 +3192,12 @@
 /obj/structure/closet/crate/pcorp/shelter,
 /turf/open/floor/shelter,
 /area/shelter)
+"Yi" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/wood{
+	icon_state = "wood-broken"
+	},
+/area/fishboat/backrooms)
 "Yl" = (
 /obj/structure/railing{
 	dir = 10;
@@ -2943,6 +3280,11 @@
 	name = "ice"
 	},
 /area/snowqueen)
+"YU" = (
+/obj/effect/landmark/tape_spawner/door_to_nowhere,
+/obj/structure/table/wood/fancy/royalblack,
+/turf/open/floor/carpet/royalblack,
+/area/fishboat/backrooms)
 "Ze" = (
 /obj/structure/flora/icestalagmite{
 	layer = 3;
@@ -4647,9 +4989,9 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
+Lm
+oV
+Lm
 ll
 ll
 ll
@@ -4700,9 +5042,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 lV
 lV
@@ -4849,9 +5191,9 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
+pM
+pS
+Dv
 ll
 ll
 ll
@@ -4902,9 +5244,9 @@ lV
 lV
 sW
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 lV
 lV
@@ -5050,11 +5392,11 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
-ll
-ll
+UL
+Dv
+bZ
+Ia
+UL
 ll
 ll
 lV
@@ -5085,8 +5427,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+eZ
+eZ
 lV
 lV
 lV
@@ -5252,11 +5594,11 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
-ll
-ll
+em
+iF
+jf
+bZ
+em
 ll
 ll
 lV
@@ -5287,8 +5629,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+YU
+eZ
 lV
 lV
 lV
@@ -5455,9 +5797,9 @@ ll
 ll
 ll
 ll
-ll
-ll
-ll
+Lb
+ao
+Rh
 ll
 ll
 ll
@@ -5489,8 +5831,8 @@ eC
 lV
 lV
 ll
-lV
-YH
+eZ
+eZ
 lV
 lV
 lV
@@ -6560,7 +6902,7 @@ lV
 lV
 lV
 lV
-lV
+ms
 ll
 XL
 XL
@@ -6758,11 +7100,11 @@ lV
 lV
 kJ
 lV
-ll
+GU
+Ql
 lV
-YH
-lV
-lV
+Tc
+GU
 ll
 XL
 XL
@@ -6861,8 +7203,8 @@ lV
 Pc
 lV
 ll
-lV
-lV
+eZ
+eZ
 lV
 eC
 lV
@@ -6960,11 +7302,11 @@ lV
 lV
 lV
 lV
-ll
+GU
+Pg
 lV
-lV
-lV
-lV
+Pg
+GU
 ll
 XL
 XL
@@ -7063,8 +7405,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+YU
+eZ
 lV
 kJ
 YH
@@ -7072,8 +7414,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+eZ
+eZ
 lV
 lV
 ll
@@ -7162,11 +7504,11 @@ lV
 YH
 lV
 lV
-ll
-lV
-lV
-lV
-lV
+GU
+qW
+dv
+Tc
+GU
 ll
 XL
 XL
@@ -7265,8 +7607,8 @@ lV
 eC
 lV
 ll
-lV
-lV
+eZ
+eZ
 lV
 lV
 lV
@@ -7274,8 +7616,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+YU
+eZ
 lV
 sW
 ll
@@ -7364,11 +7706,11 @@ lV
 lV
 lV
 lV
-ll
-eC
-lV
-lV
-lV
+GU
+dv
+qQ
+dv
+GU
 ll
 XL
 XL
@@ -7476,8 +7818,8 @@ ll
 ll
 lV
 ll
-lV
-lV
+eZ
+eZ
 lV
 lV
 ll
@@ -7566,11 +7908,11 @@ lV
 lV
 lV
 lV
-ll
-nC
-lV
-lV
-lV
+GU
+uw
+Ey
+uw
+GU
 ll
 XL
 XL
@@ -7768,11 +8110,11 @@ lV
 lV
 lV
 lV
-ll
-ll
-ll
-ll
-ll
+GU
+GU
+GU
+GU
+GU
 ll
 XL
 XL
@@ -8341,9 +8683,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 ll
 lV
@@ -8543,9 +8885,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 ll
 lV
@@ -8970,9 +9312,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 YH
 lV
@@ -9102,9 +9444,9 @@ lV
 ll
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 ll
 lV
 lV
@@ -9172,9 +9514,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 lV
 lV
@@ -9304,9 +9646,9 @@ lV
 ll
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 ll
 lV
 lV
@@ -11496,8 +11838,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+eZ
+eZ
 Pc
 lV
 ll
@@ -11698,8 +12040,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+YU
+eZ
 lV
 lV
 lV
@@ -11900,8 +12242,8 @@ ll
 lV
 lV
 ll
-lV
-lV
+eZ
+eZ
 lV
 lV
 lV
@@ -12169,9 +12511,9 @@ lV
 ll
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 ll
 lV
 lV
@@ -12371,9 +12713,9 @@ lV
 ll
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 ll
 lV
 lV
@@ -15013,8 +15355,8 @@ sW
 lV
 lV
 lV
-lV
-lV
+eZ
+eZ
 ll
 ll
 ll
@@ -15215,8 +15557,8 @@ lV
 lV
 lV
 lV
-lV
-lV
+eZ
+YU
 ll
 lV
 lV
@@ -15417,8 +15759,8 @@ lV
 lV
 lV
 lV
-lV
-lV
+eZ
+eZ
 ll
 lV
 lV
@@ -16036,9 +16378,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 lV
 lV
@@ -16238,9 +16580,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 lV
 lV
@@ -17577,9 +17919,9 @@ ll
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 lV
 ll
@@ -17779,9 +18121,9 @@ ll
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 lV
 ll
@@ -18021,9 +18363,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 lV
 lV
@@ -18223,9 +18565,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 lV
 Pc
@@ -18414,9 +18756,9 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+eZ
+eZ
+eZ
 ll
 lV
 lV
@@ -18616,9 +18958,9 @@ lV
 lV
 lV
 ll
-lV
-lV
-lV
+eZ
+YU
+eZ
 ll
 lV
 lV
@@ -18974,7 +19316,7 @@ lV
 lV
 lV
 ll
-nM
+qC
 qC
 GT
 DO
@@ -19782,8 +20124,8 @@ lV
 lV
 lV
 ll
-EC
-EM
+qC
+qC
 EM
 EM
 EM
@@ -19984,8 +20326,8 @@ lV
 sW
 lV
 ll
+ll
 EC
-EM
 ll
 ll
 ll
@@ -20180,13 +20522,13 @@ ll
 lV
 ll
 lV
-lV
-lV
 ll
-lV
-lV
 ll
-lV
+zI
+OT
+zI
+ll
+ll
 lV
 lV
 lV
@@ -20382,13 +20724,13 @@ ll
 lV
 ll
 lV
-lV
-lV
 ll
-lV
-lV
+zI
+zI
+vT
+zI
+zI
 ll
-lV
 lV
 lV
 lV
@@ -20584,13 +20926,13 @@ ll
 lV
 ll
 lV
-lV
-lV
 ll
-lV
-lV
+zI
+vT
+vT
+vT
+zI
 ll
-lV
 lV
 lV
 lV
@@ -20786,13 +21128,13 @@ ll
 lV
 ll
 lV
-lV
-lV
 ll
-lV
-lV
+zI
+vT
+vT
+vT
+zI
 ll
-lV
 lV
 lV
 lV
@@ -20849,7 +21191,7 @@ lV
 lV
 lV
 ll
-lV
+YH
 lV
 lV
 lV
@@ -20988,6 +21330,14 @@ ll
 iC
 ll
 lV
+ll
+zI
+EG
+vT
+EG
+zI
+ll
+lV
 lV
 lV
 ll
@@ -20996,23 +21346,15 @@ lV
 ll
 lV
 lV
-lV
-lV
-ll
-lV
-lV
-ll
-lV
-lV
 ll
 lV
 lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 ll
 lV
 lV
@@ -21051,8 +21393,8 @@ lV
 lV
 lV
 ll
-lV
-lV
+eA
+HT
 lV
 lV
 lV
@@ -21190,13 +21532,13 @@ ll
 lV
 lV
 lV
-eC
-lV
 ll
-lV
-lV
+zI
+EG
+vT
+EG
+zI
 ll
-lV
 YH
 lV
 lV
@@ -21212,9 +21554,9 @@ lV
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 ll
 lV
 lV
@@ -21253,7 +21595,7 @@ ll
 lV
 lV
 ll
-iC
+At
 ll
 ll
 ll
@@ -21390,15 +21732,15 @@ XL
 XL
 ll
 lV
-lV
-lV
-kJ
+eC
 lV
 ll
-lV
-lV
+zI
+zI
+Sf
+zI
+zI
 ll
-lV
 lV
 lV
 lV
@@ -21455,9 +21797,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+YH
+sW
+Gz
 ll
 lV
 lV
@@ -21592,15 +21934,15 @@ XL
 XL
 ll
 lV
-lV
-lV
-lV
+kJ
 lV
 ll
-lV
-lV
+zI
+FF
+eZ
+ep
+zI
 ll
-lV
 lV
 lV
 lV
@@ -21657,9 +21999,9 @@ ll
 lV
 lV
 ll
+Pj
 lV
-lV
-lV
+YH
 ll
 lV
 lV
@@ -21684,9 +22026,9 @@ ll
 nC
 lV
 lV
-lV
-lV
-lV
+eZ
+eZ
+eZ
 lV
 lV
 lV
@@ -21793,16 +22135,16 @@ XL
 XL
 XL
 ll
-lV
-lV
-lV
-lV
-lV
 ll
-lV
-lV
 ll
-lV
+ll
+ll
+zI
+gB
+eZ
+yV
+zI
+ll
 lV
 lV
 lV
@@ -21859,9 +22201,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+Ja
+Yi
+LZ
 ll
 lV
 lV
@@ -21886,9 +22228,9 @@ ll
 lV
 lV
 lV
-lV
-lV
-lV
+eZ
+YU
+eZ
 lV
 lV
 lV
@@ -21994,16 +22336,16 @@ XL
 XL
 XL
 XL
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-lV
-lV
-ll
+zI
+zI
+zI
+zI
+zI
+zI
+gB
+eZ
+nM
+zI
 ll
 ll
 ll
@@ -22061,9 +22403,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-Hj
+wh
+YH
+sM
 ll
 lV
 lV
@@ -22196,18 +22538,18 @@ XL
 XL
 XL
 XL
-ll
-iL
+zI
+kK
+Cv
+gO
+wb
+Sz
+eO
 eZ
-eZ
-lV
-lV
-lV
-lV
-lV
+iy
+zI
 ll
 eC
-lV
 lV
 lV
 lV
@@ -22263,9 +22605,9 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+YH
+YH
+TQ
 ll
 lV
 lV
@@ -22298,8 +22640,8 @@ lV
 lV
 lV
 lV
-lV
-eC
+eZ
+eZ
 ll
 AE
 IX
@@ -22398,18 +22740,18 @@ XL
 XL
 XL
 XL
-ll
+zI
 Cv
+Cv
+gO
+Vs
 eZ
-eZ
-lV
-lV
-lV
-lV
-lV
+rj
+iL
+JX
+zI
 ll
 kJ
-lV
 lV
 lV
 lV
@@ -22465,11 +22807,11 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
+xv
+eA
+YH
 ll
-lV
+YH
 lV
 lV
 lV
@@ -22500,8 +22842,8 @@ lV
 lV
 lV
 lV
-lV
-kJ
+eZ
+YU
 ll
 fa
 IX
@@ -22600,17 +22942,17 @@ XL
 XL
 XL
 XL
+zI
+Cv
+Cv
+gO
+It
+pm
+RW
+cH
+rs
+zI
 ll
-eZ
-eZ
-eZ
-lV
-lV
-lV
-lV
-lV
-ll
-lV
 lV
 lV
 lV
@@ -22667,12 +23009,12 @@ ll
 lV
 lV
 ll
-lV
-lV
-lV
-iC
-lV
-lV
+sc
+YH
+mC
+XD
+HT
+sW
 lV
 lV
 lV
@@ -22702,8 +23044,8 @@ lV
 lV
 lV
 lV
-lV
-lV
+eZ
+eZ
 ll
 UA
 kX
@@ -22802,16 +23144,16 @@ XL
 XL
 XL
 XL
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
-ll
+zI
+zI
+zI
+zI
+zI
+zI
+zI
+zI
+zI
+zI
 ll
 ll
 ll

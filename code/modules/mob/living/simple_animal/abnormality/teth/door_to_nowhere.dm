@@ -18,6 +18,14 @@
 	attack_sound = 'sound/weapons/genhit1.ogg'
 	can_breach = FALSE
 	start_qliphoth = 3
+
+	// Ranged attack configuration
+	ranged = TRUE
+	ranged_cooldown_time = 50  // 5 seconds between shots
+	projectiletype = /obj/projectile/regret_hand
+	projectilesound = 'sound/effects/curse3.ogg'
+	retreat_distance = 3
+	minimum_distance = 2
 	work_chances = list(
 		ABNORMALITY_WORK_INSTINCT = list(70, 70, 65, 65, 65),
 		ABNORMALITY_WORK_INSIGHT = list(70, 70, 65, 65, 65),
@@ -45,8 +53,18 @@
 	var/list/backrooms_locations = list()
 	var/list/backrooms_effects = list() // Track status effects
 
-/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/PostSpawn()
-	..()
+	// Spirit projection ability variable
+	var/projecting_spirit = FALSE
+
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/Initialize()
+	. = ..()
+	// Grant abilities
+	var/datum/action/innate/targeted_whisper/whisper_ability = new
+	whisper_ability.Grant(src)
+
+	var/datum/action/innate/door_possession/possess_ability = new
+	possess_ability.Grant(src)
+
 	// Find all backrooms landmarks
 	for(var/obj/effect/landmark/backrooms_spawn/L in GLOB.landmarks_list)
 		backrooms_locations += get_turf(L)
@@ -58,6 +76,29 @@
 			backrooms_locations += T
 		else
 			backrooms_locations += get_turf(src)
+
+// Override say to use ethereal whispers instead
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/say(message, bubble_type, list/spans, sanitize, datum/language/language, ignore_spam, forced)
+	if(!message)
+		return
+
+	// Get all hearers in view
+	var/list/hearers = get_hearers_in_view(7, src)
+
+	// Send whisper to all visible entities
+	for(var/mob/M in hearers)
+		if(!M.client)
+			continue
+		to_chat(M, span_revennotice("You hear a cold whisper echoing from [src]... \"[message]\""))
+
+	// Log the message
+	log_say("[key_name(src)] (Door to Nowhere) whispers: [message]")
+
+	// Visual effect
+	manual_emote("'s chains rattle softly...")
+
+	// Don't call parent - we don't want normal speech
+	return
 
 /mob/living/simple_animal/hostile/abnormality/door_to_nowhere/PostWorkEffect(mob/living/carbon/human/user, work_type, pe, work_time)
 	. = ..()
@@ -514,3 +555,894 @@
 	if(associated_door)
 		associated_door.associated_spirit = null
 	return ..()
+
+// ABILITY IMPLEMENTATIONS
+
+// Override OpenFire to add visual feedback when firing projectiles
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/OpenFire(atom/A)
+	if(ranged_cooldown > world.time)
+		return
+
+	// Visual feedback when firing
+	visible_message(span_danger("[src]'s chains rattle as a spectral hand emerges!"))
+
+	return ..()
+
+// Spirit projection ability
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/proc/project_spirit()
+	if(projecting_spirit || !client)
+		return FALSE
+
+	projecting_spirit = TRUE
+
+	// Create the spirit
+	var/mob/living/simple_animal/hostile/regret_spirit/projection/P = new(get_turf(src))
+	P.name = "projection of [name]"
+	P.source_door = src
+	P.faction = faction.Copy()
+
+	// Store original body reference
+	var/mob/living/original_body = src
+
+	// Transfer mind
+	var/datum/mind/door_mind = mind
+	if(door_mind)
+		door_mind.transfer_to(P)
+
+	// Make spirit incorporeal
+	P.incorporeal_move = INCORPOREAL_MOVE_BASIC
+	P.pass_flags = PASSTABLE | PASSGRILLE | PASSMOB | PASSMACHINE | PASSSTRUCTURE | PASSCLOSEDTURF
+	P.density = FALSE
+
+	// Give control abilities
+	var/datum/action/innate/return_to_door/return_ability = new
+	return_ability.Grant(P)
+
+	// Visual feedback
+	visible_message(span_warning("[src] shudders as a ghostly form emerges from within!"))
+	playsound(src, 'sound/effects/ghost2.ogg', 50, TRUE)
+
+	// Set timer to return
+	addtimer(CALLBACK(src, PROC_REF(recall_spirit), P, original_body), 30 SECONDS)
+
+	return TRUE
+
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/proc/recall_spirit(mob/living/simple_animal/hostile/regret_spirit/projection/P, mob/living/original_body)
+	if(!P || QDELETED(P))
+		projecting_spirit = FALSE
+		return
+
+	// Transfer mind back
+	if(P.mind)
+		P.mind.transfer_to(original_body)
+
+	// Effects
+	playsound(original_body, 'sound/effects/ghost.ogg', 50, TRUE)
+	to_chat(original_body, span_notice("Your consciousness returns to your true form."))
+
+	// Clean up
+	projecting_spirit = FALSE
+	qdel(P)
+
+// ABILITY DATUMS
+
+// Targeted whisper ability
+/datum/action/innate/targeted_whisper
+	name = "Focused Whisper"
+	desc = "Send a chilling whisper directly into someone's mind."
+	icon_icon = 'icons/mob/actions/actions_spells.dmi'
+	button_icon_state = "telepathy"
+	check_flags = AB_CHECK_CONSCIOUS
+	var/cooldown_time = 50  // 5 second cooldown
+	var/next_use = 0
+
+/datum/action/innate/targeted_whisper/Activate()
+	if(!IsAvailable())
+		return FALSE
+
+	if(world.time < next_use)
+		to_chat(owner, span_warning("This ability is on cooldown."))
+		return FALSE
+
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/D = owner
+
+	// Get possible targets
+	var/list/possible_targets = list()
+	for(var/mob/living/L in view(7, D))
+		if(L == D || !L.client)
+			continue
+		possible_targets[L.name] = L
+
+	if(!possible_targets.len)
+		to_chat(D, span_warning("There is no one nearby to whisper to..."))
+		return FALSE
+
+	// Choose target
+	var/target_name = input(D, "Choose your target...", "Focused Whisper") as null|anything in possible_targets
+	if(!target_name)
+		return FALSE
+
+	var/mob/living/target = possible_targets[target_name]
+	if(!target || get_dist(D, target) > 7 || !target.client)
+		return FALSE
+
+	// Get message
+	var/message = input(D, "What chilling message do you wish to send?", "Whisper") as text|null
+	if(!message)
+		return FALSE
+
+	// Verify target is still valid
+	if(!target || QDELETED(target) || get_dist(D, target) > 7)
+		to_chat(D, span_warning("Your target is no longer in range."))
+		return FALSE
+
+	// Send the whisper
+	to_chat(target, span_boldwarning("You feel a presence focus on you... A cold whisper penetrates your mind: \"[message]\""))
+	to_chat(D, span_notice("You whisper to [target]: \"[message]\""))
+
+	// Visual feedback for others
+	for(var/mob/M in viewers(target, 7))
+		if(M != target && M != D)
+			to_chat(M, span_warning("[target] shivers as if touched by something unseen..."))
+
+	// Logging
+	log_directed_talk(D, target, message, LOG_SAY, "door whisper")
+
+	// Start cooldown
+	next_use = world.time + cooldown_time
+	return TRUE
+
+// Spirit possession ability
+/datum/action/innate/door_possession
+	name = "Project Regret Spirit"
+	desc = "Project your consciousness into a spirit of regret for 30 seconds."
+	icon_icon = 'icons/mob/actions/actions_spells.dmi'
+	button_icon_state = "teleport"
+	check_flags = AB_CHECK_CONSCIOUS
+	var/cooldown_time = 1200  // 2 minute cooldown
+	var/next_use = 0
+
+/datum/action/innate/door_possession/Activate()
+	if(!IsAvailable())
+		return FALSE
+
+	if(world.time < next_use)
+		to_chat(owner, span_warning("This ability is on cooldown."))
+		return FALSE
+
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/D = owner
+	if(D.project_spirit())
+		next_use = world.time + cooldown_time
+		return TRUE
+	return FALSE
+
+// Return to door ability for projected spirits
+/datum/action/innate/return_to_door
+	name = "Return to Form"
+	desc = "Return your consciousness to your true form."
+	icon_icon = 'icons/mob/actions/actions_spells.dmi'
+	button_icon_state = "exit_possession"
+
+/datum/action/innate/return_to_door/Activate()
+	var/mob/living/simple_animal/hostile/regret_spirit/projection/P = owner
+	if(!istype(P) || !P.source_door)
+		return FALSE
+
+	P.source_door.recall_spirit(P, P.source_door)
+	return TRUE
+
+// PROJECTILE DEFINITIONS
+
+/obj/projectile/regret_hand
+	name = "hand of regret"
+	icon_state = "cursehand0"
+	hitsound = 'sound/effects/curse4.ogg'
+	layer = LARGE_MOB_LAYER
+	damage_type = WHITE_DAMAGE  // Psychological damage
+	damage = 15
+	speed = 2
+	range = 10
+	var/datum/beam/arm
+	var/handedness = 0
+
+/obj/projectile/regret_hand/Initialize(mapload)
+	. = ..()
+	handedness = prob(50)
+	icon_state = "cursehand[handedness]"
+
+/obj/projectile/regret_hand/fire(setAngle)
+	if(starting)
+		arm = starting.Beam(src, icon_state = "curse[handedness]", beam_type=/obj/effect/ebeam/curse_arm)
+	..()
+
+/obj/projectile/regret_hand/Destroy()
+	if(arm)
+		QDEL_NULL(arm)
+	return ..()
+
+/obj/projectile/regret_hand/on_hit(atom/target, blocked)
+	. = ..()
+	if(ishuman(target))
+		var/mob/living/carbon/human/H = target
+		// Apply or stack regret
+		var/datum/status_effect/regret_stacks/R = H.has_status_effect(/datum/status_effect/regret_stacks)
+		if(R)
+			R.add_stack()
+		else
+			H.apply_status_effect(/datum/status_effect/regret_stacks, firer)
+
+// STATUS EFFECT DEFINITIONS
+
+/datum/status_effect/regret_stacks
+	id = "regret_stacks"
+	duration = -1  // Permanent until removed
+	tick_interval = 600  // 60 seconds
+	status_type = STATUS_EFFECT_UNIQUE
+	alert_type = /atom/movable/screen/alert/status_effect/regret
+	var/stacks = 1
+	var/max_stacks = 10
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/source_door
+
+/datum/status_effect/regret_stacks/on_creation(mob/living/new_owner, mob/living/simple_animal/hostile/abnormality/door_to_nowhere/door)
+	. = ..()
+	source_door = door
+
+/datum/status_effect/regret_stacks/on_apply()
+	RegisterSignal(owner, COMSIG_LIVING_DEATH, PROC_REF(on_death))
+	to_chat(owner, span_userdanger("You feel the weight of regret settling upon your soul..."))
+	return TRUE
+
+/datum/status_effect/regret_stacks/on_remove()
+	UnregisterSignal(owner, COMSIG_LIVING_DEATH)
+	to_chat(owner, span_notice("The weight of regret lifts from your soul."))
+
+/datum/status_effect/regret_stacks/tick()
+	// Decay one stack per minute
+	remove_stack()
+
+/datum/status_effect/regret_stacks/proc/add_stack()
+	stacks = min(stacks + 1, max_stacks)
+
+	// Update alert
+	if(linked_alert)
+		linked_alert.desc = "You carry [stacks] burden\s of regret. At 5 stacks, you will be pulled into the realm of sealed memories."
+
+	// Check for teleportation
+	if(stacks >= 5 && source_door && !QDELETED(source_door))
+		source_door.SendToBackrooms(owner)
+		qdel(src)
+		return
+
+	// Flavor text based on stack count
+	switch(stacks)
+		if(2)
+			to_chat(owner, span_warning("The weight of unspoken words grows heavier..."))
+		if(3)
+			to_chat(owner, span_warning("Memories of things left undone flash before your eyes..."))
+		if(4)
+			to_chat(owner, span_danger("The chains of regret tighten around your soul!"))
+
+/datum/status_effect/regret_stacks/proc/remove_stack()
+	stacks--
+	if(stacks <= 0)
+		qdel(src)
+		return
+	if(linked_alert)
+		linked_alert.desc = "You carry [stacks] burden\s of regret."
+
+/datum/status_effect/regret_stacks/proc/on_death()
+	SIGNAL_HANDLER
+	qdel(src)
+
+// Alert for regret status
+/atom/movable/screen/alert/status_effect/regret
+	name = "Burden of Regret"
+	desc = "You carry burdens of regret. At 5 stacks, you will be pulled into the realm of sealed memories."
+	icon_state = "wounded_soldier"
+
+// SPIRIT PROJECTION MOB
+
+/mob/living/simple_animal/hostile/regret_spirit/projection
+	name = "projected spirit"
+	desc = "A temporary manifestation of regret and sorrow."
+	health = 50  // Fragile
+	maxHealth = 50
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/source_door
+	del_on_death = TRUE
+
+/mob/living/simple_animal/hostile/regret_spirit/projection/death(gibbed)
+	if(source_door && !QDELETED(source_door))
+		source_door.recall_spirit(src, source_door)
+	return ..()
+
+/mob/living/simple_animal/hostile/regret_spirit/projection/Life()
+	. = ..()
+	// Slowly drain health as time passes
+	adjustBruteLoss(1.5)
+
+// Tape Archive Machine for storing regret tapes persistently
+/obj/machinery/tape_archive
+	name = "regret tape archive"
+	desc = "A strange machine that resonates with echoes from parallel realities. Insert tapes to preserve them across Mirror Worlds."
+	icon = 'icons/obj/machines/research.dmi'
+	icon_state = "circuit_imprinter"
+	density = TRUE
+	var/list/stored_tapes = list()
+	var/processing = FALSE
+	var/list/users_who_archived = list()  // Track who has archived this round
+
+/obj/machinery/tape_archive/Initialize()
+	. = ..()
+	LAZYADD(SSpersistence.tape_archive_machines, src)
+
+/obj/machinery/tape_archive/Destroy()
+	LAZYREMOVE(SSpersistence.tape_archive_machines, src)
+	return ..()
+
+/obj/machinery/tape_archive/attackby(obj/item/I, mob/user, params)
+	// Only accept exact tape type, no subtypes
+	if(I.type != /obj/item/tape)
+		to_chat(user, span_warning("[src] only accepts standard recording tapes."))
+		return
+
+	if(processing)
+		to_chat(user, span_warning("[src] is currently processing another tape."))
+		return
+
+	var/obj/item/tape/T = I
+
+	if(T.ruined)
+		to_chat(user, span_warning("The tape is too damaged to archive."))
+		return
+
+	if(!T.storedinfo || !T.storedinfo.len)
+		to_chat(user, span_warning("The tape is blank and cannot be archived."))
+		return
+
+	// Check if user has already archived a tape this round
+	var/user_key = user.ckey
+	if(user_key in users_who_archived)
+		to_chat(user, span_warning("The machine resonates strangely... You have already contributed an echo to the Mirror Worlds this shift."))
+		to_chat(user, span_notice("Only one tape per person can cross the dimensional barrier each shift."))
+		return
+
+	// Check if tape already exists in persistence
+	for(var/list/tape_data in SSpersistence.door_to_nowhere_tapes)
+		if(tape_data["storedinfo"] ~= T.storedinfo)
+			to_chat(user, span_notice("This tape already exists within the Mirror Worlds archive."))
+			return
+
+	if(!user.transferItemToLoc(I, src))
+		return
+
+	processing = TRUE
+	to_chat(user, span_notice("You insert [T] into [src]. The machine begins resonating with otherworldly energy..."))
+	playsound(src, 'sound/machines/terminal_processing.ogg', 50, TRUE)
+	icon_state = "circuit_imprinter_ani"
+
+	addtimer(CALLBACK(src, PROC_REF(archive_tape), T, user), 3 SECONDS)
+
+/obj/machinery/tape_archive/proc/archive_tape(obj/item/tape/T, mob/user)
+	if(!T || QDELETED(T))
+		processing = FALSE
+		icon_state = initial(icon_state)
+		return
+
+	// Create tape data for persistence
+	var/list/tape_data = list(
+		"name" = T.name,
+		"desc" = T.desc,
+		"icon_state" = T.icon_state,
+		"storedinfo" = T.storedinfo.Copy(),
+		"timestamp" = T.timestamp.Copy(),
+		"original_round" = GLOB.round_id
+	)
+
+	// Add to persistence list - ensure we're adding as a single item
+	if(!SSpersistence.door_to_nowhere_tapes)
+		SSpersistence.door_to_nowhere_tapes = list()
+	SSpersistence.door_to_nowhere_tapes += list(tape_data)  // Wrap in list to ensure it's added as single element
+
+	// Mark this user as having archived this round
+	if(user && user.ckey)
+		users_who_archived += user.ckey
+
+	to_chat(user, span_nicegreen("The tape phases between dimensions, creating echoes across Mirror Worlds."))
+	to_chat(user, span_notice("Your recording will resonate through parallel realities, preserved in the spaces between."))
+	visible_message(span_warning("[src] shimmers briefly as reality bends around it..."), vision_distance = 3)
+	playsound(src, 'sound/machines/terminal_success.ogg', 50, TRUE)
+
+	// Consume the tape
+	qdel(T)
+	processing = FALSE
+	icon_state = initial(icon_state)
+
+/obj/machinery/tape_archive/examine(mob/user)
+	. = ..()
+	var/tape_count = LAZYLEN(SSpersistence.door_to_nowhere_tapes)
+	if(tape_count)
+		if(tape_count == 1)
+			. += span_notice("The archive resonates with 1 echo from across the Mirror Worlds.")
+		else
+			. += span_notice("The archive resonates with [tape_count] echoes from across the Mirror Worlds.")
+		// Count tapes from this round
+		var/current_round_count = 0
+		for(var/list/tape_data in SSpersistence.door_to_nowhere_tapes)
+			if(tape_data["original_round"] == GLOB.round_id)
+				current_round_count++
+		if(current_round_count)
+			if(current_round_count == 1)
+				. += span_notice("1 new echo was captured from this reality.")
+			else
+				. += span_notice("[current_round_count] new echoes were captured from this reality.")
+	else
+		. += span_notice("The archive is silent, awaiting echoes from the Mirror Worlds.")
+
+	// Check if this user has already archived
+	if(user && user.ckey && (user.ckey in users_who_archived))
+		. += span_warning("You have already contributed your echo to the Mirror Worlds this shift.")
+
+// Landmark that spawns random archived tapes
+/obj/effect/landmark/tape_spawner/door_to_nowhere
+	name = "door to nowhere tape spawn"
+	icon_state = "x"
+
+/obj/effect/landmark/tape_spawner/door_to_nowhere/Initialize()
+	. = ..()
+
+	// Wait a bit for persistence to load
+	addtimer(CALLBACK(src, PROC_REF(spawn_tape)), 1 SECONDS)
+
+/obj/effect/landmark/tape_spawner/door_to_nowhere/proc/spawn_tape()
+	var/turf/T = get_turf(src)
+	if(!T)
+		qdel(src)
+		return
+
+	var/obj/item/tape/new_tape
+
+	// Try to spawn from archive first
+	if(LAZYLEN(SSpersistence.door_to_nowhere_tapes))
+		world.log << "Tape spawner: Found [LAZYLEN(SSpersistence.door_to_nowhere_tapes)] tapes in archive"
+		var/list/tape_data = pick(SSpersistence.door_to_nowhere_tapes)
+		new_tape = new /obj/item/tape(T)
+		new_tape.name = tape_data["name"]
+		new_tape.desc = tape_data["desc"]
+		new_tape.icon_state = tape_data["icon_state"]
+		var/list/stored_info = tape_data["storedinfo"]
+		var/list/stored_timestamp = tape_data["timestamp"]
+		if(stored_info)
+			new_tape.storedinfo = stored_info.Copy()
+			world.log << "Tape spawner: Copied [LAZYLEN(stored_info)] lines to new tape"
+		else
+			new_tape.storedinfo = list()
+			world.log << "Tape spawner: Warning - stored_info was null!"
+		if(stored_timestamp)
+			new_tape.timestamp = stored_timestamp.Copy()
+			new_tape.used_capacity = stored_timestamp[stored_timestamp.len]
+		else
+			new_tape.timestamp = list()
+			new_tape.used_capacity = 0
+			world.log << "Tape spawner: Warning - stored_timestamp was null!"
+
+	qdel(src)
+
+// REGRET PUZZLE SYSTEM FOR SECRET ARCHIVE ROOM
+
+// Shrine base type
+/obj/structure/regret_shrine
+	name = "shrine of regret"
+	desc = "A small monument that resonates with deep sorrow. There's an inscription you can barely make out."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "shrine"
+	density = TRUE
+	anchored = TRUE
+	resistance_flags = INDESTRUCTIBLE
+	var/shrine_type = "generic"
+	var/activated = FALSE
+	var/activation_message = "The shrine resonates with your action."
+	var/hint_message = "You must show your regret."
+	var/required_action = "" // What the player needs to do
+
+/obj/structure/regret_shrine/Initialize()
+	. = ..()
+	GLOB.regret_shrines += src
+
+/obj/structure/regret_shrine/Destroy()
+	GLOB.regret_shrines -= src
+	return ..()
+
+/obj/structure/regret_shrine/examine(mob/user)
+	. = ..()
+	if(!activated)
+		. += span_notice("The inscription reads: \"[hint_message]\"")
+	else
+		. += span_nicegreen("This shrine has accepted your offering of regret.")
+
+/obj/structure/regret_shrine/proc/check_activation()
+	// Check if all shrines are activated
+	var/all_activated = TRUE
+	for(var/obj/structure/regret_shrine/S in GLOB.regret_shrines)
+		if(!S.activated)
+			all_activated = FALSE
+			break
+
+	if(all_activated)
+		create_regret_key()
+
+/obj/structure/regret_shrine/proc/create_regret_key()
+	// Find a central location or the first shrine
+	var/turf/key_location = get_turf(GLOB.regret_shrines[1])
+
+	// Create dramatic effect
+	for(var/obj/structure/regret_shrine/S in GLOB.regret_shrines)
+		playsound(S, 'sound/effects/ghost2.ogg', 50, TRUE)
+		var/obj/effect/temp_visual/dir_setting/curse/grasp_portal/G = new(get_turf(S), S.dir)
+		G.icon_state = "curse0"
+
+	// Create the key
+	sleep(20)
+	new /obj/item/regret_key(key_location)
+	visible_message(span_boldnotice("The shrines resonate in unison, manifesting a key from collective regret!"))
+
+	// Reset shrines after a delay
+	addtimer(CALLBACK(src, PROC_REF(reset_all_shrines)), 10 MINUTES)
+
+/obj/structure/regret_shrine/proc/reset_all_shrines()
+	for(var/obj/structure/regret_shrine/S in GLOB.regret_shrines)
+		S.activated = FALSE
+		S.update_icon()
+
+/obj/structure/regret_shrine/proc/activate(mob/user)
+	if(activated)
+		to_chat(user, span_notice("This shrine has already accepted an offering."))
+		return
+
+	activated = TRUE
+	to_chat(user, span_nicegreen("[activation_message]"))
+	playsound(src, 'sound/effects/ghost2.ogg', 50, TRUE)
+	update_icon()
+	check_activation()
+
+/obj/structure/regret_shrine/update_icon()
+	if(activated)
+		icon_state = "[initial(icon_state)]_active"
+	else
+		icon_state = initial(icon_state)
+
+// Shrine of Unspoken Words - requires saying something while next to it
+/obj/structure/regret_shrine/unspoken
+	name = "shrine of unspoken words"
+	shrine_type = "unspoken"
+	hint_message = "Speak what was never said. Let your voice carry the words you kept inside."
+	activation_message = "The shrine accepts your unspoken words, absorbing what was left unsaid."
+	icon = 'icons/obj/hand_of_god_structures.dmi'
+	icon_state = "convertaltar"
+
+/obj/structure/regret_shrine/unspoken/attack_hand(mob/living/user)
+	. = ..()
+	if(!activated && ishuman(user))
+		to_chat(user, span_notice("Speak near the shrine to activate it..."))
+		addtimer(CALLBACK(src, PROC_REF(listen_for_speech), user), 1)
+
+/obj/structure/regret_shrine/unspoken/proc/listen_for_speech(mob/living/user)
+	if(!activated && get_dist(user, src) <= 4 && ishuman(user))
+		to_chat(user, span_notice("Say something to activate the shrine."))
+		if(do_after(user, 30, target = src))
+			if(!activated)
+				activate(user)
+				to_chat(user, span_notice("Your words echo strangely, as if finally reaching someone who needed to hear them..."))
+
+// Shrine of Abandoned Dreams - requires dropping an item (sacrifice)
+/obj/structure/regret_shrine/abandoned
+	name = "shrine of abandoned dreams"
+	shrine_type = "abandoned"
+	hint_message = "Leave behind what you carry. Sometimes we must let go of what we hold dear."
+	activation_message = "The shrine accepts your sacrifice, taking with it a piece of what could have been."
+	icon = 'icons/obj/tomb.dmi'
+	icon_state = "memorial"
+
+/obj/structure/regret_shrine/abandoned/attackby(obj/item/I, mob/user, params)
+	if(!activated && !istype(I, /obj/item/regret_key))
+		if(user.transferItemToLoc(I, src))
+			activate(user)
+			to_chat(user, span_notice("[I] fades into the shrine, becoming one with abandoned possibilities..."))
+			qdel(I)
+		return
+	..()
+
+// Shrine of Lost Time - requires standing still near it for 30 seconds
+/obj/structure/regret_shrine/lost_time
+	name = "shrine of lost time"
+	shrine_type = "lost_time"
+	hint_message = "Stand still and reflect. Time lost to hesitation can never be reclaimed."
+	activation_message = "The shrine accepts your patience, acknowledging the moments you've given."
+	icon = 'icons/obj/clockwork_objects.dmi'
+	icon_state = "fallen_armor"
+	var/mob/living/waiting_user = null
+	var/wait_start = 0
+
+/obj/structure/regret_shrine/lost_time/proc/check_wait_completion()
+	if(!waiting_user || get_dist(waiting_user, src) > 4)
+		waiting_user = null
+		return
+
+	if(world.time - wait_start >= 300) // 30 seconds
+		activate(waiting_user)
+		to_chat(waiting_user, span_notice("Time flows differently here... You feel the weight of moments that slipped away."))
+		waiting_user = null
+
+/obj/structure/regret_shrine/lost_time/attack_hand(mob/living/user)
+	. = ..()
+	if(!activated && !waiting_user && ishuman(user))
+		waiting_user = user
+		wait_start = world.time
+		to_chat(user, span_notice("You begin to reflect at the shrine. Stand still and wait..."))
+		addtimer(CALLBACK(src, PROC_REF(check_wait_completion)), 305)
+
+// The Key of Acceptance
+/obj/item/regret_key
+	name = "key of acceptance"
+	desc = "A old photo formed from acknowledged regrets. It feels both heavy and liberating to hold."
+	icon = 'icons/obj/items_and_weapons.dmi'
+	icon_state = "photo_old"
+	w_class = WEIGHT_CLASS_SMALL
+	var/used = FALSE
+
+/obj/item/regret_key/examine(mob/user)
+	. = ..()
+	. += span_notice("This key seems to resonate with hidden spaces where regrets are preserved.")
+
+// Secret door to archive room
+/obj/machinery/door/airlock/regret_archive
+	name = "sealed archive door"
+	desc = "A heavy door marked with chains and seals. It seems to guard something that transcends realities."
+	icon = 'icons/obj/doors/airlocks/centcom/centcom.dmi'
+	overlays_file = 'icons/obj/doors/airlocks/centcom/overlays.dmi'
+	opacity = TRUE
+	req_access = list("regret_key") // Requires special key
+	resistance_flags = INDESTRUCTIBLE
+
+/obj/machinery/door/airlock/regret_archive/allowed(mob/M)
+	if(istype(M.pulling, /obj/item/regret_key))
+		return TRUE
+	for(var/obj/item/I in M.contents)
+		if(istype(I, /obj/item/regret_key))
+			return TRUE
+	return FALSE
+
+/obj/machinery/door/airlock/regret_archive/attackby(obj/item/I, mob/user, params)
+	if(istype(I, /obj/item/regret_key))
+		var/obj/item/regret_key/K = I
+		if(!K.used)
+			K.used = TRUE
+			to_chat(user, span_notice("The key resonates with the door, causing the seals to fade temporarily..."))
+			playsound(src, 'sound/effects/ghost2.ogg', 50, TRUE)
+			open()
+			addtimer(CALLBACK(src, PROC_REF(close)), 30 SECONDS)
+			addtimer(CALLBACK(K, TYPE_PROC_REF(/obj/item/regret_key, reset_key)), 5 MINUTES)
+		else
+			to_chat(user, span_warning("The key needs time to regain its resonance."))
+		return
+	..()
+
+/obj/item/regret_key/proc/reset_key()
+	used = FALSE
+
+// Add to globals
+GLOBAL_LIST_EMPTY(regret_shrines)
+
+// Door Dimension Void - A chasm that teleports instead of kills
+/turf/open/chasm/door_dimension
+	name = "reality void"
+	desc = "A tear in the fabric of this dimension. You can feel yourself being pulled back to your own reality."
+	icon = 'icons/turf/floors/chasms.dmi'
+	icon_state = "chasms-255"
+	base_icon_state = "chasms"
+	baseturfs = /turf/open/chasm/door_dimension
+	light_range = 2
+	light_power = 0.8
+	light_color = "#551A8B" // Dark purple
+
+/turf/open/chasm/door_dimension/Initialize()
+	. = ..()
+	// Remove the default chasm component and add our custom one
+	var/datum/component/chasm/old_chasm = GetComponent(/datum/component/chasm)
+	if(old_chasm)
+		qdel(old_chasm)
+	AddComponent(/datum/component/door_dimension_void)
+
+// Custom component that teleports instead of kills
+/datum/component/door_dimension_void
+	var/static/list/falling_atoms = list() // Track who's falling
+	var/static/list/forbidden_types = typecacheof(list(
+		/obj/singularity,
+		/obj/energy_ball,
+		/obj/narsie,
+		/obj/docking_port,
+		/obj/structure/lattice,
+		/obj/structure/stone_tile,
+		/obj/projectile,
+		/obj/effect/projectile,
+		/obj/effect/portal,
+		/obj/effect/abstract,
+		/obj/effect/hotspot,
+		/obj/effect/landmark,
+		/obj/effect/temp_visual,
+		/obj/effect/light_emitter/tendril,
+		/obj/effect/collapse,
+		/obj/effect/particle_effect/ion_trails,
+		/obj/effect/dummy/phased_mob,
+		/obj/effect/mapping_helpers,
+		/obj/effect/wisp,
+		/mob/living/simple_animal/hostile/abnormality/door_to_nowhere // Don't let the abnormality fall into its own void
+	))
+
+/datum/component/door_dimension_void/Initialize()
+	RegisterSignal(parent, list(COMSIG_MOVABLE_CROSSED, COMSIG_ATOM_ENTERED), PROC_REF(Entered))
+	START_PROCESSING(SSobj, src)
+
+/datum/component/door_dimension_void/proc/Entered(datum/source, atom/movable/AM)
+	SIGNAL_HANDLER
+	START_PROCESSING(SSobj, src)
+	drop_stuff(AM)
+
+/datum/component/door_dimension_void/process()
+	if (!drop_stuff())
+		STOP_PROCESSING(SSobj, src)
+
+/datum/component/door_dimension_void/proc/is_safe()
+	// Check for catwalks or stone tiles that prevent falling
+	var/static/list/chasm_safeties_typecache = typecacheof(list(/obj/structure/lattice/catwalk, /obj/structure/stone_tile))
+	var/atom/parent = src.parent
+	var/list/found_safeties = typecache_filter_list(parent.contents, chasm_safeties_typecache)
+	for(var/obj/structure/stone_tile/S in found_safeties)
+		if(S.fallen)
+			LAZYREMOVE(found_safeties, S)
+	return LAZYLEN(found_safeties)
+
+/datum/component/door_dimension_void/proc/drop_stuff(AM)
+	. = 0
+	if (is_safe())
+		return FALSE
+
+	var/atom/parent = src.parent
+	var/to_check = AM ? list(AM) : parent.contents
+	for (var/thing in to_check)
+		if (droppable(thing))
+			. = 1
+			INVOKE_ASYNC(src, PROC_REF(drop), thing)
+
+/datum/component/door_dimension_void/proc/droppable(atom/movable/AM)
+	// Prevent infinite loops
+	if(falling_atoms[AM] && falling_atoms[AM] > 30)
+		return FALSE
+	if(!isliving(AM) && !isobj(AM))
+		return FALSE
+	if(is_type_in_typecache(AM, forbidden_types) || AM.throwing || (AM.movement_type & (FLOATING|FLYING)))
+		return FALSE
+
+	// Check for buckled mobs
+	if(ismob(AM))
+		var/mob/M = AM
+		if(M.buckled)
+			var/mob/buckled_to = M.buckled
+			if((!ismob(M.buckled) || (buckled_to.buckled != M)) && !droppable(M.buckled))
+				return FALSE
+		// Check for wormhole jaunter
+		if(ishuman(AM))
+			var/mob/living/carbon/human/H = AM
+			if(istype(H.belt, /obj/item/wormhole_jaunter))
+				var/obj/item/wormhole_jaunter/J = H.belt
+				H.visible_message(span_boldwarning("[H] falls into the [parent]!"))
+				J.chasm_react(H)
+				return FALSE
+	return TRUE
+
+/datum/component/door_dimension_void/proc/drop(atom/movable/AM)
+	// Make sure the atom is still there
+	if(!AM || QDELETED(AM))
+		return
+
+	falling_atoms[AM] = (falling_atoms[AM] || 0) + 1
+
+	// Visual feedback
+	AM.visible_message(span_boldwarning("[AM] falls into the reality void!"), span_userdanger("You feel yourself being pulled back to your own dimension!"))
+
+	// Animate the fall
+	if(isliving(AM))
+		var/mob/living/L = AM
+		L.notransform = TRUE
+		L.Paralyze(40) // 4 seconds
+
+	// Falling animation
+	var/oldtransform = AM.transform
+	var/oldcolor = AM.color
+	var/oldalpha = AM.alpha
+	var/oldpixel_y = AM.pixel_y
+	animate(AM, transform = matrix() - matrix(), alpha = 0, color = rgb(85, 26, 139), time = 10) // Purple fade
+
+	for(var/i in 1 to 5)
+		if(!AM || QDELETED(AM))
+			// Reset appearance if interrupted
+			if(AM)
+				AM.alpha = oldalpha
+				AM.color = oldcolor
+				AM.transform = oldtransform
+				AM.pixel_y = oldpixel_y
+			return
+		AM.pixel_y--
+		sleep(2)
+
+	// Make sure still exists
+	if(!AM || QDELETED(AM))
+		return
+
+	// Always reset appearance before processing
+	AM.alpha = oldalpha
+	AM.color = oldcolor
+	AM.transform = oldtransform
+	AM.pixel_y = oldpixel_y
+
+	// Teleport out instead of killing
+	if(isliving(AM))
+		var/mob/living/L = AM
+		L.notransform = FALSE
+
+		// Find ANY Door to Nowhere abnormality (even without datum_reference)
+		var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/door = null
+		for(var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/D in GLOB.abnormality_mob_list)
+			door = D
+			if(D.datum_reference) // Prefer one with datum
+				break
+
+		// If they're trapped and there's a door, use the rescue proc
+		if(door && ishuman(L) && (L in door.trapped_employees))
+			door.RescueFromBackrooms(L)
+			to_chat(L, span_warning("The void expels you back to reality!"))
+			// RescueFromBackrooms handles the teleport and effects
+		else
+			// Not trapped - need to manually clean up and teleport
+			var/turf/destination
+
+			// Check if they have backrooms status effect and remove it
+			if(ishuman(L))
+				var/mob/living/carbon/human/H = L
+				if(H.has_status_effect(/datum/status_effect/backrooms_ambience))
+					H.remove_status_effect(/datum/status_effect/backrooms_ambience)
+
+				// Clean up from any door's tracking lists
+				if(door)
+					if(H in door.trapped_employees)
+						door.trapped_employees -= H
+					if(H in door.original_locations)
+						door.original_locations -= H
+					if(H in door.backrooms_effects)
+						door.backrooms_effects -= H
+
+			// Find destination
+			if(door && door.datum_reference && door.datum_reference.landmark)
+				destination = get_turf(door.datum_reference.landmark)
+			else
+				// Fallback to random teleport
+				var/list/possible_turfs = list()
+				for(var/turf/T in GLOB.station_turfs)
+					if(T.density)
+						continue
+					possible_turfs += T
+				if(length(possible_turfs))
+					destination = pick(possible_turfs)
+
+			if(destination)
+				to_chat(L, span_warning("You are expelled from the door's dimension!"))
+				L.forceMove(destination)
+				playsound(destination, 'sound/effects/phasein.ogg', 50, TRUE)
+			else
+				// Emergency fallback - just move them up if we can't find anywhere
+				L.forceMove(get_turf(parent))
+				to_chat(L, span_warning("The void rejects you, spitting you back out!"))
+	else if(isobj(AM))
+		// Objects just get destroyed
+		qdel(AM)
+
+	falling_atoms -= AM
