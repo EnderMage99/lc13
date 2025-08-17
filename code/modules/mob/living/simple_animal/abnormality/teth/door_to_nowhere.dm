@@ -568,6 +568,24 @@
 
 	return ..()
 
+// Override Move to prevent movement while projecting
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/Move()
+	if(projecting_spirit)
+		return FALSE
+	return ..()
+
+// Override CanAttack to prevent attacks while projecting
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/CanAttack(atom/the_target)
+	if(projecting_spirit)
+		return FALSE
+	return ..()
+
+// Override OpenFire to prevent projectile attacks while projecting
+/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/OpenFire(atom/A)
+	if(projecting_spirit)
+		return FALSE
+	return ..()
+
 // Spirit projection ability
 /mob/living/simple_animal/hostile/abnormality/door_to_nowhere/proc/project_spirit()
 	if(projecting_spirit || !client)
@@ -599,7 +617,7 @@
 	return_ability.Grant(P)
 
 	// Visual feedback
-	visible_message(span_warning("[src] shudders as a ghostly form emerges from within!"))
+	visible_message(span_warning("[src] shudders as a ghostly form emerges from within! The door becomes completely still..."))
 	playsound(src, 'sound/effects/ghost2.ogg', 50, TRUE)
 
 	// Set timer to return
@@ -619,8 +637,9 @@
 	// Effects
 	playsound(original_body, 'sound/effects/ghost.ogg', 50, TRUE)
 	to_chat(original_body, span_notice("Your consciousness returns to your true form."))
+	visible_message(span_notice("[original_body] shudders back to life as the spirit returns!"))
 
-	// Clean up
+	// Clean up - setting projecting_spirit to FALSE will allow movement and attacks again
 	projecting_spirit = FALSE
 	qdel(P)
 
