@@ -594,22 +594,22 @@ SUBSYSTEM_DEF(persistence)
 	if(!fexists(json_file))
 		log_game("Door to Nowhere tapes: No persistence file found")
 		return
-	
+
 	var/list/json = json_decode(file2text(json_file))
 	if(!json || !json["tapes"])
 		log_game("Door to Nowhere tapes: Invalid or empty persistence file")
 		return
-	
+
 	door_to_nowhere_tapes = json["tapes"]
 	log_game("Door to Nowhere tapes: Loaded [LAZYLEN(door_to_nowhere_tapes)] tapes from persistence")
 
 /datum/controller/subsystem/persistence/proc/SaveDoorToNowhereTapes()
 	var/json_file = file("data/door_to_nowhere_tapes.json")
-	
+
 	// Collect all stored tapes
 	var/list/tape_data = list()
 	for(var/list/tape_info in door_to_nowhere_tapes)
 		tape_data += list(tape_info)
-	
+
 	fdel(json_file)
 	WRITE_FILE(json_file, json_encode(list("tapes" = tape_data)))
