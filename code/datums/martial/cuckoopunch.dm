@@ -130,10 +130,10 @@
 	var/picked_hit_type = pick("punch", "kick")
 	var/bonus_damage = 0
 	if(D.body_position == LYING_DOWN)
-		bonus_damage += 10
+		bonus_damage += 40
 		picked_hit_type = "stomp"
 	if(A.has_status_effect(/datum/status_effect/hunter))
-		D.apply_damage(rand(25,30) + bonus_damage, RED_DAMAGE, affecting, armor_block)
+		D.apply_damage(rand(35,40) + bonus_damage, RED_DAMAGE, affecting, armor_block)
 		if(ishuman(D) && D.stat != DEAD && prob(5))
 			var/mob/living/carbon/human/human_target = D
 			var/obj/item/bodypart/chest/LC = human_target.get_bodypart(BODY_ZONE_CHEST)

@@ -18,13 +18,14 @@
 	liked_food = MEAT | RAW
 	disliked_food = VEGETABLES | DAIRY
 	attack_sound = 'sound/abnormalities/big_wolf/Wolf_Scratch.ogg'
-	punchdamagelow = 24
-	punchdamagehigh = 27
+	punchdamagelow = 34
+	punchdamagehigh = 37
 	stunmod = 0.5
 	redmod = 0.7
 	whitemod = 1
 	blackmod = 0.7
 	palemod = 1.5
+	burnmod = 0.5
 	payday_modifier = 0
 
 /datum/species/cuckoospawn/random_name(gender,unique,lastname)
