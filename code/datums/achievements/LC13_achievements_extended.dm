@@ -130,13 +130,6 @@
 	icon = "snow_queen"
 	difficulty = ACHIEVEMENT_NORMAL
 
-/datum/award/achievement/lc13/melting_love_survivor
-	name = "Love Survivor"
-	desc = "Repress Melting Love whilst having her blessing - and survive."
-	database_id = MEDAL_MELTING_LOVE_SURVIVOR
-	icon = "melting_love"
-	difficulty = ACHIEVEMENT_VERYHARD
-
 /datum/award/achievement/lc13/naked_nest_cure_without
 	name = "Natural Recovery"
 	desc = "Cure Naked Nest infection without a cure."
@@ -154,13 +147,6 @@
 //=================================
 // DEATH ACHIEVEMENTS
 //=================================
-
-/datum/award/achievement/lc13/queen_hatred_death
-	name = "Friendly Fire"
-	desc = "Get killed by friendly breach Queen of Hatred."
-	database_id = MEDAL_QUEEN_HATRED_DEATH
-	icon = "queen_hatred"
-	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/cuckoo_death
 	name = "Cuckoo Clock"
@@ -407,37 +393,9 @@
 	icon = "fatass"
 	difficulty = ACHIEVEMENT_NORMAL
 
-/datum/award/achievement/lc13/radio_codes
-	name = "Radio Expert"
-	desc = "Successfully hear and type 680 mhz codes 5 times in a row."
-	database_id = MEDAL_RADIO_CODES
-	icon = "radio"
-	difficulty = ACHIEVEMENT_NORMAL
-
 //=================================
 // REALIZATION ACHIEVEMENTS
 //=================================
-
-/datum/award/achievement/lc13/realize_carmen
-	name = "Carmen Realized"
-	desc = "Realize Carmen from her plushie."
-	database_id = MEDAL_REALIZE_CARMEN
-	icon = "carmen"
-	difficulty = ACHIEVEMENT_NORMAL
-
-/datum/award/achievement/lc13/realize_benjamin
-	name = "Benjamin Realized"
-	desc = "Realize Benjamin from his plushie."
-	database_id = MEDAL_REALIZE_BENJAMIN
-	icon = "benjamin"
-	difficulty = ACHIEVEMENT_NORMAL
-
-/datum/award/achievement/lc13/realize_ayin
-	name = "Ayin Realized"
-	desc = "Realize Ayin from Paradise Lost's weapon."
-	database_id = MEDAL_REALIZE_AYIN
-	icon = "ayin"
-	difficulty = ACHIEVEMENT_NORMAL
 
 //=================================
 // STAT ACHIEVEMENTS
@@ -468,7 +426,7 @@
 	difficulty = ACHIEVEMENT_HARD
 
 /datum/award/achievement/lc13/kill_wn_pink_midnight
-	name = "A Night Everlasting" // Alternative: "DOOM, Hell on Facility"
+	name = "A Night Everlasting"
 	title = "a Night Everlasting"
 	desc = "Kill WhiteNight during a pink midnight."
 	database_id = MEDAL_KILL_WN_PINK_MIDNIGHT
@@ -484,12 +442,16 @@
 	difficulty = ACHIEVEMENT_HARD
 
 /datum/award/achievement/lc13/friendly_qoh_kill
-	name = "Villain of the Day" // Alternative: "Villain Beware!!!"
+	name = "Villain of the Day"
 	title = "the Villain of the Day"
 	desc = "Get killed by friendly breach Queen of Hatred."
 	database_id = MEDAL_FRIENDLY_QOH_KILL
 	icon = "friendly_fire"
 	difficulty = ACHIEVEMENT_HARD
+
+
+
+
 
 /datum/award/achievement/lc13/bald_round
 	name = "Now We're Awesome"
@@ -523,9 +485,11 @@
 	icon = "paradise_found"
 	difficulty = ACHIEVEMENT_EASY
 
+
+
+
 /datum/award/achievement/lc13/make_meth
-	name = "Breaking Bong"
-	title = "a Breaking Bong Expert"
+	name = "How?"
 	desc = "Make meth."
 	database_id = MEDAL_MAKE_METH
 	icon = "how_meth"
@@ -627,13 +591,6 @@
 	icon = "ordeal_food"
 	difficulty = ACHIEVEMENT_EASY
 
-/datum/award/achievement/lc13/pink_whitenight
-	name = "Pink Slayer"
-	desc = "Kill WhiteNight during a pink midnight."
-	database_id = MEDAL_PINK_WHITENIGHT
-	icon = "pink_midnight"
-	difficulty = ACHIEVEMENT_VERYHARD
-
 //=================================
 // CITY ACHIEVEMENTS
 //=================================
@@ -670,23 +627,9 @@
 // ROLE-SPECIFIC ACHIEVEMENTS
 //=================================
 
-/datum/award/achievement/lc13/clerk_weapon
-	name = "Armed Clerk"
-	desc = "As a clerk role, use a weapon that isn't ZAYIN or TETH."
-	database_id = MEDAL_CLERK_WEAPON
-	icon = "clerk"
-	difficulty = ACHIEVEMENT_HARD
-
 //=================================
 // MISCELLANEOUS ACHIEVEMENTS
 //=================================
-
-/datum/award/achievement/lc13/make_meth
-	name = "How?"
-	desc = "Make meth."
-	database_id = MEDAL_MAKE_METH
-	icon = "chemistry"
-	difficulty = ACHIEVEMENT_HARDEST
 
 /datum/award/achievement/lc13/fell_bullet
 	name = "Fell Bullet"
