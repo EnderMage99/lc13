@@ -158,7 +158,6 @@
 		for(var/mob/living/carbon/human/potential_savior in view(5, src))
 			if(potential_savior != saved && potential_savior.stat != DEAD && potential_savior.client)
 				potential_savior.client?.give_award(/datum/award/achievement/lc13/wolf_savior, potential_savior)
-				break // Only award to one savior
 
 	density = FALSE
 	animate(src, alpha = 0, time = 10 SECONDS)

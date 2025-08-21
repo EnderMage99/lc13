@@ -28,15 +28,18 @@
 	icon = "basilisoup"
 	difficulty = ACHIEVEMENT_EASY
 
+/*
 /datum/award/achievement/lc13/spider_farmer
 	name = "Spider Farmer"
 	desc = "Generate 100 PE from Spiderbud from a successful work."
 	database_id = MEDAL_SPIDER_FARMER
 	icon = "spider_bud"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
 /datum/award/achievement/lc13/pe_refiner
-	name = "PE Master"
+	name = "Don't forget to do your dailies"
+	title = "Refina-Junkie"
 	desc = "Refine 100 PE boxes in the same round."
 	database_id = MEDAL_PE_REFINER
 	icon = "pe_box"
@@ -46,22 +49,50 @@
 // ABNORMALITY INTERACTIONS
 //=================================
 
+//Abnormality interaction achievements
+/datum/award/achievement/lc13/die_to_toad
+	name = "Just don't bother it..."
+	title = "reaping their consequences"
+	desc = "Die to Blubbering Toad."
+	database_id = MEDAL_DIE_TO_TOAD
+	icon = "blubbering_toad"
+	difficulty = ACHIEVEMENT_EASY
+
+/datum/award/achievement/lc13/free_toad
+	name = "Gloomy, I said don't bother it!"
+	title = "Sad"
+	desc = "Let Blubbering Toad out of containment."
+	database_id = MEDAL_FREE_TOAD
+	icon = "blubbering_toad"
+	difficulty = ACHIEVEMENT_EASY
+
+/datum/award/achievement/lc13/damage_pbird
+	name = "SINNER!!!"
+	title = "a SINNER!!!"
+	desc = "Damage Punishing Bird and face the consequences."
+	database_id = MEDAL_DAMAGE_PBIRD
+	icon = "punishing_bird"
+	difficulty = ACHIEVEMENT_EASY
+
 /datum/award/achievement/lc13/nobody_escape
-	name = "Nobody's Escape"
+	name = "Reversal"
+	title = "a Reversal Expert"
 	desc = "Free yourself from Nobody Is' chokehold."
 	database_id = MEDAL_NOBODY_ESCAPE
 	icon = "nobody_is"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/wolf_savior
-	name = "Wolf Savior"
+	name = "Free the Pig, Wolf and the Seven Lambs"
+	title = "the Wolf and the Seven Lambs"
 	desc = "Save someone from the wolf yourself."
 	database_id = MEDAL_WOLF_SAVIOR
 	icon = "big_wolf"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/red_hood_saved
-	name = "Red Hood Rescue"
+	name = "In Sheep's Clothing"
+	title = "being In Sheep's Clothing"
 	desc = "Be saved by Red Hood after getting eaten by Wolf."
 	database_id = MEDAL_RED_HOOD_SAVED
 	icon = "red_hood"
@@ -69,20 +100,23 @@
 
 /datum/award/achievement/lc13/golden_apple_breach
 	name = "'I didn’t want to die.'"
+	title = "Yuri"
 	desc = "Breach Golden Apple with a Yuri plushie."
 	database_id = MEDAL_GOLDEN_APPLE_BREACH
 	icon = "golden_apple"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/orchestra_listener
-	name = "Orchestra Audience"
+	name = "Curtains down for the performance of history, Give applause to the song no one can hear, but all can listen to"
+	title = "bringing Curtains Down"
 	desc = "Hear Silent Orchestra's full performance."
 	database_id = MEDAL_ORCHESTRA_LISTENER
 	icon = "silent_orchestra"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/hammer_activate
-	name = "Light Activated"
+	name = "It gives you as much as it takes..."
+	title = "Noble Sacrifice"
 	desc = "Activate Hammer of Light."
 	database_id = MEDAL_HAMMER_ACTIVATE
 	icon = "hammer_light"
@@ -90,55 +124,64 @@
 
 /datum/award/achievement/lc13/nothing_survivor
 	name = "Nothing Survivor"
+	title = "Surviving Nothing"
 	desc = "Survive a non-instinct/attachment work on Nothing There."
 	database_id = MEDAL_NOTHING_SURVIVOR
 	icon = "nothing_there"
 	difficulty = ACHIEVEMENT_HARD
 
 /datum/award/achievement/lc13/punishing_bird_innocent
-	name = "Innocent Victim"
+	name = "Lethal Birdpany, Misdeeds not allowed!"
+	title = "forbidding Misdeeds"
 	desc = "Die to Punishing Bird without having enraged it beforehand."
 	database_id = MEDAL_PUNISHING_BIRD_INNOCENT
 	icon = "punishing_bird"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/one_sin_confession
-	name = "One Sin"
+	name = "Jesus is that you?, The 12th Apostle"
+	title = "the 12th Apostle"
 	desc = "Kill WhiteNight by confessing to one sin."
 	database_id = MEDAL_ONE_SIN_CONFESSION
 	icon = "whitenight"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/hammer_kill_wn
-	name = "Hammer Justice"
+	name = "Divine Intervention"
+	title = "a Divine Intervener"
 	desc = "Kill WhiteNight with Hammer of Light."
 	database_id = MEDAL_HAMMER_KILL_WN
 	icon = "whitenight"
 	difficulty = ACHIEVEMENT_HARD
 
 /datum/award/achievement/lc13/snow_queen_rescue
-	name = "Ice Breaker"
+	name = "Gerda and Kai"
+	title = "being like Gerda and Kai"
 	desc = "Rescue a friend/Be rescued from Snow Queen."
 	database_id = MEDAL_SNOW_QUEEN_RESCUE
 	icon = "snow_queen"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/snow_queen_frozen
-	name = "Honored Ice"
+	name = "Frozen Honor"
+	title = "being Frozen with Honor"
 	desc = "Trigger Snow Queen's ice encasement due to wearing Feather of Honour."
 	database_id = MEDAL_SNOW_QUEEN_FROZEN
 	icon = "snow_queen"
 	difficulty = ACHIEVEMENT_NORMAL
 
+/*
 /datum/award/achievement/lc13/naked_nest_cure_without
 	name = "Natural Recovery"
 	desc = "Cure Naked Nest infection without a cure."
 	database_id = MEDAL_NAKED_NEST_CURE_WITHOUT
 	icon = "naked_nest"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
 /datum/award/achievement/lc13/naked_nest_cure_with
-	name = "Medical Treatment"
+	name = "Clothed Nest, Nakedly Unafraid"
+	title = "Nakedly Unafraid"
 	desc = "Cure Naked Nest infection with a cure."
 	database_id = MEDAL_NAKED_NEST_CURE_WITH
 	icon = "naked_nest"
@@ -148,110 +191,128 @@
 // DEATH ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/cuckoo_death
 	name = "Cuckoo Clock"
 	desc = "Get ??? by the cuckoospawn."
 	database_id = MEDAL_CUCKOO_DEATH
 	icon = "cuckoo_clock"
 	difficulty = ACHIEVEMENT_NORMAL
-
-/datum/award/achievement/lc13/blubbering_toad_death
-	name = "Toad Victim"
-	desc = "Die to Blubbering Toad."
-	database_id = MEDAL_BLUBBERING_TOAD_DEATH
-	icon = "blubbering_toad"
-	difficulty = ACHIEVEMENT_EASY
+*/
 
 //=================================
 // COMBAT ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/resane_agents
 	name = "Mind Healer"
 	desc = "Re-sane 8 agents in the same round."
 	database_id = MEDAL_RESANE_AGENTS
 	icon = "sanity"
 	difficulty = ACHIEVEMENT_EASY
+*/
 
+/*
 /datum/award/achievement/lc13/records_killer
 	name = "Record Breaker"
 	desc = "Have 5 abno kills as records officer."
 	database_id = MEDAL_RECORDS_KILLER
 	icon = "records"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
+/*
 /datum/award/achievement/lc13/midnight_b12
 	name = "B12 Survivor"
 	desc = "Beat midnight on B12."
 	database_id = MEDAL_MIDNIGHT_B12
 	icon = "midnight"
 	difficulty = ACHIEVEMENT_VERYHARD
+*/
 
+/*
 /datum/award/achievement/lc13/abno_blitz
 	name = "Blitz Master"
 	desc = "Beat Abno Blitz."
 	database_id = MEDAL_ABNO_BLITZ
 	icon = "abno_blitz"
 	difficulty = ACHIEVEMENT_VERYHARD
+*/
 
 /datum/award/achievement/lc13/train_survivor
-	name = "Train Dodger"
+	name = "Not my stop"
+	title = "Loving Trains"
 	desc = "Get hit by hell train and survive."
 	database_id = MEDAL_TRAIN_SURVIVOR
 	icon = "express_train"
 	difficulty = ACHIEVEMENT_HARD
 
+/*
 /datum/award/achievement/lc13/warp_20min
 	name = "Warp Veteran"
 	desc = "Survive 20 minutes in Warp corp cleanup."
 	database_id = MEDAL_WARP_20MIN
 	icon = "warp_corp"
 	difficulty = ACHIEVEMENT_VERYHARD
+*/
 
+/*
 /datum/award/achievement/lc13/warp_10min
 	name = "Warp Survivor"
 	desc = "Survive 10 minutes in Warp corp cleanup."
 	database_id = MEDAL_WARP_10MIN
 	icon = "warp_corp"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
+/*
 /datum/award/achievement/lc13/xcorp_grenade
 	name = "Grenade Master"
 	desc = "Kill 8 x-corp monsters with a single grenade."
 	database_id = MEDAL_XCORP_GRENADE
 	icon = "grenade"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
+/*
 /datum/award/achievement/lc13/naked_parry
 	name = "Naked Parry"
 	desc = "Land a naked parry on a pale pillar/pale fixer."
 	database_id = MEDAL_NAKED_PARRY
 	icon = "parry"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
 /datum/award/achievement/lc13/fan_trigger
-	name = "FAN Master"
+	name = "Refreshing air for 199,99!"
+	title = "selling Refreshing Air"
 	desc = "Trigger FAN five times on the same character."
 	database_id = MEDAL_FAN_TRIGGER
 	icon = "fan"
 	difficulty = ACHIEVEMENT_NORMAL
 
+// Duplicate of the earlier damage_pbird achievement
+/*
 /datum/award/achievement/lc13/damage_pbird
 	name = "Bird Harmer"
 	desc = "Damage Punishing Bird."
 	database_id = MEDAL_DAMAGE_PBIRD
 	icon = "punishing_bird"
 	difficulty = ACHIEVEMENT_EASY
+*/
 
 /datum/award/achievement/lc13/kill_pbird
-	name = "Punished Bird"
+	name = "Punishment denied!"
+	title = "denying Punishment"
 	desc = "Kill Punishing Bird."
 	database_id = MEDAL_KILL_PBIRD
 	icon = "punishing_bird"
 	difficulty = ACHIEVEMENT_HARD
 
 /datum/award/achievement/lc13/kill_distorted
-	name = "Distortion Slayer"
+	name = "Egoism"
+	title = "being Egoism Incarnate"
 	desc = "Kill Distorted form."
 	database_id = MEDAL_KILL_DISTORTED
 	icon = "distortion"
@@ -261,12 +322,14 @@
 // BOSS ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/heart_of_greed
 	name = "Greed Slayer"
 	desc = "Defeat the Heart of Greed."
 	database_id = MEDAL_HEART_OF_GREED
 	icon = "heart_greed"
 	difficulty = ACHIEVEMENT_VERYHARD
+*/
 
 /datum/award/achievement/lc13/yin_yang
 	name = "Duality"
@@ -276,104 +339,129 @@
 	icon = "yin_yang"
 	difficulty = ACHIEVEMENT_NORMAL
 
+/*
 /datum/award/achievement/lc13/extraction_survivor
-	name = "Extraction Expert"
-	desc = "Survive until extraction with Yin, Yang, ETTH & the fourth."
+	name = "Long Expert"
+	desc = "Survive until extraction with Yin, Yang, Express Train to Hell & the fourth."
 	database_id = MEDAL_EXTRACTION_SURVIVOR
 	icon = "extraction"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
 //=================================
 // PROGRESSION ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/half_achievements
 	name = "Halfway There"
 	desc = "Complete 50% of all achievements."
 	database_id = MEDAL_HALF_ACHIEVEMENTS
 	icon = "halfway"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
+/*
 /datum/award/achievement/lc13/all_achievements
 	name = "Completionist"
 	desc = "Complete 100% of all achievements."
 	database_id = MEDAL_ALL_ACHIEVEMENTS
 	icon = "completionist"
 	difficulty = ACHIEVEMENT_HARDEST
+*/
 
+/*
 /datum/award/achievement/lc13/veteran_cloak
 	name = "Veteran"
 	desc = "Achieve enough playtime to get the Veteran Player's cloak."
 	database_id = MEDAL_VETERAN_CLOAK
 	icon = "veteran"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
+/*
 /datum/award/achievement/lc13/max_intern
 	name = "Eternal Intern"
 	desc = "Play the maximum amount of hours as intern."
 	database_id = MEDAL_MAX_INTERN
 	icon = "intern"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
 //=================================
 // EQUIPMENT ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/tool_collector
 	name = "Tool Master"
 	desc = "Have at least 2 tool abno ego weapons and 1 tool abno ego armour."
 	database_id = MEDAL_TOOL_COLLECTOR
 	icon = "tools"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
+/*
 /datum/award/achievement/lc13/fishing_5
 	name = "Novice Fisher"
 	desc = "Get a Level 5 fishing hat."
 	database_id = MEDAL_FISHING_5
 	icon = "fishing"
 	difficulty = ACHIEVEMENT_EASY
+*/
 
+/*
 /datum/award/achievement/lc13/fishing_10
 	name = "Skilled Fisher"
 	desc = "Get a Level 10 fishing hat."
 	database_id = MEDAL_FISHING_10
 	icon = "fishing"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
+/*
 /datum/award/achievement/lc13/fishing_15
 	name = "Expert Fisher"
 	desc = "Get a Level 15 fishing hat."
 	database_id = MEDAL_FISHING_15
 	icon = "fishing"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
+/*
 /datum/award/achievement/lc13/fishing_20
 	name = "Master Fisher"
 	desc = "Get a Level 20 fishing hat."
 	database_id = MEDAL_FISHING_20
 	icon = "fishing"
 	difficulty = ACHIEVEMENT_HARD
+*/
 
+/*
 /datum/award/achievement/lc13/boomerang_self
 	name = "Dumbass"
 	desc = "Hit yourself with boomerang weapon."
 	database_id = MEDAL_BOOMERANG_SELF
 	icon = "boomerang"
 	difficulty = ACHIEVEMENT_EASY
+*/
 
+/*
 /datum/award/achievement/lc13/color_fixer_set
 	name = "This is my fixer OC, donut steel"
 	desc = "Have all color fixer weapons on you + Twilight suit."
 	database_id = MEDAL_COLOR_FIXER_SET
 	icon = "color_fixer"
 	difficulty = ACHIEVEMENT_VERYHARD
+*/
 
 //=================================
 // SPECIAL/EASTER EGGS
 //=================================
 
 /datum/award/achievement/lc13/uwu_radio
-	name = "UwU"
+	name = "Illegal in 26 districts."
+	title = "being criminally silly, uwu"
 	desc = "Say 'uwu' on the radio."
 	database_id = MEDAL_UWU_RADIO
 	icon = "uwu"
@@ -381,17 +469,20 @@
 
 /datum/award/achievement/lc13/chaos_dunk
 	name = "Slam Jam"
+	title = "Slaming Jam"
 	desc = "See the Chaos Dunk."
 	database_id = MEDAL_CHAOS_DUNK
 	icon = "chaos_dunk"
 	difficulty = ACHIEVEMENT_VERYHARD
 
+/*
 /datum/award/achievement/lc13/fatass
 	name = "Fatass"
 	desc = "Become a fatass."
 	database_id = MEDAL_FATASS
 	icon = "fatass"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
 //=================================
 // REALIZATION ACHIEVEMENTS
@@ -419,7 +510,7 @@
 
 /datum/award/achievement/lc13/melting_love_blessing_repress
 	name = "Begone Thot!"
-	title = "saying Begone Thot"
+	title = "Rejector of Love"
 	desc = "Repress Melting Love whilst having her blessing - and survive."
 	database_id = MEDAL_MELTING_LOVE_BLESSING_REPRESS
 	icon = "melting_love_tough"
@@ -449,13 +540,9 @@
 	icon = "friendly_fire"
 	difficulty = ACHIEVEMENT_HARD
 
-
-
-
-
 /datum/award/achievement/lc13/bald_round
 	name = "Now We're Awesome"
-	title = "being Awesome Now"
+	title = "Bald"
 	desc = "Be in a round where Bald balds everyone in the facility."
 	database_id = MEDAL_BALD_ROUND
 	icon = "bald_awesome"
@@ -472,7 +559,7 @@
 /datum/award/achievement/lc13/carmen_benjamin
 	name = "A Friend from the Past"
 	title = "a Friend from the Past"
-	desc = "Realize Carmen/Benjamin from their respective plushies."
+	desc = "Realize Carmen or Benjamin from their respective plushies."
 	database_id = MEDAL_CARMEN_BENJAMIN
 	icon = "lost_companions"
 	difficulty = ACHIEVEMENT_EASY
@@ -485,11 +572,9 @@
 	icon = "paradise_found"
 	difficulty = ACHIEVEMENT_EASY
 
-
-
-
 /datum/award/achievement/lc13/make_meth
-	name = "How?"
+	name = "Breaking Bong"
+	title = "a Breaking Bong Expert"
 	desc = "Make meth."
 	database_id = MEDAL_MAKE_METH
 	icon = "how_meth"
@@ -499,12 +584,14 @@
 // ROUND EVENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/bald_nuke
 	name = "Bald Witness"
 	desc = "Be in a round where Bald nukes the facility."
 	database_id = MEDAL_BALD_NUKE
 	icon = "bald"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
 //=================================
 // CORE SUPPRESSION ACHIEVEMENTS
@@ -512,6 +599,7 @@
 
 /datum/award/achievement/lc13/suppress_malkuth
 	name = "Control Suppressed"
+	title = "Control Management"
 	desc = "Complete Malkuth's core suppression."
 	database_id = MEDAL_SUPPRESS_MALKUTH
 	icon = "malkuth"
@@ -519,6 +607,7 @@
 
 /datum/award/achievement/lc13/suppress_yesod
 	name = "Information Suppressed"
+	title = "Information Management"
 	desc = "Complete Yesod's core suppression."
 	database_id = MEDAL_SUPPRESS_YESOD
 	icon = "yesod"
@@ -526,6 +615,7 @@
 
 /datum/award/achievement/lc13/suppress_hod
 	name = "Training Suppressed"
+	title = "Training Management"
 	desc = "Complete Hod's core suppression."
 	database_id = MEDAL_SUPPRESS_HOD
 	icon = "hod"
@@ -533,6 +623,7 @@
 
 /datum/award/achievement/lc13/suppress_netzach
 	name = "Safety Suppressed"
+	title = "Safety Management"
 	desc = "Complete Netzach's core suppression."
 	database_id = MEDAL_SUPPRESS_NETZACH
 	icon = "netzach"
@@ -540,6 +631,7 @@
 
 /datum/award/achievement/lc13/suppress_tiphereth
 	name = "Central Command Suppressed"
+	title = "Central Command Management"
 	desc = "Complete Tiphereth's core suppression."
 	database_id = MEDAL_SUPPRESS_TIPHERETH
 	icon = "tiphereth"
@@ -547,6 +639,7 @@
 
 /datum/award/achievement/lc13/suppress_chesed
 	name = "Welfare Suppressed"
+	title = "Welfare Management"
 	desc = "Complete Chesed's core suppression."
 	database_id = MEDAL_SUPPRESS_CHESED
 	icon = "chesed"
@@ -554,6 +647,7 @@
 
 /datum/award/achievement/lc13/suppress_gebura
 	name = "Disciplinary Suppressed"
+	title = "Disciplinary Management"
 	desc = "Complete Gebura's core suppression."
 	database_id = MEDAL_SUPPRESS_GEBURA
 	icon = "gebura"
@@ -561,6 +655,7 @@
 
 /datum/award/achievement/lc13/suppress_hokma
 	name = "Records Suppressed"
+	title = "Records Management"
 	desc = "Complete Hokma's core suppression."
 	database_id = MEDAL_SUPPRESS_HOKMA
 	icon = "hokma"
@@ -568,13 +663,15 @@
 
 /datum/award/achievement/lc13/suppress_binah
 	name = "Extraction Suppressed"
+	title = "Extraction Management"
 	desc = "Complete Binah's core suppression."
 	database_id = MEDAL_SUPPRESS_BINAH
 	icon = "binah"
 	difficulty = ACHIEVEMENT_HARD
 
 /datum/award/achievement/lc13/burn_binah_plush
-	name = "Binah Burner"
+	name = "Gebura approves"
+	title = "Binah Burner"
 	desc = "Burn a Binah plush."
 	database_id = MEDAL_BURN_BINAH_PLUSH
 	icon = "binah"
@@ -584,70 +681,70 @@
 // ORDEAL ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/ordeal_food
 	name = "Ordeal Chef"
 	desc = "Make one of each ordeal monster food items."
 	database_id = MEDAL_ORDEAL_FOOD
 	icon = "ordeal_food"
 	difficulty = ACHIEVEMENT_EASY
+*/
 
 //=================================
 // CITY ACHIEVEMENTS
 //=================================
 
+/*
 /datum/award/achievement/lc13/happy_room
 	name = "Happy Explorer"
 	desc = "Get to the happy room in the city."
 	database_id = MEDAL_HAPPY_ROOM
 	icon = "happy_room"
 	difficulty = ACHIEVEMENT_NORMAL
+*/
 
 /datum/award/achievement/lc13/workshop_max
-	name = "Workshop Master"
+	name = "Weapon of mass Fixer-ation, S-Class Workshop Meister"
+	title = "an S-Class Workshop Meister"
 	desc = "Max out a workshop weapon in City of Light."
 	database_id = MEDAL_WORKSHOP_MAX
 	icon = "workshop"
 	difficulty = ACHIEVEMENT_HARD
 
+/*
 /datum/award/achievement/lc13/landmine_trip
 	name = "Trap Springer"
 	desc = "Trip on a landmine in one of the COL starter rooms."
 	database_id = MEDAL_LANDMINE_TRIP
 	icon = "landmine"
 	difficulty = ACHIEVEMENT_EASY
+*/
 
+/*
 /datum/award/achievement/lc13/golden_bough
 	name = "Bough Collector"
 	desc = "Collect the golden bough in ER."
 	database_id = MEDAL_GOLDEN_BOUGH
 	icon = "golden_bough"
 	difficulty = ACHIEVEMENT_VERYHARD
-
-//=================================
-// ROLE-SPECIFIC ACHIEVEMENTS
-//=================================
+*/
 
 //=================================
 // MISCELLANEOUS ACHIEVEMENTS
 //=================================
 
 /datum/award/achievement/lc13/fell_bullet
-	name = "Fell Bullet"
+	name = "Bullet drenched with blood of ally"
+	title = "Memory Burner"
 	desc = "Use Fell Bullet's shotgun for its intended use."
 	database_id = MEDAL_FELL_BULLET
 	icon = "fell_bullet"
 	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/swa_interaction
-	name = "SWA Special"
-	desc = "Experience the special interaction between SWA and a person with her EGO gift."
+	name = "Abhorrent Admiration"
+	title = "an Abhorrent Admirer"
+	desc = "Experience the special interaction between Snow White's Apple and a person with her EGO gift."
 	database_id = MEDAL_SWA_INTERACTION
 	icon = "swa"
 	difficulty = ACHIEVEMENT_NORMAL
-
-/datum/award/achievement/lc13/blubbering_toad_release
-	name = "Toad Liberator"
-	desc = "Let Blubbering Toad out."
-	database_id = MEDAL_BLUBBERING_TOAD_RELEASE
-	icon = "blubbering_toad"
-	difficulty = ACHIEVEMENT_EASY
