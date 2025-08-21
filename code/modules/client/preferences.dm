@@ -316,12 +316,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			dat += "<a href='byond://?_src_=prefs;preference=seph_body;task=input'><b>Preferred Sephirah Body:</b> [prefered_sephirah_bodytype]</a><BR>"
 			dat += "<b>Preferred Sephirah Box Color:</b> <span style='border: 1px solid #161616; background-color: #[prefered_sephirah_boxcolor];'>&nbsp;&nbsp;&nbsp;</span> <a href='byond://?_src_=prefs;preference=seph_boxcolor;task=input'>Change</a><BR>"
 			dat += "<br>"
-			
+
 			dat += "<b>Achievement Specialization:</b><BR>"
 			if(chosen_achievement && SSachievements.achievements[chosen_achievement])
 				var/datum/award/achievement/A = SSachievements.achievements[chosen_achievement]
-				var/color = A.get_difficulty_color()
-				dat += "<span style='color: [color]'>[A.name]</span> "
+				dat += "[A.name] "
 			else
 				dat += "None "
 			dat += "<a href='byond://?_src_=prefs;preference=achievement_spec;task=input'>Change</a><BR>"
@@ -1701,16 +1700,16 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 					var/department = input(user, "Choose your preferred agent department:", "Agent Departments") as null|anything in GLOB.agent_depts_prefs
 					if(department)
 						prefered_agent_department = department
-				
+
 				if("achievement_spec")
 					var/list/unlocked = get_unlocked_achievements()
 					if(!unlocked.len)
 						to_chat(user, "<span class='warning'>You have no unlocked achievements!</span>")
 						return
-					
+
 					var/list/choices = list("None")
 					var/list/achievement_map = list()
-					
+
 					for(var/achievement_type in unlocked)
 						var/datum/award/achievement/A = SSachievements.achievements[achievement_type]
 						if(!A || !A.name)
@@ -1719,11 +1718,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 						var/display_name = "<font color='[color]'>[A.name] ([A.difficulty])</font>"
 						choices += display_name
 						achievement_map[display_name] = achievement_type
-					
+
 					var/choice = input(user, "Choose your achievement specialization:", "Achievement Specialization") as null|anything in choices
 					if(!choice)
 						return
-					
+
 					if(choice == "None")
 						chosen_achievement = null
 					else
@@ -2214,12 +2213,12 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/datum/achievement_data/player_achievements = parent.player_details.achievements
 	if(!player_achievements)
 		return list()
-	
+
 	for(var/achievement_type in SSachievements.achievements)
 		var/datum/award/achievement/A = SSachievements.achievements[achievement_type]
 		if(!A.name) // Skip abstract achievements
 			continue
 		if(player_achievements.data[achievement_type])
 			unlocked += achievement_type
-	
+
 	return unlocked
