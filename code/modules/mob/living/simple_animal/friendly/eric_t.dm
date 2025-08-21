@@ -294,7 +294,7 @@
 			"..." = list(
 				"text" = "...",
 				"var_updates" = list(
-					"player.collected_parcels" = "{player.collected_parcels++}",
+					"player.collected_parcels" = "{player.collected_parcels + 1}",
 				),
 				"proc_callbacks" = list(CALLBACK(src, PROC_REF(check_parcel_achievement))),
 				"default_scene" = "job"
