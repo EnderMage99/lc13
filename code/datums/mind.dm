@@ -103,6 +103,8 @@
 	var/mhz_codes_streak = 0
 	/// Number of times FAN has been triggered on this character
 	var/fan_triggers = 0
+	/// Number of parcels delivered for Eric T.
+	var/parcels_delivered = 0
 
 /datum/mind/New(_key)
 	key = _key

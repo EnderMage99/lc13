@@ -84,7 +84,7 @@
 		if(user.mind)
 			user.mind.mhz_codes_streak++
 			if(user.mind.mhz_codes_streak >= 5)
-				user.client?.give_award(/datum/award/achievement/lc13/mhz_codes, user)
+				user.client?.give_award(/datum/award/achievement/lc13/khz_codes, user)
 
 	//If you fuck it up
 	else if(bitcalculator != input && bitcalculator != 0 && isopen)
