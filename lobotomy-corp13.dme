@@ -3989,6 +3989,7 @@
 #include "ModularLobotomy\lc13_traps.dm"
 #include "ModularLobotomy\lc13boss_summon.dm"
 #include "ModularLobotomy\lc13unique_items.dm"
+#include "ModularLobotomy\records_officer.dm"
 #include "ModularLobotomy\looc.dm"
 #include "ModularLobotomy\misc_procs.dm"
 #include "ModularLobotomy\trusted.dm"
