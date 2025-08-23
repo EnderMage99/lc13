@@ -4,7 +4,7 @@
 /obj/item/agent_preservation_tool
 	name = "agent preservation watch"
 	desc = "A high-tech handheld watch that can store a digital backup of an agent's biological data. Can restore them after death with temporary attribute penalties. Single use per person."
-	icon = 'ModularTegustation/Teguicons/teguitems.dmi'
+	icon = 'ModularLobotomy/_Lobotomyicons/teguitems.dmi'
 	icon_state = "watch_copper"
 	w_class = WEIGHT_CLASS_SMALL
 	var/list/stored_agent_data = list()
