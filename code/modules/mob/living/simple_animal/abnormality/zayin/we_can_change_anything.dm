@@ -132,6 +132,7 @@
 			energy_generated += total_damage/8 //adds the normal work PE boxes, since those are normally lost on death
 		else
 			ReleaseWorker()
+			user.client?.give_award(/datum/award/achievement/abno/we_can_change, user)
 		datum_reference.stored_boxes += energy_generated // adds PE to the console, only half actually counts towards the goal for balance reasons.
 		SSlobotomy_corp.AdjustGoalBoxes(floor(energy_generated * 0.5))
 		total_energy += energy_generated

@@ -245,7 +245,7 @@
 	M.lastattackerckey = user.ckey
 
 	if(force && M == user && user.client)
-		user.client.give_award(/datum/award/achievement/misc/selfouch, user)
+		user.client.give_award(/datum/award/achievement/ss13/selfouch, user)
 
 	user.do_attack_animation(M, no_effect = !run_item_attack_animation)
 	M.attacked_by(src, user)

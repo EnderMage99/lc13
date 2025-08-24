@@ -78,6 +78,7 @@
 	switch(work_type)
 		if(ABNORMALITY_WORK_ATTACHMENT)
 			stoked = TRUE
+			user.client?.give_award(/datum/award/achievement/abno/kindling, user)
 			to_chat(user, span_notice("You stoke the flames, and it burns hotter."))
 
 /mob/living/simple_animal/hostile/abnormality/ardor_moth/Move()

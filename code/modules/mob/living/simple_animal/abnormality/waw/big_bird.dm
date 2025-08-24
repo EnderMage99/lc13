@@ -141,6 +141,7 @@
 		QDEL_NULL(head)
 		H.regenerate_icons()
 		visible_message(span_danger("\The [src] bites [H]'s head off!"))
+		H.client?.give_award(/datum/award/achievement/abno/headless, H)
 		new /obj/effect/gibspawner/generic/silent(get_turf(H))
 		playsound(get_turf(src), 'sound/abnormalities/bigbird/bite.ogg', 50, 1, 2)
 		flick("big_bird_chomp", src)

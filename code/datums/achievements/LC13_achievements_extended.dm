@@ -485,7 +485,7 @@
 
 /datum/award/achievement/lc13/bald_round
 	name = "Now We're Awesome"
-	title = "Bald"
+	title = "SUPER Bald"
 	desc = "Be in a round where Bald balds everyone in the facility."
 	database_id = MEDAL_BALD_ROUND
 	difficulty = ACHIEVEMENT_NORMAL

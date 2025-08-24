@@ -272,7 +272,7 @@
 			C.RollCredits()
 		C.playcreditsmusic(40)//playtitlemusic(40) // Tegustation Music edit
 		if(speed_round)
-			C.give_award(/datum/award/achievement/misc/speed_round, C.mob)
+			C.give_award(/datum/award/achievement/ss13/speed_round, C.mob)
 		//You survived for more than a hour!
 		if(check_survival)
 			SurvivalAwards(C)

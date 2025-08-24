@@ -81,6 +81,25 @@
 #define MEDAL_MELTING_LOVE_SURVIVOR "Love Survivor"
 #define MEDAL_NAKED_NEST_CURE_WITHOUT "Natural Recovery"
 #define MEDAL_NAKED_NEST_CURE_WITH "Medical Treatment"
+#define MEDAL_SOULTEARS "Soul Sharpened with Tears"
+#define MEDAL_BALD "Bald"
+#define MEDAL_BOTTLE_CAKE "Eat me"
+#define MEDAL_QUIET_RAMBLING "Enjoy the Ramblings"
+#define MEDAL_CHANGE_ANYTHING "We Can Change Anything"
+#define MEDAL_SCHISMATIC "Schismatic"
+#define MEDAL_HOPPED_UP "Drugged by the Moon"
+#define MEDAL_KIKIMORA "Kiki Mora?"
+#define MEDAL_LUTEMIS "Dear Lutemis"
+#define MEDAL_SHRIMP_ASSOCIATION "Shrimp Assistant"
+#define MEDAL_ERIS_EATEN "Dinner with Eris"
+#define MEDAL_MOONLIGHT "Moonlight Sonata"
+#define MEDAL_HEADLESS "So No Head?"
+#define MEDAL_KINDLING "Kindling"
+#define MEDAL_SOLEMN "Solemn Lament for the Living"
+#define MEDAL_GALAXY_PEBBLE "Friends with the Galaxy"
+#define MEDAL_GALAXY_SHATTER "Make Him Cry"
+
+
 
 // Death Achievements
 #define MEDAL_QUEEN_HATRED_DEATH "Friendly Fire"
@@ -170,6 +189,9 @@
 #define MEDAL_WORKSHOP_MAX "Workshop Master"
 #define MEDAL_LANDMINE_TRIP "Trap Springer"
 #define MEDAL_GOLDEN_BOUGH "Bough Collector"
+
+// RCA Achievemenets
+#define MEDAL_RCORP_MAJOR "R-Corp Major"
 
 // Role-Specific Achievements
 #define MEDAL_CLERK_WEAPON "Armed Clerk"

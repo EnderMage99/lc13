@@ -102,27 +102,33 @@
 
 /datum/award/achievement/lc13/city/resurgence_village
 	name = "Scouting Civilization"
+	title = "Scout"
 	desc = "You've discovered the hidden Resurgence Clan Village."
 	database_id = MEDAL_RESURGENCE_VILLAGE
 	icon = "village"
+	difficulty = ACHIEVEMENT_EASY
 
 /datum/award/achievement/lc13/city/parcel_delivery
 	name = "Professional Courier"
+	title = "Courier"
 	desc = "You've successfully delivered 10 parcels for Eric T."
 	database_id = MEDAL_PARCEL_DELIVERY
 	icon = "parcel"
+	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/city/eric_quest_accept
 	name = "Contract Accepted"
 	desc = "You've accepted Eric T's briefcase retrieval contract."
 	database_id = MEDAL_ERIC_QUEST_ACCEPT
 	icon = "briefcase"
+	difficulty = ACHIEVEMENT_EASY
 
 /datum/award/achievement/lc13/city/eric_quest_complete
 	name = "Mission Accomplished"
 	desc = "You've successfully delivered the briefcase to Eric T."
 	database_id = MEDAL_ERIC_QUEST_COMPLETE
 	icon = "briefcase_gold"
+	difficulty = ACHIEVEMENT_NORMAL
 
 /datum/award/achievement/lc13/city/mutant_clown_boss
 	name = "Family Reunion"

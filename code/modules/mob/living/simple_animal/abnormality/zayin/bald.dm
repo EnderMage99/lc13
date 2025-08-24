@@ -69,6 +69,7 @@
 	if(!do_bald(user)) // Already bald
 		return
 	bald_users |= user.ckey
+	user.client?.give_award(/datum/award/achievement/abno/bald, user)
 	update_icon()
 	switch(length(bald_users))
 		if(2)

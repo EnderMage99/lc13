@@ -136,6 +136,7 @@
 	if(breached && killspawn)
 		BreachEnd()
 
+	user.client?.give_award(/datum/award/achievement/abno/moonlight_sonata, user)
 	killspawn = FALSE
 	performance = FALSE
 	to_chat(user, span_nicegreen("The performance is completed."))
