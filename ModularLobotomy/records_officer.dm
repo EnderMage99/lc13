@@ -297,7 +297,7 @@
 			G.Grant(new_body)
 
 	// Apply justice penalty as buff (negative buff = debuff)
-	new_body.adjust_attribute_buff(JUSTICE_ATTRIBUTE, revival_justice_penalty)
+	new_body.adjust_attribute_bonus(JUSTICE_ATTRIBUTE, revival_justice_penalty)
 
 	// Add component to track and restore the penalty
 	new_body.AddComponent(/datum/component/temporary_justice_penalty, revival_justice_penalty, revival_penalty_duration)
@@ -361,7 +361,7 @@
 		return
 
 	// Remove the penalty buff (negative of negative = positive)
-	H.adjust_attribute_buff(JUSTICE_ATTRIBUTE, -penalty_amount)
+	H.adjust_attribute_bonus(JUSTICE_ATTRIBUTE, -penalty_amount)
 	to_chat(H, span_nicegreen("Your Justice attribute has been restored!"))
 
 	qdel(src)
