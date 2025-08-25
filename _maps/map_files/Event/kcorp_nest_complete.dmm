@@ -2370,7 +2370,7 @@
 	name = "bistro alley entrance";
 	req_access_txt = "9"
 	},
-/turf/closed/indestructible/reinforced,
+/turf/open/floor/plating/ashplanet/rocky,
 /area/city)
 "oR" = (
 /obj/structure/railing{
@@ -4260,6 +4260,15 @@
 	color = "#abf2ff"
 	},
 /area/city/shop)
+"Bh" = (
+/obj/machinery/door/poddoor{
+	id = "outskirtslockdown";
+	name = "Ruins Lockdown Door"
+	},
+/turf/open/floor/plating/ashplanet/rocky{
+	layer = 1.98
+	},
+/area/city/backstreets_alley)
 "Bj" = (
 /obj/structure/flora/ash/fern,
 /turf/open/floor/plating/dirt/jungle,
@@ -33370,7 +33379,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 Bx
 IR
 IR
@@ -33627,7 +33636,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 cr
 HK
@@ -33884,7 +33893,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 Bj
 HK
 HK
@@ -34141,7 +34150,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -34398,7 +34407,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 Fr
@@ -34655,7 +34664,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 HK
@@ -34912,7 +34921,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 IR
 HK
@@ -35169,7 +35178,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -35426,7 +35435,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -35683,7 +35692,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -35940,7 +35949,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 Fo
@@ -36197,7 +36206,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -36454,7 +36463,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 IR
 HK
@@ -36711,7 +36720,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -36968,7 +36977,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 IR
@@ -37225,7 +37234,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -37482,7 +37491,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -37739,7 +37748,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -37996,7 +38005,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 HK
@@ -38253,7 +38262,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -38510,7 +38519,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -38767,7 +38776,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -39024,7 +39033,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -39281,7 +39290,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 HK
@@ -39538,7 +39547,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -39795,7 +39804,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -40052,7 +40061,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 jC
 jC
@@ -40309,7 +40318,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 kQ
 lS
@@ -40566,7 +40575,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 AW
 lS
@@ -40823,7 +40832,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 NT
 lS
@@ -41080,7 +41089,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 Lg
 lS
@@ -41337,7 +41346,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 NT
 lS
@@ -41594,7 +41603,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 jC
 jC
 jC
@@ -41851,7 +41860,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 jC
 ZV
@@ -42108,7 +42117,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 jC
 fO
@@ -42365,7 +42374,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 jC
 Re
@@ -42622,7 +42631,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 jC
 fO
@@ -42879,7 +42888,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 jC
 ZV
@@ -43136,7 +43145,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 jC
 jC
@@ -43393,7 +43402,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 Zs
 Ll
@@ -43650,7 +43659,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 Zs
 ug
@@ -43907,7 +43916,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 Zs
 km
@@ -44164,8 +44173,8 @@ pG
 pG
 pG
 pG
-pG
-PW
+Bx
+cc
 Zs
 lU
 fZ
@@ -44421,9 +44430,9 @@ pG
 pG
 pG
 pG
-pG
+Bx
 iv
-IR
+Bh
 rl
 rl
 rl
@@ -44678,9 +44687,9 @@ pG
 pG
 pG
 pG
-pG
+Bx
 iv
-rl
+Bh
 rl
 IR
 rl
@@ -44935,9 +44944,9 @@ pG
 pG
 pG
 pG
-pG
+Bx
 iv
-IR
+Bh
 rl
 rl
 rl
@@ -45192,9 +45201,9 @@ pG
 pG
 pG
 pG
-pG
-PW
-PW
+Bx
+cc
+cc
 PW
 fT
 PW
@@ -45449,7 +45458,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 IR
 IR
@@ -45706,7 +45715,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 HK
@@ -45963,7 +45972,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 iT
@@ -46220,7 +46229,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 IR
@@ -46477,7 +46486,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 HK
@@ -46734,7 +46743,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 IR
@@ -46991,7 +47000,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 HK
@@ -47248,7 +47257,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 IR
@@ -47505,7 +47514,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 HK
@@ -47762,7 +47771,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -48019,7 +48028,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -48276,7 +48285,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -48533,7 +48542,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -48790,7 +48799,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 HK
 IR
@@ -49047,7 +49056,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -49304,7 +49313,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -49561,7 +49570,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 cc
 cc
 cc
@@ -49818,7 +49827,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 IR
 HK
@@ -50075,7 +50084,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -50332,7 +50341,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -50589,7 +50598,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -50846,7 +50855,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 HK
 IR
 IR
@@ -51103,7 +51112,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -51360,7 +51369,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -51617,7 +51626,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -51874,7 +51883,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -52131,7 +52140,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -52388,7 +52397,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -52645,7 +52654,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -52902,7 +52911,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -53159,7 +53168,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -53416,7 +53425,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -53673,7 +53682,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -53930,7 +53939,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -54187,7 +54196,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -54444,7 +54453,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -54701,7 +54710,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -54958,7 +54967,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -55215,7 +55224,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -55472,7 +55481,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 HK
 IR
@@ -55729,7 +55738,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -55986,7 +55995,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -56243,7 +56252,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 HK
@@ -56500,7 +56509,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -56757,7 +56766,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -57014,7 +57023,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -57271,7 +57280,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -57528,7 +57537,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 IR
 IR
 IR
@@ -57785,7 +57794,7 @@ pG
 pG
 pG
 pG
-pG
+Bx
 Bx
 Bx
 Bx
