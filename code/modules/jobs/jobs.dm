@@ -133,6 +133,9 @@ GLOBAL_LIST_INIT(service_positions, list(
 	"R-Corp Production Specialist",
 	"R-Corp Raven MP",
 	"R-Corp Messenger Raven",
+
+	// Resurgence Clan
+	"Machine Civilian",
 	))
 
 

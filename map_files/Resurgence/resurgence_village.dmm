@@ -1,0 +1,110 @@
+//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aa" = (
+/turf/open/floor/plating/asteroid,
+/area/resurgence_village/outside)
+"ab" = (
+/turf/closed/wall,
+/area/resurgence_village/plaza)
+"ac" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/plaza)
+"ad" = (
+/obj/effect/landmark/start/machine_civilian,
+/turf/open/floor/plasteel,
+/area/resurgence_village/spawn)
+"ae" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/spawn)
+"af" = (
+/turf/closed/wall,
+/area/resurgence_village/workshop_north)
+"ag" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/workshop_north)
+"ah" = (
+/turf/closed/wall,
+/area/resurgence_village/workshop_south)
+"ai" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/workshop_south)
+"aj" = (
+/turf/closed/wall,
+/area/resurgence_village/workshop_east)
+"ak" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/workshop_east)
+"al" = (
+/turf/closed/wall,
+/area/resurgence_village/workshop_west)
+"am" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/workshop_west)
+"an" = (
+/turf/closed/wall,
+/area/resurgence_village/chapel)
+"ao" = (
+/turf/open/floor/plasteel/dark,
+/area/resurgence_village/chapel)
+"ap" = (
+/turf/closed/wall,
+/area/resurgence_village/storage)
+"aq" = (
+/turf/open/floor/plasteel,
+/area/resurgence_village/storage)
+"ar" = (
+/obj/structure/closet,
+/turf/open/floor/plasteel,
+/area/resurgence_village/storage)
+
+(1,1,1) = {"
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa af af af af af af af af aa aa aa aa aa aa aa aj aj aj aj aj aj aj aj aa aa aa aa
+aa aa aa af ag ag ag ag ag ag af aa aa aa aa aa aa aa aj ak ak ak ak ak ak aj aa aa aa aa
+aa aa aa af ag ag ag ag ag ag af aa aa aa aa aa aa aa aj ak ak ak ak ak ak aj aa aa aa aa
+aa aa aa af ag ag ag ag ag ag af aa aa aa aa aa aa aa aj ak ak ak ak ak ak aj aa aa aa aa
+aa aa aa af ag ag ag ag ag ag af aa aa aa aa aa aa aa aj ak ak ak ak ak ak aj aa aa aa aa
+aa aa aa af ag ag ag ag ag ag af aa aa aa aa aa aa aa aj ak ak ak ak ak ak aj aa aa aa aa
+aa aa aa af ag ag ag ag ag ag af aa aa aa aa aa aa aa aj ak ak ak ak ak ak aj aa aa aa aa
+aa aa aa af af af af af af af af aa aa aa aa aa aa aa aj aj aj aj aj aj aj aj aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ab ab ab ab ab ab ab ab ab ab ab ab ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ac ac ac ac ac ac ac ac ac ac ac ac ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa ab ab ab ab ae ae ae ae ae ab ab ab ab ab aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa ad ad ad ad ad aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa ad ad ad ad ad aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa ad ad ad ad ad aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa al al al al al al al al aa aa aa aa aa aa aa ah ah ah ah ah ah ah ah aa aa aa aa
+aa aa aa al am am am am am am al aa aa aa aa aa aa aa ah ai ai ai ai ai ai ah aa aa aa aa
+aa aa aa al am am am am am am al aa aa aa aa aa aa aa ah ai ai ai ai ai ai ah aa aa aa aa
+aa aa aa al am am am am am am al aa aa aa aa aa aa aa ah ai ai ai ai ai ai ah aa aa aa aa
+aa aa aa al am am am am am am al aa aa aa aa aa aa aa ah ai ai ai ai ai ai ah aa aa aa aa
+aa aa aa al am am am am am am al aa aa aa aa aa aa aa ah ai ai ai ai ai ai ah aa aa aa aa
+aa aa aa al am am am am am am al aa aa aa aa aa aa aa ah ai ai ai ai ai ai ah aa aa aa aa
+aa aa aa al al al al al al al al aa aa aa aa aa aa aa ah ah ah ah ah ah ah ah aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa an an an an an an an an aa aa aa ap ap ap ap ap ap ap ap aa aa aa aa aa aa
+aa aa aa aa aa an ao ao ao ao ao ao an aa aa aa ap aq aq ar ar aq aq ap aa aa aa aa aa aa
+aa aa aa aa aa an ao ao ao ao ao ao an aa aa aa ap aq aq ar ar aq aq ap aa aa aa aa aa aa
+aa aa aa aa aa an ao ao ao ao ao ao an aa aa aa ap aq aq ar ar aq aq ap aa aa aa aa aa aa
+aa aa aa aa aa an ao ao ao ao ao ao an aa aa aa ap aq aq aq aq aq aq ap aa aa aa aa aa aa
+aa aa aa aa aa an ao ao ao ao ao ao an aa aa aa ap aq aq aq aq aq aq ap aa aa aa aa aa aa
+aa aa aa aa aa an ao ao ao ao ao ao an aa aa aa ap aq aq aq aq aq aq ap aa aa aa aa aa aa
+aa aa aa aa aa an an an an an an an an aa aa aa ap ap ap ap ap ap ap ap aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
+"}
