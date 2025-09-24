@@ -103,6 +103,10 @@
 "bY" = (
 /turf/closed/indestructible/reinforced,
 /area/city)
+"cj" = (
+/obj/effect/landmark/wandering_npc_spawn,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "cm" = (
 /turf/open/floor/plating/grass,
 /area/city)
@@ -110,6 +114,10 @@
 /obj/structure/filingcabinet/chestdrawer,
 /turf/open/floor/facility/white,
 /area/city/fixers)
+"cu" = (
+/obj/effect/landmark/wandering_npc_point,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "cI" = (
 /obj/machinery/vending/boozeomat/all_access,
 /obj/machinery/light/small{
@@ -360,6 +368,10 @@
 	},
 /turf/closed/indestructible/reinforced,
 /area/city/fixers)
+"fb" = (
+/obj/machinery/newscaster,
+/turf/closed/indestructible/reinforced,
+/area/city/fixers)
 "fj" = (
 /obj/machinery/hydroponics,
 /obj/machinery/light{
@@ -460,6 +472,13 @@
 /obj/machinery/vending/weaving/cheap,
 /turf/open/floor/facility/dark,
 /area/city/shop)
+"gu" = (
+/obj/structure/chair/plastic{
+	dir = 4
+	},
+/obj/effect/landmark/wandering_npc_point,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "gw" = (
 /obj/structure/table/reinforced,
 /turf/open/indestructible/hoteltile,
@@ -1009,6 +1028,11 @@
 	},
 /turf/open/floor/plasteel/white,
 /area/city/shop)
+"pQ" = (
+/obj/machinery/light,
+/obj/effect/landmark/wandering_npc_spawn,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "qf" = (
 /obj/structure/table/wood,
 /obj/structure/railing,
@@ -1307,6 +1331,7 @@
 /obj/item/folder,
 /obj/item/folder,
 /obj/structure/table/wood,
+/obj/effect/landmark/association_dropoff,
 /turf/open/floor/facility/white,
 /area/city/fixers)
 "um" = (
@@ -1551,6 +1576,7 @@
 /area/city)
 "yI" = (
 /obj/structure/chair/wood,
+/obj/effect/landmark/housed_npc_spawn,
 /turf/open/floor/carpet/black,
 /area/city/house)
 "yN" = (
@@ -1821,6 +1847,7 @@
 /obj/machinery/door/airlock/wood{
 	name = "employee housing"
 	},
+/obj/effect/landmark/house_door_landmark,
 /turf/open/floor/wood,
 /area/city/house)
 "CD" = (
@@ -2036,6 +2063,16 @@
 	},
 /turf/open/floor/facility,
 /area/city/shop)
+"Fs" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 24
+	},
+/obj/effect/landmark/wandering_npc_point,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "Fv" = (
 /obj/effect/turf_decal/trimline/red/filled/line{
 	dir = 8
@@ -2055,6 +2092,11 @@
 "FO" = (
 /turf/closed/indestructible/reinforced,
 /area/city/backstreets_checkpoint)
+"FW" = (
+/obj/machinery/light,
+/obj/effect/landmark/wandering_npc_point,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "Gb" = (
 /obj/machinery/computer/arcade/battle,
 /turf/open/floor/eighties,
@@ -2184,6 +2226,7 @@
 /area/city/shop)
 "HM" = (
 /obj/structure/chair/wood,
+/obj/effect/landmark/housed_npc_spawn,
 /turf/open/floor/wood,
 /area/city/house)
 "HP" = (
@@ -2638,6 +2681,13 @@
 "Pz" = (
 /turf/open/floor/plating/beach/sand,
 /area/city)
+"PA" = (
+/obj/structure/chair/plastic{
+	dir = 1
+	},
+/obj/effect/landmark/wandering_npc_spawn,
+/turf/open/floor/plating/ashplanet/rocky,
+/area/city)
 "PE" = (
 /turf/closed/indestructible/reinforced,
 /area/city/shop)
@@ -3078,6 +3128,10 @@
 	name = "asphalt"
 	},
 /area/city)
+"WK" = (
+/obj/effect/landmark/wandering_npc_point,
+/turf/open/floor/plating/beach/sand,
+/area/city)
 "WR" = (
 /turf/open/water/deep/saltwater,
 /area/city)
@@ -3130,6 +3184,10 @@
 	},
 /turf/closed/indestructible/reinforced,
 /area/city/shop)
+"Xv" = (
+/obj/effect/landmark/wandering_npc_point,
+/turf/open/floor/plating/grass,
+/area/city)
 "Xw" = (
 /obj/effect/spawner/room/backstreet_template,
 /turf/closed/indestructible/rock,
@@ -27076,7 +27134,7 @@ Ta
 NK
 hE
 LC
-kY
+FW
 eW
 ye
 ye
@@ -30157,7 +30215,7 @@ NK
 bx
 GU
 pe
-Ak
+NK
 LC
 LC
 LC
@@ -30414,13 +30472,13 @@ kl
 bx
 bx
 WY
-NK
+Ak
 LC
 LC
 LC
 LC
 LC
-Kh
+Fs
 LC
 LC
 LC
@@ -36333,6 +36391,7 @@ mZ
 mZ
 Uz
 LC
+cu
 LC
 LC
 LC
@@ -36343,8 +36402,7 @@ LC
 LC
 LC
 LC
-LC
-LC
+cu
 LC
 LC
 qS
@@ -37913,7 +37971,7 @@ LC
 LC
 LC
 LC
-LC
+cj
 bY
 bY
 Ta
@@ -38171,7 +38229,7 @@ LC
 LC
 LC
 LC
-LC
+cj
 bY
 Ta
 Ta
@@ -38425,10 +38483,10 @@ Kh
 LC
 LC
 LC
+cu
 LC
 LC
-LC
-LC
+cj
 bY
 Ta
 Ta
@@ -38685,7 +38743,7 @@ LC
 LC
 LC
 LC
-LC
+cj
 bY
 Ta
 Ta
@@ -38942,7 +39000,7 @@ JL
 JL
 JL
 kQ
-LC
+cj
 bY
 Ta
 Ta
@@ -39199,7 +39257,7 @@ ED
 Ua
 WJ
 jn
-LC
+cj
 bY
 Ta
 Ta
@@ -39456,7 +39514,7 @@ db
 Ua
 db
 jn
-kY
+pQ
 bY
 Ta
 Ta
@@ -39674,7 +39732,7 @@ Yg
 Yg
 lE
 LC
-LC
+cu
 LC
 ye
 nn
@@ -39713,7 +39771,7 @@ MY
 Ua
 Uq
 jn
-xY
+PA
 bY
 Ta
 Ta
@@ -39970,7 +40028,7 @@ db
 Ua
 db
 jn
-xY
+PA
 bY
 Ta
 Ta
@@ -40194,9 +40252,9 @@ bY
 LC
 LC
 bY
+gu
 hg
-hg
-hg
+gu
 LC
 LC
 LC
@@ -40693,7 +40751,7 @@ ic
 df
 Dk
 TI
-St
+fb
 MS
 Yp
 qf
@@ -41210,7 +41268,7 @@ hO
 hO
 hO
 sC
-St
+fb
 hO
 hO
 xN
@@ -41239,7 +41297,7 @@ LC
 Da
 aS
 cm
-cm
+Xv
 cm
 cm
 vQ
@@ -42238,7 +42296,7 @@ hO
 hO
 hO
 sC
-St
+fb
 hO
 hO
 Pp
@@ -44300,7 +44358,7 @@ BE
 BE
 Jy
 LC
-LC
+cu
 LC
 xC
 LC
@@ -45830,7 +45888,7 @@ bY
 Pz
 Pz
 IU
-Pz
+WK
 Pz
 lP
 Pz
@@ -46618,7 +46676,7 @@ Pz
 IS
 Pz
 Pz
-Pz
+WK
 Pz
 Pz
 Pz

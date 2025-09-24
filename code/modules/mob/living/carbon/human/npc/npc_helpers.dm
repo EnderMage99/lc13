@@ -61,7 +61,7 @@
 			NPC.npc_type = "wanderer"
 			log_admin("[key_name(src)] spawned a wandering NPC at [COORD(T)]")
 		if("Housed")
-			new /mob/living/carbon/human/wandering_npc/housed(T)
+			new /mob/living/simple_animal/hostile/ui_npc/housed(T)
 			log_admin("[key_name(src)] spawned a housed NPC at [COORD(T)]")
 
 // Admin verb to create landmarks
