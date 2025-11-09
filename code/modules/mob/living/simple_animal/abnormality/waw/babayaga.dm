@@ -321,7 +321,7 @@
 /datum/action/cooldown/babayaga_leap
 	name = "Leap"
 	desc = "Leap into the air and become untargetable, up for 2 minutes."
-	icon_icon = 'ModularTegustation/Teguicons/status_sprites.dmi'
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/status_sprites.dmi'
 	button_icon_state = "freezing_noBG"
 	var/in_leap = FALSE
 	cooldown_time = 21 SECONDS

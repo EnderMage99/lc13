@@ -166,7 +166,7 @@
 
 /datum/action/cooldown/laetitia_detonate
 	name = "Prank!"
-	icon_icon = 'ModularTegustation/Teguicons/tegu_effects.dmi'
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/tegu_effects.dmi'
 	desc = "Time for the Prank!"
 	button_icon_state = "prank_boom"
 	check_flags = AB_CHECK_CONSCIOUS
@@ -189,12 +189,14 @@
 	icon_state = "prank_gift"
 	var/opening = FALSE
 	var/oneuse = TRUE
-	var/basepower = 20
+	var/basepower = 30
 	var/strength = 1
 	var/list/active_gifts
 
 /obj/item/laetitia_gift/Crossed(atom/movable/AM)
 	. = ..()
+	if(istype(AM, /obj/projectile))
+		return
 	explode(loc)
 
 /obj/item/laetitia_gift/attack_self(mob/user)
@@ -206,7 +208,7 @@
 	if(do_after(user, 5 SECONDS, src))
 		if (istype(user, /mob/living))
 			var/mob/living/L = user
-			L.apply_damage((basepower * strength), RED_DAMAGE, null, L.run_armor_check(null, RED_DAMAGE), FALSE, TRUE)
+			L.deal_damage((basepower * strength), RED_DAMAGE)
 		explode(user)
 		to_chat(user, "You opened the gift!")
 	opening = FALSE
@@ -226,8 +228,9 @@
 	. = ..()
 	if(!breaching)
 		return
-	if((summon_cooldown < world.time) && !(status_flags & GODMODE))
-		SummonAdds()
+	if(SSmaptype.maptype != "rcorp")
+		if((summon_cooldown < world.time) && !(status_flags & GODMODE))
+			SummonAdds()
 
 /mob/living/simple_animal/hostile/abnormality/laetitia/NeutralEffect(mob/living/carbon/human/user, work_type, pe)
 	. = ..()

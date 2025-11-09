@@ -286,7 +286,7 @@
 
 /obj/effect/proc_holder/spell/pointed/contract
 	action_background_icon_state = "bg_alien"
-	var/contract_overlay_icon = 'ModularTegustation/Teguicons/status_sprites.dmi'
+	var/contract_overlay_icon = 'ModularLobotomy/_Lobotomyicons/status_sprites.dmi'
 	var/contract_overlay_icon_state = "small_contract"
 	var/mutable_appearance/colored_overlay
 	base_action = /datum/action/spell_action/spell/contract
@@ -541,7 +541,7 @@
 /atom/movable/screen/alert/status_effect/ruin
 	name = "Contract of Ruin"
 	desc = "You now deal more damage to objects and mechs!"
-	icon = 'ModularTegustation/Teguicons/status_sprites.dmi'
+	icon = 'ModularLobotomy/_Lobotomyicons/status_sprites.dmi'
 	icon_state = "contract_ruin"
 
 /datum/status_effect/stealth
@@ -553,7 +553,7 @@
 /atom/movable/screen/alert/status_effect/stealth
 	name = "Contract of Stealth"
 	desc = "You are now much harder to see and indirect projectiles no longer hit you."
-	icon = 'ModularTegustation/Teguicons/status_sprites.dmi'
+	icon = 'ModularLobotomy/_Lobotomyicons/status_sprites.dmi'
 	icon_state = "contract_stealth"
 
 /datum/status_effect/recall
@@ -565,5 +565,5 @@
 /atom/movable/screen/alert/status_effect/recall
 	name = "Contract of Recall"
 	desc = "A Contract, Signed is able to bring you over to their location at any moment."
-	icon = 'ModularTegustation/Teguicons/status_sprites.dmi'
+	icon = 'ModularLobotomy/_Lobotomyicons/status_sprites.dmi'
 	icon_state = "contract_recall"
