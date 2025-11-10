@@ -4142,6 +4142,7 @@
 #include "ModularLobotomy\associations\augment_ui.dm"
 #include "ModularLobotomy\associations\augments.dm"
 #include "ModularLobotomy\associations\cityspawners.dm"
+#include "ModularLobotomy\associations\easy_vending.dm"
 #include "ModularLobotomy\associations\fixer.dm"
 #include "ModularLobotomy\associations\fixeroffice.dm"
 #include "ModularLobotomy\associations\head_trophies.dm"
