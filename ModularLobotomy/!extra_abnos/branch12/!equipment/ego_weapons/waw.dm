@@ -581,3 +581,289 @@
 	icon_state = "heavylaser"
 	damage = 60
 	damage_type = RED_DAMAGE
+
+//Beyond the Veil - Dimensional Tear
+/obj/item/ego_weapon/branch12/dimensional_tear
+	name = "dimensional tear"
+	desc = "A blade that cuts through dimensions."
+	special = "This weapon teleports the target randomly on hit. Every 3rd consecutive hit on the same target applies Mental Detonation. \
+	Use in hand to open a portal that teleports you to a random nearby location. <br>\
+	When hitting a target with Mental Detonation, shatter it and create a reality rift that deals massive damage to all nearby enemies. <br><br>\
+	(Mental Detonation: Does nothing until it is 'Shattered.' Once it is 'Shattered,' it will cause Mental Decay to trigger without reducing it's stack. Weapons that cause 'Shatter' gain other benefits as well.) <br>\
+	(Mental Decay: Deals White damage every 5 seconds, equal to its stack, and then halves it. If it is on a mob, then it deals *4 more damage.)"
+	icon_state = "dimensional_tear"
+	force = 55
+	damtype = BLACK_DAMAGE
+	attack_verb_continuous = list("tears", "rips", "slashes")
+	attack_verb_simple = list("tear", "rip", "slash")
+	hitsound = 'sound/weapons/fixer/reverb_normal.ogg'
+	attribute_requirements = list(
+							FORTITUDE_ATTRIBUTE = 60,
+							PRUDENCE_ATTRIBUTE = 60
+							)
+	var/portal_cooldown
+	var/portal_cooldown_time = 10 SECONDS
+	var/consecutive_hits = 0
+	var/mob/living/last_target
+	var/inflicted_decay = 3
+
+/obj/item/ego_weapon/branch12/dimensional_tear/attack(mob/living/target, mob/living/user)
+	. = ..()
+	if(!isliving(target))
+		return
+
+	// Track consecutive hits
+	if(target == last_target)
+		consecutive_hits++
+	else
+		consecutive_hits = 1
+		last_target = target
+
+	// Apply mental decay
+	target.apply_lc_mental_decay(inflicted_decay)
+
+	// Check for mental detonation
+	var/datum/status_effect/mental_detonate/MD = target.has_status_effect(/datum/status_effect/mental_detonate)
+	if(MD)
+		MD.shatter()
+		// Reality rift - massive AOE damage
+		to_chat(user, span_boldwarning("Reality tears apart!"))
+		playsound(target, 'sound/magic/teleport_diss.ogg', 100, TRUE)
+		for(var/mob/living/L in range(3, target))
+			if(L == user)
+				continue
+			L.deal_damage(80, BLACK_DAMAGE, source = user, attack_type = (ATTACK_TYPE_MELEE | ATTACK_TYPE_SPECIAL))
+			new /obj/effect/temp_visual/dir_setting/cult/phase(get_turf(L))
+		consecutive_hits = 0
+		return
+
+	// Apply mental detonation every 3rd hit
+	if(consecutive_hits >= 3)
+		consecutive_hits = 0
+		target.apply_status_effect(/datum/status_effect/mental_detonate)
+		to_chat(user, span_warning("The dimensional tear marks [target] for detonation!"))
+		playsound(target, 'sound/magic/clockwork/invoke_general.ogg', 50, TRUE)
+
+	// Random teleport on hit
+	if(prob(50))
+		var/list/possible_turfs = list()
+		for(var/turf/T in range(3, target))
+			if(!T.density && !T.is_blocked_turf())
+				possible_turfs += T
+		if(possible_turfs.len)
+			var/turf/dest = pick(possible_turfs)
+			new /obj/effect/temp_visual/dir_setting/cult/phase/out(get_turf(target))
+			target.forceMove(dest)
+			new /obj/effect/temp_visual/dir_setting/cult/phase(dest)
+			playsound(dest, 'sound/magic/teleport_app.ogg', 50, TRUE)
+
+/obj/item/ego_weapon/branch12/dimensional_tear/attack_self(mob/user)
+	if(!CanUseEgo(user))
+		return
+	if(portal_cooldown > world.time)
+		to_chat(user, span_warning("The dimensional tear hasn't recharged yet."))
+		return
+
+	portal_cooldown = world.time + portal_cooldown_time
+
+	var/list/possible_turfs = list()
+	for(var/turf/T in range(5, user))
+		if(!T.density && !T.is_blocked_turf())
+			possible_turfs += T
+
+	if(possible_turfs.len)
+		var/turf/dest = pick(possible_turfs)
+		new /obj/effect/temp_visual/dir_setting/cult/phase/out(get_turf(user))
+		user.forceMove(dest)
+		new /obj/effect/temp_visual/dir_setting/cult/phase(dest)
+		playsound(dest, 'sound/magic/teleport_app.ogg', 75, TRUE)
+		to_chat(user, span_notice("You tear through dimensions!"))
+
+//Dead Bird - Crimson Feathers
+/obj/item/ego_weapon/branch12/crimson_feathers
+	name = "crimson feathers"
+	desc = "Feathers stained with the blood of the fallen."
+	special = "Every hit inflicts 5 Bleed on target. Every 3rd hit does a small AOE that inflicts 10 Bleed to all nearby enemies. \
+	If you haven't attacked in 5 seconds, your next attack does double damage and inflicts 15 Bleed. \
+	When hitting a target with Mental Detonation, shatter it and cause a massive bleed explosion. <br><br>\
+	(Mental Detonation: Does nothing until it is 'Shattered.' Once it is 'Shattered,' it will cause Mental Decay to trigger without reducing it's stack. Weapons that cause 'Shatter' gain other benefits as well.) <br>\
+	(Mental Decay: Deals White damage every 5 seconds, equal to its stack, and then halves it. If it is on a mob, then it deals *4 more damage.)"
+	icon_state = "crimson_feathers"
+	force = 45
+	damtype = RED_DAMAGE
+	attack_verb_continuous = list("pecks", "claws", "tears")
+	attack_verb_simple = list("peck", "claw", "tear")
+	hitsound = 'sound/abnormalities/cleave.ogg'
+	attribute_requirements = list(
+							FORTITUDE_ATTRIBUTE = 60
+							)
+	var/hit_count = 0
+	var/last_attack_time = 0
+	var/idle_threshold = 5 SECONDS
+	var/base_bleed = 5
+	var/aoe_bleed = 10
+	var/charged_bleed = 15
+	var/inflicted_decay = 2
+
+/obj/item/ego_weapon/branch12/crimson_feathers/attack(mob/living/target, mob/living/user)
+	var/is_charged = (world.time - last_attack_time) > idle_threshold
+	var/damage_mult = 1
+
+	if(is_charged)
+		damage_mult = 2
+		to_chat(user, span_boldwarning("The feathers hunger for blood!"))
+		playsound(target, 'sound/abnormalities/judgementbird/kill.ogg', 50, TRUE)
+
+	var/old_force = force
+	force = force * damage_mult
+	. = ..()
+	force = old_force
+
+	if(!isliving(target))
+		return
+
+	last_attack_time = world.time
+	hit_count++
+
+	// Apply mental decay
+	target.apply_lc_mental_decay(inflicted_decay)
+
+	// Check for mental detonation
+	var/datum/status_effect/mental_detonate/MD = target.has_status_effect(/datum/status_effect/mental_detonate)
+	if(MD)
+		MD.shatter()
+		// Massive bleed explosion
+		to_chat(user, span_boldwarning("The crimson feathers explode with blood!"))
+		playsound(target, 'sound/weapons/fixer/hana_blunt.ogg', 100, TRUE)
+		for(var/mob/living/L in range(4, target))
+			if(L == user)
+				continue
+			L.apply_lc_bleed(30)
+			new /obj/effect/temp_visual/cleave(get_turf(L))
+		hit_count = 0
+		return
+
+	// Apply bleed
+	if(is_charged)
+		target.apply_lc_bleed(charged_bleed)
+	else
+		target.apply_lc_bleed(base_bleed)
+
+	// Every 3rd hit AOE
+	if(hit_count >= 3)
+		hit_count = 0
+		to_chat(user, span_warning("Feathers scatter!"))
+		playsound(target, 'sound/abnormalities/judgementbird/ability.ogg', 50, TRUE)
+		for(var/mob/living/L in range(2, target))
+			if(L == user || L == target)
+				continue
+			L.apply_lc_bleed(aoe_bleed)
+			new /obj/effect/temp_visual/cleave(get_turf(L))
+
+//Dead Man's Plan - Death's Pursuit
+/obj/item/ego_weapon/branch12/deaths_pursuit
+	name = "death's pursuit"
+	desc = "The relentless march of death cannot be stopped."
+	special = "Use in hand to mark a visible target. Consecutive hits on your marked target deal escalating damage (+10% per hit, max +50%). \
+	If marked target dies, gain 20% speed boost for 10 seconds. Attacking non-marked targets resets your damage bonus. \
+	Inflicts 3 Mental Decay on marked target, 1 on others. <br>\
+	When hitting a marked target with Mental Detonation, shatter it for instant +100 bonus damage. <br><br>\
+	(Mental Detonation: Does nothing until it is 'Shattered.' Once it is 'Shattered,' it will cause Mental Decay to trigger without reducing it's stack. Weapons that cause 'Shatter' gain other benefits as well.) <br>\
+	(Mental Decay: Deals White damage every 5 seconds, equal to its stack, and then halves it. If it is on a mob, then it deals *4 more damage.)"
+	icon_state = "deaths_pursuit"
+	force = 50
+	damtype = BLACK_DAMAGE
+	attack_verb_continuous = list("pursues", "hunts", "condemns")
+	attack_verb_simple = list("pursue", "hunt", "condemn")
+	hitsound = 'sound/weapons/fixer/reverb_normal.ogg'
+	attribute_requirements = list(
+							FORTITUDE_ATTRIBUTE = 60,
+							PRUDENCE_ATTRIBUTE = 60
+							)
+	var/mob/living/marked_target
+	var/consecutive_hits = 0
+	var/max_bonus = 50
+	var/bonus_per_hit = 10
+	var/marked_decay = 3
+	var/unmarked_decay = 1
+
+/obj/item/ego_weapon/branch12/deaths_pursuit/examine(mob/user)
+	. = ..()
+	if(marked_target && !QDELETED(marked_target) && marked_target.stat != DEAD)
+		. += span_warning("Current target: [marked_target]. Damage bonus: +[min(consecutive_hits * bonus_per_hit, max_bonus)]%")
+	else
+		. += span_notice("No target marked. Use in hand while looking at an enemy to mark them.")
+
+/obj/item/ego_weapon/branch12/deaths_pursuit/attack_self(mob/user)
+	if(!CanUseEgo(user))
+		return
+
+	var/mob/living/new_target
+	for(var/mob/living/L in view(7, user))
+		if(L == user || L.stat == DEAD)
+			continue
+		if(!faction_check(L.faction, list("neutral"), FALSE))
+			new_target = L
+			break
+
+	if(new_target)
+		marked_target = new_target
+		consecutive_hits = 0
+		to_chat(user, span_boldwarning("You mark [marked_target] for death!"))
+		playsound(user, 'sound/abnormalities/silence/bong.ogg', 50, TRUE)
+		RegisterSignal(marked_target, COMSIG_LIVING_DEATH, PROC_REF(target_died))
+	else
+		to_chat(user, span_warning("No valid target in sight."))
+
+/obj/item/ego_weapon/branch12/deaths_pursuit/attack(mob/living/target, mob/living/user)
+	var/damage_bonus = 0
+
+	if(target == marked_target)
+		consecutive_hits++
+		damage_bonus = min(consecutive_hits * bonus_per_hit, max_bonus)
+		target.apply_lc_mental_decay(marked_decay)
+	else
+		consecutive_hits = 0
+		target.apply_lc_mental_decay(unmarked_decay)
+
+	var/old_force = force
+	force = force * (1 + damage_bonus / 100)
+
+	// Check for mental detonation on marked target
+	if(target == marked_target)
+		var/datum/status_effect/mental_detonate/MD = target.has_status_effect(/datum/status_effect/mental_detonate)
+		if(MD)
+			MD.shatter()
+			// Instant massive bonus damage
+			to_chat(user, span_boldwarning("Death claims its mark!"))
+			playsound(target, 'sound/magic/clockwork/narsie_attack.ogg', 75, TRUE)
+			target.deal_damage(100, BLACK_DAMAGE, source = user, attack_type = (ATTACK_TYPE_MELEE | ATTACK_TYPE_SPECIAL))
+			new /obj/effect/temp_visual/human_horizontal_bisect(get_turf(target))
+
+	. = ..()
+	force = old_force
+
+	if(target == marked_target && consecutive_hits > 0)
+		to_chat(user, span_nicegreen("Pursuit intensifies! Damage bonus: +[min(consecutive_hits * bonus_per_hit, max_bonus)]%"))
+
+/obj/item/ego_weapon/branch12/deaths_pursuit/proc/target_died(datum/source)
+	SIGNAL_HANDLER
+	if(marked_target)
+		UnregisterSignal(marked_target, COMSIG_LIVING_DEATH)
+
+	var/mob/living/carbon/human/holder = loc
+	if(ishuman(holder))
+		to_chat(holder, span_nicegreen("Your mark has fallen. The hunt empowers you!"))
+		holder.add_movespeed_modifier(/datum/movespeed_modifier/deaths_pursuit_boost)
+		addtimer(CALLBACK(src, PROC_REF(remove_speed_boost), holder), 10 SECONDS)
+
+	marked_target = null
+	consecutive_hits = 0
+
+/obj/item/ego_weapon/branch12/deaths_pursuit/proc/remove_speed_boost(mob/living/carbon/human/H)
+	if(H && !QDELETED(H))
+		H.remove_movespeed_modifier(/datum/movespeed_modifier/deaths_pursuit_boost)
+		to_chat(H, span_notice("The hunt's empowerment fades..."))
+
+/datum/movespeed_modifier/deaths_pursuit_boost
+	multiplicative_slowdown = -0.2

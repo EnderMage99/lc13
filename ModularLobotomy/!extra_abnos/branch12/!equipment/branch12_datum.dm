@@ -318,6 +318,35 @@
 
 
 // Sage of the World - XXI
+/datum/ego_datum/weapon/branch12/XXI
+	item_path = /obj/item/ego_weapon/branch12/XXI
+	cost = 100
+
 /datum/ego_datum/armor/branch12/XXI
 	item_path = /obj/item/clothing/suit/armor/ego_gear/branch12/XXI
 	cost = 100
+
+// Space Station 13 - Station Command
+/datum/ego_datum/weapon/branch12/station_command
+	item_path = /obj/item/ego_weapon/ranged/branch12/station_command
+	cost = 100
+
+// Beyond the Veil - Dimensional Tear
+/datum/ego_datum/weapon/branch12/dimensional_tear
+	item_path = /obj/item/ego_weapon/branch12/dimensional_tear
+	cost = 50
+
+// Dead Bird - Crimson Feathers
+/datum/ego_datum/weapon/branch12/crimson_feathers
+	item_path = /obj/item/ego_weapon/branch12/crimson_feathers
+	cost = 50
+
+// Dead Man's Plan - Death's Pursuit
+/datum/ego_datum/weapon/branch12/deaths_pursuit
+	item_path = /obj/item/ego_weapon/branch12/deaths_pursuit
+	cost = 50
+
+// Helios Effigy - Solar Lance
+/datum/ego_datum/weapon/branch12/solar_lance
+	item_path = /obj/item/ego_weapon/lance/branch12/solar_lance
+	cost = 35

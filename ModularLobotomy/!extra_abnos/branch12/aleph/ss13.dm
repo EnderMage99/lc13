@@ -21,8 +21,7 @@
 	pet_bonus = "pings"
 
 	ego_list = list(
-	//	/datum/ego_datum/weapon/branch12/captaincy,
-	//	/datum/ego_datum/armor/branch12/captaincy,
+		/datum/ego_datum/weapon/branch12/station_command,
 	)
 	//gift_type =  /datum/ego_gifts/signal
 

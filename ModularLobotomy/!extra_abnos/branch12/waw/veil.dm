@@ -33,8 +33,7 @@
 	work_damage_type = BLACK_DAMAGE
 
 	ego_list = list(
-	//	/datum/ego_datum/weapon/branch12/egoification,
-	//	/datum/ego_datum/armor/legs
+		/datum/ego_datum/weapon/branch12/dimensional_tear,
 	)
 	//gift_type =  /datum/ego_gifts/departure
 	abnormality_origin = ABNORMALITY_ORIGIN_BRANCH12

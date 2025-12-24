@@ -28,7 +28,7 @@
 	wander = FALSE
 
 	ego_list = list(
-		//datum/ego_datum/weapon/branch12/solar_day,
+		/datum/ego_datum/weapon/branch12/solar_lance,
 		/datum/ego_datum/armor/branch12/solar_day,
 	)
 	//gift_type =  /datum/ego_gifts/insanity

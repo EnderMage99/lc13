@@ -137,6 +137,8 @@
 /obj/item/ego_weapon/branch12/egoification
 	name = "Egoification!"
 	desc = "Egoification!"
+	special = "This weapon inflicts 2 Mental Decay on melee hit and 4 Mental Decay when thrown. <br><br>\
+	(Mental Decay: Deals White damage every 5 seconds, equal to its stack, and then halves it. If it is on a mob, then it deals *4 more damage.)"
 	icon_state = "egoification"
 	force = 45
 	reach = 2		//Has 2 Square Reach.
@@ -151,9 +153,88 @@
 	attribute_requirements = list(
 							FORTITUDE_ATTRIBUTE = 60
 							)
+	var/melee_decay = 2
+	var/throw_decay = 4
+
+/obj/item/ego_weapon/branch12/egoification/attack(mob/living/target, mob/living/user)
+	. = ..()
+	if(isliving(target))
+		target.apply_lc_mental_decay(melee_decay)
+
+/obj/item/ego_weapon/branch12/egoification/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
+	. = ..()
+	if(isliving(hit_atom))
+		var/mob/living/L = hit_atom
+		L.apply_lc_mental_decay(throw_decay)
 
 /obj/item/ego_weapon/branch12/egoification/get_clamped_volume()
 	return 25
+
+//Helios Effigy - Solar Lance
+/obj/item/ego_weapon/lance/branch12/solar_lance
+	name = "solar lance"
+	desc = "A lance forged from the light of the sun."
+	special = "Use in hand to lower the lance and begin charging. Moving in a straight line increases force and speed. \
+	On hit, inflict 1 Mental Decay per tile moved and 2 Overheat per tile moved during the charge. <br><br>\
+	(Mental Decay: Deals White damage every 5 seconds, equal to its stack, and then halves it. If it is on a mob, then it deals *4 more damage.)"
+	icon = 'ModularLobotomy/_Lobotomyicons/branch12/branch12_weapon.dmi'
+	icon_state = "solar_lance"
+	force = 30
+	force_cap = 90
+	damtype = WHITE_DAMAGE
+	attack_verb_continuous = list("impales", "pierces", "stabs")
+	attack_verb_simple = list("impale", "pierce", "stab")
+	hitsound = 'sound/weapons/ego/spear1.ogg'
+	attribute_requirements = list(
+							PRUDENCE_ATTRIBUTE = 40
+							)
+	force_per_tile = 5
+	speed_per_tile = 0.25
+	couch_cooldown_time = 4 SECONDS
+	var/tiles_moved = 0
+	var/decay_per_tile = 1
+	var/overheat_per_tile = 2
+
+/obj/item/ego_weapon/lance/branch12/solar_lance/LowerLance(mob/user)
+	. = ..()
+	tiles_moved = 0
+
+/obj/item/ego_weapon/lance/branch12/solar_lance/RaiseLance(mob/user)
+	. = ..()
+	tiles_moved = 0
+
+/obj/item/ego_weapon/lance/branch12/solar_lance/UserMoved(mob/user)
+	. = ..()
+	if(!raised)
+		tiles_moved++
+
+/obj/item/ego_weapon/lance/branch12/solar_lance/UserBump(mob/living/carbon/human/user, atom/A)
+	if(charge_speed > -(bump_threshold))
+		. = ..()
+		return
+
+	if(istype(A, /mob/living/simple_animal/projectile_blocker_dummy))
+		var/mob/living/simple_animal/projectile_blocker_dummy/pbd = A
+		A = pbd.parent
+
+	if(isliving(A))
+		var/mob/living/L = A
+		// Apply solar effects based on tiles moved
+		if(tiles_moved > 0)
+			L.apply_lc_mental_decay(tiles_moved * decay_per_tile)
+			L.apply_lc_overheat(tiles_moved * overheat_per_tile)
+
+			// Solar flare visual
+			new /obj/effect/temp_visual/fire/fast(get_turf(L))
+			playsound(L, 'sound/abnormalities/apocalypse/fire.ogg', 50, TRUE)
+
+			if(tiles_moved >= 5)
+				to_chat(user, span_boldwarning("The sun's fury scorches [L]!"))
+			else
+				to_chat(user, span_warning("Solar heat sears [L]!"))
+
+	. = ..()
+	tiles_moved = 0
 
 
 //Golden Needle
