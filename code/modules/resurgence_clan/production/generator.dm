@@ -2,8 +2,8 @@
 /obj/machinery/power/resurgence_generator
 	name = "resurgence generator"
 	desc = "A makeshift generator that converts materials into power. Connect with cables to power nearby machinery."
-	icon = 'icons/obj/power.dmi'
-	icon_state = "teg"
+	icon = 'icons/obj/clockwork_objects.dmi'
+	icon_state = "relay"
 	density = TRUE
 	anchored = TRUE
 	use_power = NO_POWER_USE // Generates its own power

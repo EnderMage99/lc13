@@ -2,8 +2,8 @@
 /obj/machinery/resurgence_crafting_bench
 	name = "resurgence crafting bench"
 	desc = "A workbench where machines can craft tools and equipment from processed materials."
-	icon = 'icons/obj/stationobjs.dmi'
-	icon_state = "workbench"
+	icon = 'icons/obj/clockwork_objects.dmi'
+	icon_state = "tinkerers_daemon"
 	density = TRUE
 	anchored = TRUE
 	use_power = NO_POWER_USE // Doesn't require power - uses Core charge for crafting

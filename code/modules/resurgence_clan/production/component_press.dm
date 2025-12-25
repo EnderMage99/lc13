@@ -2,8 +2,8 @@
 /obj/machinery/resurgence_component_press
 	name = "component press"
 	desc = "A precision press for shaping ingots into mechanical components. Requires perfect timing."
-	icon = '	'
-	icon_state = "autolathe"
+	icon = 'icons/obj/clockwork_objects.dmi'
+	icon_state = "stargazer"
 	density = TRUE
 	anchored = TRUE
 	use_power = NO_POWER_USE // Operates on Core charge by default
@@ -30,6 +30,14 @@
 
 	// Component tier based on performance
 	var/perfect_timings = 0
+
+	// Visual indicator for timing window
+	var/timing_window_active = FALSE
+
+/obj/machinery/resurgence_component_press/update_overlays()
+	. = ..()
+	if(timing_window_active)
+		. += "stargazer_light"
 
 /obj/machinery/resurgence_component_press/examine(mob/user)
 	. = ..()
@@ -112,7 +120,6 @@
 	perfect_timings = 0
 	if(use_power != NO_POWER_USE)
 		use_power = ACTIVE_POWER_USE
-	icon_state = "autolathe_n"
 
 	to_chat(user, "<span class='notice'>You start the component press. Watch for the timing indicators!</span>")
 	to_chat(user, "<span class='warning'>Click when the indicator shows GREEN for perfect timing!</span>")
@@ -151,12 +158,21 @@
 /obj/machinery/resurgence_component_press/proc/show_ready()
 	if(!current_operator || !pressing)
 		return
+	timing_window_active = TRUE
+	update_icon()
 	to_chat(current_operator, "<span class='green'><b>PRESS NOW!</b></span>")
 	playsound(src, 'sound/machines/ping.ogg', 50, TRUE)
+
+/obj/machinery/resurgence_component_press/proc/hide_timing_indicator()
+	timing_window_active = FALSE
+	update_icon()
 
 /obj/machinery/resurgence_component_press/proc/check_timing()
 	if(!pressing || !current_operator)
 		return
+
+	// Hide the timing indicator when player clicks
+	hide_timing_indicator()
 
 	var/current_time = world.time
 
@@ -189,6 +205,9 @@
 /obj/machinery/resurgence_component_press/proc/timing_failed()
 	if(!pressing || target_window_start == 0)
 		return
+
+	// Hide the timing indicator when window expires
+	hide_timing_indicator()
 
 	if(world.time > target_window_end && current_operator)
 		to_chat(current_operator, "<span class='warning'>Missed timing window! Timing reset.</span>")
@@ -266,9 +285,10 @@
 	perfect_timings = 0
 	target_window_start = 0
 	target_window_end = 0
+	timing_window_active = FALSE
 	if(use_power != NO_POWER_USE)
 		use_power = IDLE_POWER_USE
-	icon_state = "autolathe"
+	update_icon()
 
 /obj/machinery/resurgence_component_press/AltClick(mob/user)
 	if(!user.canUseTopic(src, BE_CLOSE))
