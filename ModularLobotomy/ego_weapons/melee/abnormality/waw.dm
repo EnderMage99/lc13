@@ -2708,6 +2708,6 @@
 /obj/item/ego_weapon/merryment/attack(mob/living/target, mob/living/carbon/human/user) //first is target, other is user
 	..()
 	if(ishostile(target))
-		var/mob/living/simple_animal/hostile/hostilemob1 = target
+		var/mob/living/simple_animal/hostile/hostilemob = target
 		if(hostilemob.target != user)
-			hostilemob1.deal_damage(force, WHITE_DAMAGE, user, attack_type = (ATTACK_TYPE_MELEE))
+			hostilemob.deal_damage(force, WHITE_DAMAGE, user, attack_type = (ATTACK_TYPE_MELEE))

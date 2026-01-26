@@ -2262,6 +2262,8 @@
 		TEMPERANCE_ATTRIBUTE = 80,
 		JUSTICE_ATTRIBUTE = 80,
 	)
+	/// Whether the throw effect is activated
+	var/activated = TRUE
 
 /obj/item/ego_weapon/fireball/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	..()

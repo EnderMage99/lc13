@@ -10,10 +10,6 @@
 	icon_living = "wild_ashe"
 	icon_dead = "wild_ashe_dead"
 	portrait = "wild_ashe"
-	pixel_x = -32
-	base_pixel_x = -32
-	pixel_y = -16
-	base_pixel_y = -16
 
 	maxHealth = 5000
 	health = 5000

@@ -12,8 +12,6 @@
 	icon_living = "coupid_contained"
 	icon_dead = "coupid_dead"
 	portrait = "coupid"
-	pixel_x = -16
-	base_pixel_x = -16
 
 	maxHealth = 1800
 	health = 1800

@@ -12,8 +12,6 @@
 	icon_dead = "eve_of_winter_dead"
 	portrait = "eve_of_winter"
 	gender = FEMALE
-	pixel_x = -16
-	base_pixel_x = -16
 
 	maxHealth = 2500
 	health = 2500
@@ -275,6 +273,35 @@
 	del_on_death = TRUE
 	/// Reference to Eve of Winter
 	var/mob/living/simple_animal/hostile/abnormality/eve_of_winter/connected_abno
+
+/mob/living/simple_animal/hostile/intice_statue_animated/AttackingTarget(atom/attacked_target)
+	. = ..()
+	if(!.)
+		return
+	if(!ishuman(attacked_target))
+		return
+	var/mob/living/carbon/human/H = attacked_target
+	// Convert insane humans to ice statues
+	if(H.sanity_lost)
+		ConvertToStatue(H)
+
+/// Convert a human to an ice statue
+/mob/living/simple_animal/hostile/intice_statue_animated/proc/ConvertToStatue(mob/living/carbon/human/H)
+	if(!H)
+		return
+	visible_message(span_danger("[H] is encased in ice by [src], becoming a frozen statue!"))
+	playsound(get_turf(H), 'sound/effects/glassbr1.ogg', 50, TRUE)
+	var/obj/structure/intice_statue/S = new(get_turf(H))
+	S.frozen_victim = H
+	S.connected_abno = connected_abno
+	H.forceMove(S)
+	ADD_TRAIT(H, TRAIT_NOBREATH, src)
+	ADD_TRAIT(H, TRAIT_INCAPACITATED, src)
+	ADD_TRAIT(H, TRAIT_IMMOBILIZED, src)
+	// Add to Eve's ice_statues list if connected
+	if(connected_abno && !QDELETED(connected_abno))
+		connected_abno.ice_statues += S
+		RegisterSignal(S, COMSIG_PARENT_QDELETING, TYPE_PROC_REF(/mob/living/simple_animal/hostile/abnormality/eve_of_winter, OnStatueDestroyed))
 
 /mob/living/simple_animal/hostile/intice_statue_animated/death(gibbed)
 	visible_message(span_notice("[src] shatters into a pile of ice shards!"))

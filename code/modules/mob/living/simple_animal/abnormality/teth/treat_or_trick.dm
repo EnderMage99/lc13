@@ -10,8 +10,6 @@
 	icon_living = "treat_contained"
 	icon_dead = "treat_dead"
 	portrait = "treat_or_trick"
-	pixel_x = -16
-	base_pixel_x = -16
 
 	maxHealth = 800
 	health = 800
@@ -31,7 +29,7 @@
 	work_damage_type = PALE_DAMAGE
 	work_damage_amount = 4
 	can_breach = TRUE
-	faction = list("neutral")
+	faction = list("neutral", "hostile")
 	move_to_delay = 5
 
 	work_chances = list(
@@ -74,7 +72,7 @@
 	/// List of soul mobs we've created
 	var/list/spawned_souls = list()
 	/// Timer for qliphoth decay
-	var/datum/timerid/qliphoth_decay_timer
+	var/qliphoth_decay_timer
 
 /mob/living/simple_animal/hostile/abnormality/treat_or_trick/PostSpawn()
 	. = ..()
@@ -117,6 +115,7 @@
 	. = ..()
 	if(!.)
 		return
+	update_icon_state()
 	// Turn up to 5 employees into Soul Mobs
 	var/list/potential_victims = list()
 	for(var/mob/living/carbon/human/H in GLOB.human_list)
@@ -151,10 +150,7 @@
 	is_trick = TRUE
 	visible_message(span_danger("[src]'s form twists and warps into something malevolent!"))
 	playsound(get_turf(src), 'sound/hallucinations/wail.ogg', 75, TRUE)
-	name = "Trick"
-	icon = 'ModularLobotomy/_Lobotomyicons/64x64.dmi'
-	icon_state = "trick"
-	icon_living = "trick"
+	update_icon_state()
 	// Trick resistances: RED Resisted, WHITE Normal, BLACK Resisted, PALE Absorbed
 	damage_coeff = list(RED_DAMAGE = 0.4, WHITE_DAMAGE = 1, BLACK_DAMAGE = 0.4, PALE_DAMAGE = -1)
 	melee_damage_lower = 30
@@ -225,12 +221,14 @@
 		damage_coeff = list(RED_DAMAGE = 1, WHITE_DAMAGE = 1.2, BLACK_DAMAGE = 0.5, PALE_DAMAGE = -1)
 		melee_damage_lower = 0
 		melee_damage_upper = 0
-		faction = list("neutral")
+		faction = list("neutral", "hostile")
 		StartQliphothDecay()
 	else if(is_trick)
 		icon = 'ModularLobotomy/_Lobotomyicons/64x64.dmi'
 		icon_state = "trick"
 		icon_living = "trick"
+		pixel_x = -16
+		base_pixel_x = -16
 	else
 		icon = 'ModularLobotomy/_Lobotomyicons/32x32.dmi'
 		icon_state = "treat"
