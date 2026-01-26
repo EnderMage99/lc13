@@ -512,3 +512,12 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 	attribute_requirements = list(
 							PRUDENCE_ATTRIBUTE = 40
 							)
+
+/obj/item/clothing/suit/armor/ego_gear/he/allergen
+	name = "allergen"
+	desc = "A coat that smells faintly of pollen. It makes your nose itch."
+	icon_state = "allergen"
+	armor = list(RED_DAMAGE = 0, WHITE_DAMAGE = 30, BLACK_DAMAGE = 50, PALE_DAMAGE = -10) // 70
+	attribute_requirements = list(
+							PRUDENCE_ATTRIBUTE = 40
+							)

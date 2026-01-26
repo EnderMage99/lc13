@@ -356,4 +356,9 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 	icon_state = "patch"
 	armor = list(RED_DAMAGE = 0, WHITE_DAMAGE = -40, BLACK_DAMAGE = 40, PALE_DAMAGE = 0) //20. Made out of flammable cotton so fire resist sucks ass.
 
+/obj/item/clothing/suit/armor/ego_gear/teth/hallowed
+	name = "hallowed"
+	desc = "Smells like candy. Sweet, sickening candy."
+	icon_state = "hallowed"
+	armor = list(RED_DAMAGE = 0, WHITE_DAMAGE = -20, BLACK_DAMAGE = 20, PALE_DAMAGE = 20) // 20
 

@@ -2690,3 +2690,24 @@
 		force = initial(force)
 		return
 
+/obj/item/ego_weapon/merryment
+	name = "misunderstanding"
+	desc = "A small mishap spirals further down."
+	special = "This weapon has a backstab ability \
+	It deals higher damage on hostiles attacking other people"
+	icon_state = "misunderstanding"
+	force = 20
+	damtype = WHITE_DAMAGE
+	swingstyle = WEAPONSWING_THRUST
+	attack_verb_continuous = list("stabs", "attacks", "slashes")
+	attack_verb_simple = list("stab", "attack", "slash")
+	hitsound = 'sound/weapons/ego/rapier1.ogg'
+	attribute_requirements = list(
+							JUSTICE_ATTRIBUTE = 80
+							)
+/obj/item/ego_weapon/merryment/attack(mob/living/target, mob/living/carbon/human/user) //first is target, other is user
+	..()
+	if(ishostile(target))
+		var/mob/living/simple_animal/hostile/hostilemob1 = target
+		if(hostilemob.target != user)
+			hostilemob1.deal_damage(force, WHITE_DAMAGE, user, attack_type = (ATTACK_TYPE_MELEE))

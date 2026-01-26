@@ -2243,3 +2243,42 @@
 	damage = 85
 	damage_type = WHITE_DAMAGE
 	icon_state = "star"
+
+/obj/item/ego_weapon/fireball
+	name = "fireball"
+	desc = "Even though it's blazing in your hand, It feels like it is just a warm rock, And yet you want to throw it at someone."
+	special = "This weapon can be thrown to ignite the terrain around it."
+	icon_state = "wildfire"
+	force = 50 // i ripped most of this from chaos dunk, but i want this to be a non-joke ego
+	attack_speed = 1
+	throwforce = 90
+	throw_speed = 1
+	throw_range = 10
+	damtype = RED_DAMAGE
+	hitsound = 'sound/weapons/fixer/generic/gen1.ogg'
+	attribute_requirements = list(
+		FORTITUDE_ATTRIBUTE = 100,
+		PRUDENCE_ATTRIBUTE = 80,
+		TEMPERANCE_ATTRIBUTE = 80,
+		JUSTICE_ATTRIBUTE = 80,
+	)
+
+/obj/item/ego_weapon/fireball/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
+	..()
+	if(!activated)
+		return
+	if((ishuman(hit_atom)))
+		var/mob/living/carbon/M = hit_atom
+		M.deal_damage(10, STAMINA, source = throwingdatum.thrower, attack_type = (ATTACK_TYPE_THROWING))
+		if(prob(75))
+			M.Paralyze(60)
+			visible_message(span_danger("[M] can't handle the heat of the [src]!"))
+			return
+	else
+		new /obj/effect/temp_visual/explosion(get_turf(src))
+		visible_message(span_danger("[src] ignites violently!"))
+		playsound(src, 'sound/abnormalities/crying_children/sorrow_shot.ogg', 45, FALSE, 5)
+		for(var/mob/living/L in view(1, src))
+			var/aoe = 50
+			L.deal_damage(aoe, RED_DAMAGE, throwingdatum.thrower, attack_type = (ATTACK_TYPE_THROWING))
+			new /obj/effect/temp_visual/small_smoke/halfsecond(get_turf(L))

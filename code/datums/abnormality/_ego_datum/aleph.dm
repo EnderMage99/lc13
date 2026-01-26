@@ -221,3 +221,12 @@
 /datum/ego_datum/armor/throne
 	item_path = /obj/item/clothing/suit/armor/ego_gear/aleph/throne
 	cost = 100
+
+// Wild Ashe - Fireball
+/datum/ego_datum/weapon/fireball
+	item_path = /obj/item/ego_weapon/fireball
+	cost = 100
+
+/datum/ego_datum/armor/fireball
+	item_path = /obj/item/clothing/suit/armor/ego_gear/aleph/fireball
+	cost = 100

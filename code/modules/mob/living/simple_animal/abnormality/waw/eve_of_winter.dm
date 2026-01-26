@@ -6,11 +6,12 @@
 /mob/living/simple_animal/hostile/abnormality/eve_of_winter
 	name = "Eve of Winter"
 	desc = "A beautiful figure carved from ice and frost. The air around them is bitterly cold."
-	icon = 'ModularLobotomy/_Lobotomyicons/64x64.dmi'
-	icon_state = "eve_of_winter"
-	icon_living = "eve_of_winter"
+	icon = 'ModularLobotomy/_Lobotomyicons/32x32.dmi'
+	icon_state = "eve_contained"
+	icon_living = "eve_contained"
 	icon_dead = "eve_of_winter_dead"
 	portrait = "eve_of_winter"
+	gender = FEMALE
 	pixel_x = -16
 	base_pixel_x = -16
 
@@ -43,7 +44,8 @@
 	)
 
 	ego_list = list(
-		// Add EGO datums when created
+		/datum/ego_datum/weapon/merryment,
+		/datum/ego_datum/armor/merryment,
 	)
 	gift_type = null // Add gift when created
 	abnormality_origin = ABNORMALITY_ORIGIN_ARTBOOK
@@ -99,8 +101,9 @@
 	// Transform to Adam
 	is_adam = TRUE
 	name = "Adam"
-	icon_state = "adam"
-	icon_living = "adam"
+	icon_state = "eve_breach"
+	icon_living = "eve_breach"
+	gender = MALE
 	visible_message(span_danger("[src] transforms into a terrifying visage of winter's wrath!"))
 
 /// Adam doesn't leave containment zones
@@ -255,8 +258,8 @@
 	name = "Awakened Ice Statue"
 	desc = "A frozen figure animated by malevolent cold. Its movements are jerky but deadly."
 	icon = 'icons/obj/flora/icedecor.dmi'
-	icon_state = "ice_grave1"
-	icon_living = "ice_grave1"
+	icon_state = "ice_grave2"
+	icon_living = "ice_grave2"
 	maxHealth = 400
 	health = 400
 	damage_coeff = list(RED_DAMAGE = 1.5, WHITE_DAMAGE = 0.5, BLACK_DAMAGE = 1, PALE_DAMAGE = 1)
@@ -286,8 +289,8 @@
 /obj/structure/winter_present
 	name = "Frost-Covered Present"
 	desc = "A gift wrapped in frost and tied with icicles. What could be inside?"
-	icon = 'icons/obj/items_and_weapons.dmi'
-	icon_state = "yourfloor_rainbow"  // Placeholder
+	icon = 'icons/obj/storage.dmi'
+	icon_state = "giftdeliverypackage3"
 	anchored = FALSE
 	density = FALSE
 
@@ -311,11 +314,11 @@
 			H.adjustSanityLoss(30)
 		new /obj/effect/gibspawner/generic(get_turf(src))
 	else
-		// Good outcome - random loot
+		// Good outcome - random loot (can include Icicle Spear)
 		var/loot = pick(list(
-			/obj/item/storage/firstaid/regular,  // Healing item
-			/obj/item/stack/medical/bruise_pack,  // Bandages
-			/obj/item/reagent_containers/syringe,  // Syringe
+			/obj/item/storage/firstaid/regular,
+			/obj/item/stack/medical/bruise_pack,
+			/obj/item/ego_weapon/icicle_spear,
 		))
 		new loot(get_turf(src))
 		visible_message(span_nicegreen("Inside is a useful item!"))
@@ -331,3 +334,22 @@
 	desc = "A sharp piece of magical ice."
 	icon_state = "large"
 	color = "#88DDFF"
+
+//this is the alt ego for Merryment
+/obj/item/ego_weapon/icicle_spear
+	name = "icicle spear"
+	desc = "A gift with good intentions, Best used to maim anything around. \
+	Made of ice, You know it's best to get things done with this so there is no proof afterwards."
+	special = "This weapon deals the same damage in Red."
+	icon_state = "iciclespear"
+	force = 32
+	reach = 2
+	stuntime = 5
+	attack_speed = 1.2
+	damtype = WHITE_DAMAGE
+	attack_verb_continuous = list("impales", "jabs", "stabs", "lacerates", "gores")
+	attack_verb_simple = list("impale", "jab", "stab", "lacerate", "gore")
+	hitsound = 'sound/weapons/ego/spear1.ogg'
+	attribute_requirements = list(
+							FORTITUDE_ATTRIBUTE = 40
+							)

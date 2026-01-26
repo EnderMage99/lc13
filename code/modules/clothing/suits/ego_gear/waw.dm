@@ -511,3 +511,13 @@ Any attempt to code risk class armor will result in a 10 day Github ban.*/
 							JUSTICE_ATTRIBUTE = 60
 							)
 
+/obj/item/clothing/suit/armor/ego_gear/waw/merryment
+	name = "merryment"
+	desc = "A coat that emanates a faint chill. It feels like winter never left."
+	icon_state = "merryment"
+	armor = list(RED_DAMAGE = 30, WHITE_DAMAGE = 60, BLACK_DAMAGE = 30, PALE_DAMAGE = 20) // 140
+	attribute_requirements = list(
+							PRUDENCE_ATTRIBUTE = 60,
+							TEMPERANCE_ATTRIBUTE = 60
+							)
+

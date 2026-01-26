@@ -403,3 +403,12 @@
 /datum/ego_datum/armor/patch
 	item_path = /obj/item/clothing/suit/armor/ego_gear/teth/patch
 	cost = 20
+
+// Treat or Trick - Hallowed
+/datum/ego_datum/weapon/hallowed
+	item_path = /obj/item/ego_weapon/hallowed
+	cost = 20
+
+/datum/ego_datum/armor/hallowed
+	item_path = /obj/item/clothing/suit/armor/ego_gear/teth/hallowed
+	cost = 20

@@ -2,15 +2,14 @@
 // HE-class abnormality - Pollen/allergy themed
 // Part of the Holiday abnormality set
 
-/// Amount of histamine to apply
 #define COUPID_HISTAMINE_AMOUNT 10
 
 /mob/living/simple_animal/hostile/abnormality/coupid
 	name = "Coupid"
 	desc = "A cherubic figure wreathed in flowers and pollen. Its presence makes your eyes water."
-	icon = 'ModularLobotomy/_Lobotomyicons/64x64.dmi'
-	icon_state = "coupid"
-	icon_living = "coupid"
+	icon = 'ModularLobotomy/_Lobotomyicons/32x32.dmi'
+	icon_state = "coupid_contained"
+	icon_living = "coupid_contained"
 	icon_dead = "coupid_dead"
 	portrait = "coupid"
 	pixel_x = -16
@@ -21,8 +20,8 @@
 	threat_level = HE_LEVEL
 	start_qliphoth = 2
 	max_boxes = 20
-	damage_coeff = list(RED_DAMAGE = 1, WHITE_DAMAGE = 0.5, BLACK_DAMAGE = -1, PALE_DAMAGE = 0.4)
 	// RED Normal, WHITE Endured, BLACK Absorbed, PALE Resisted
+	damage_coeff = list(RED_DAMAGE = 1, WHITE_DAMAGE = 0.5, BLACK_DAMAGE = -1, PALE_DAMAGE = 0.4)
 
 	melee_damage_type = BLACK_DAMAGE
 	melee_damage_lower = 15
@@ -45,9 +44,10 @@
 	)
 
 	ego_list = list(
-		// Add EGO datums when created
+		/datum/ego_datum/weapon/allergen,
+		/datum/ego_datum/armor/allergen,
 	)
-	gift_type = null // Add gift when created
+	gift_type = null
 	abnormality_origin = ABNORMALITY_ORIGIN_ARTBOOK
 	chem_type = /datum/reagent/abnormality/sin/gluttony
 
@@ -67,13 +67,10 @@
 
 	/// Cooldown for pollen spread during breach
 	var/pollen_cooldown = 0
-	var/pollen_cooldown_time = 10 SECONDS
 	/// List of blossoms we've created
 	var/list/spawned_blossoms = list()
-	// Coupid heals the worker
+	/// Heal amount after work
 	var/heal_amount = 20
-	/// Can't move/attack when performing finishing move
-	var/finishing = FALSE
 
 /mob/living/simple_animal/hostile/abnormality/coupid/Destroy()
 	for(var/obj/structure/forbidden_blossom/B in spawned_blossoms)
@@ -82,52 +79,17 @@
 	spawned_blossoms.Cut()
 	return ..()
 
-/mob/living/simple_animal/hostile/abnormality/coupid/CanAttack(atom/the_target)
-	if(finishing)
-		return FALSE
-	return ..()
-
-/mob/living/simple_animal/hostile/abnormality/coupid/Move()
-	if(finishing)
-		return FALSE
-	return ..()
-
-/mob/living/simple_animal/hostile/abnormality/coupid/Goto(target, delay, minimum_distance)
-	if(finishing)
-		return FALSE
-	return ..()
-
-/mob/living/simple_animal/hostile/abnormality/coupid/DestroySurroundings()
-	if(finishing)
-		return FALSE
-	return ..()
-
-/mob/living/simple_animal/hostile/abnormality/coupid/AttackingTarget(atom/attacked_target)
-	if(finishing)
-		return
+/// During work, agents suffer allergic response
+/mob/living/simple_animal/hostile/abnormality/coupid/Worktick(mob/living/carbon/human/user, bubble_type, work_type)
 	. = ..()
-	if(.)
-		if(!ishuman(attacked_target))
-			return
-		var/mob/living/carbon/human/TH = attacked_target
-		if(TH.health < 0)
-			finishing = TRUE
-			TH.Stun(4 SECONDS)
-			forceMove(get_turf(TH))
-			for(var/i = 1 to 5)
-				if(!targets_from.Adjacent(TH) || QDELETED(TH) || TH.health > 0)
-					finishing = FALSE
-					return
-				SLEEP_CHECK_DEATH(3)
-				TH.attack_animal(src)
-			if(!targets_from.Adjacent(TH) || QDELETED(TH) || TH.health > 0)
-				finishing = FALSE
-				return
-			playsound(get_turf(src), 'sound/weapons/whip.ogg', 50, TRUE)
-			TH.gib()
-			finishing = FALSE
+	if(!ishuman(user))
+		return
+	// Apply histamine during work regardless of success
+	if(prob(30))
+		user.reagents?.add_reagent(/datum/reagent/toxin/histamine, COUPID_HISTAMINE_AMOUNT * 0.5)
+		to_chat(user, span_warning("The pollen makes your nose itch..."))
 
-/// After work completes, heal the worker but don't remove histamine
+/// After work, heal the worker but don't remove histamine
 /mob/living/simple_animal/hostile/abnormality/coupid/WorkComplete(mob/living/carbon/human/user, work_type, pe, work_time, canceled)
 	. = ..()
 	if(!ishuman(user))
@@ -147,31 +109,55 @@
 	. = ..()
 	if(!.)
 		return
+	icon_state = "coupid"
+	icon_living = "coupid"
 
 /mob/living/simple_animal/hostile/abnormality/coupid/Life()
 	. = ..()
-	if(!.)
-		return FALSE
-	if(status_flags & GODMODE)
-		return FALSE
+	if(!. || (status_flags & GODMODE))
+		return
 	// Spread pollen during breach
 	if(pollen_cooldown < world.time)
 		SpreadPollen()
-		pollen_cooldown = world.time + pollen_cooldown_time
+		pollen_cooldown = world.time + 10 SECONDS
 
 /// Spread pollen in an area around Coupid
 /mob/living/simple_animal/hostile/abnormality/coupid/proc/SpreadPollen()
-	var/pollen_range = 5
-	for(var/turf/T in view(pollen_range, src))
+	for(var/turf/T in view(5, src))
 		if(prob(30))
 			new /obj/effect/temp_visual/pollen(T)
-	// Apply histamine to nearby humans
-	for(var/mob/living/carbon/human/H in view(pollen_range, src))
+	for(var/mob/living/carbon/human/H in view(5, src))
 		if(H.stat == DEAD)
 			continue
 		H.reagents?.add_reagent(/datum/reagent/toxin/histamine, COUPID_HISTAMINE_AMOUNT)
 		if(prob(20))
 			to_chat(H, span_warning("The pollen makes you start sneezing uncontrollably!"))
+
+/// When Coupid kills someone, spawn a Forbidden Blossom
+/mob/living/simple_animal/hostile/abnormality/coupid/AttackingTarget(atom/attacked_target)
+	. = ..()
+	if(!.)
+		return
+	if(!ishuman(attacked_target))
+		return
+	var/mob/living/carbon/human/H = attacked_target
+	if(H.stat == DEAD)
+		SpawnBlossom(get_turf(H))
+
+/// Spawn a Forbidden Blossom on a corpse
+/mob/living/simple_animal/hostile/abnormality/coupid/proc/SpawnBlossom(turf/T)
+	if(!T)
+		return
+	visible_message(span_danger("A grotesque flower blooms from the corpse!"))
+	var/obj/structure/forbidden_blossom/B = new(T)
+	B.connected_abno = src
+	spawned_blossoms += B
+	RegisterSignal(B, COMSIG_PARENT_QDELETING, PROC_REF(OnBlossomDestroyed))
+
+/mob/living/simple_animal/hostile/abnormality/coupid/proc/OnBlossomDestroyed(obj/structure/forbidden_blossom/B)
+	SIGNAL_HANDLER
+	UnregisterSignal(B, COMSIG_PARENT_QDELETING)
+	spawned_blossoms -= B
 
 // ==================== FORBIDDEN BLOSSOM ====================
 
@@ -188,9 +174,6 @@
 	var/mob/living/simple_animal/hostile/abnormality/coupid/connected_abno
 	/// Cooldown for allergen release
 	var/allergen_cooldown = 0
-	var/allergen_cooldown_time = 8 SECONDS
-	/// Range for attracting abnormalities
-	var/attract_range = 15
 
 /obj/structure/forbidden_blossom/Initialize(mapload)
 	. = ..()
@@ -206,15 +189,14 @@
 	if(allergen_cooldown < world.time)
 		ReleaseAllergens()
 		AttractAbnormalities()
-		allergen_cooldown = world.time + allergen_cooldown_time
+		allergen_cooldown = world.time + 8 SECONDS
 
 /// Release allergens in area
 /obj/structure/forbidden_blossom/proc/ReleaseAllergens()
-	var/allergen_range = 4
-	for(var/turf/T in view(allergen_range, src))
+	for(var/turf/T in view(4, src))
 		if(prob(20))
 			new /obj/effect/temp_visual/pollen(T)
-	for(var/mob/living/carbon/human/H in view(allergen_range, src))
+	for(var/mob/living/carbon/human/H in view(4, src))
 		if(H.stat == DEAD)
 			continue
 		H.reagents?.add_reagent(/datum/reagent/toxin/histamine, COUPID_HISTAMINE_AMOUNT)
@@ -223,12 +205,9 @@
 
 /// Attract nearby abnormalities
 /obj/structure/forbidden_blossom/proc/AttractAbnormalities()
-	for(var/mob/living/simple_animal/hostile/abnormality/A in range(attract_range, src))
-		if(A == connected_abno)
+	for(var/mob/living/simple_animal/hostile/abnormality/A in range(15, src))
+		if(A == connected_abno || A.IsContained())
 			continue
-		if(A.IsContained())
-			continue
-		// Give abnormalities a target near the blossom
 		if(!A.target && prob(20))
 			A.GiveTarget(src)
 

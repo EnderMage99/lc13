@@ -5,7 +5,7 @@
 /mob/living/simple_animal/hostile/abnormality/wild_ashe
 	name = "Wild Ashe"
 	desc = "A towering figure wreathed in flames and ash. The heat emanating from it is unbearable."
-	icon = 'ModularLobotomy/_Lobotomyicons/96x96.dmi'
+	icon = 'ModularLobotomy/_Lobotomyicons/32x32.dmi'
 	icon_state = "wild_ashe"
 	icon_living = "wild_ashe"
 	icon_dead = "wild_ashe_dead"
@@ -49,9 +49,10 @@
 	)
 
 	ego_list = list(
-		// Add EGO datums when created
+		/datum/ego_datum/weapon/fireball,
+		/datum/ego_datum/armor/fireball,
 	)
-	gift_type = null // Add gift when created
+	gift_type = null
 	abnormality_origin = ABNORMALITY_ORIGIN_ARTBOOK
 	chem_type = /datum/reagent/abnormality/sin/wrath
 
@@ -72,9 +73,6 @@
 
 	/// Cooldown for hall burning
 	var/hall_burn_cooldown = 0
-	var/hall_burn_cooldown_time = 3 SECONDS
-	/// Damage for burning targets special attack
-	var/burning_target_damage = 500
 
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/Initialize(mapload)
 	. = ..()
@@ -84,45 +82,36 @@
 	UnregisterSignal(SSdcs, COMSIG_GLOB_MOB_DEATH)
 	return ..()
 
-/// Work is noticeably slow - multiply work speed by 1.5 (higher = slower)
+/// Work is noticeably slow
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/SpeedWorktickOverride(mob/living/carbon/human/user, work_speed, init_work_speed, work_type)
 	return work_speed * 1.5
 
-/// Work failure deals light burn damage instead of normal work damage
+/// Work deals light burn damage and spawns fire when employee takes burn damage
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/WorktickFailure(mob/living/carbon/human/user)
-	// Deal light burn damage instead of normal work damage
-	user.deal_damage(work_damage_amount * 0.5, FIRE, src, attack_type = ATTACK_TYPE_OTHER)
+	user.deal_damage(work_damage_amount * 0.5, FIRE, src)
 	WorkDamageEffect()
-	// When employee takes burn damage, spawn fire somewhere in facility
-	SpawnRandomFire()
+	// When employee takes burn damage during work, spawn fire
+	if(prob(30))
+		SpawnRandomFire()
 
 /// On human death from burn damage, reduce qliphoth
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/proc/OnMobDeath(datum/source, mob/living/died, gibbed)
 	SIGNAL_HANDLER
-	if(!IsContained())
+	if(!(status_flags & GODMODE))
 		return
-	if(!ishuman(died))
+	if(!ishuman(died) || died.z != z)
 		return
-	if(died.z != z)
-		return
-	// Check if died from fire/burn damage (check fire loss)
 	var/mob/living/carbon/human/H = died
 	if(H.getFireLoss() > (H.maxHealth * 0.3))
-		// Likely died from burn damage
 		datum_reference.qliphoth_change(-1)
 		SpawnRandomFire()
 
-/// Spawn fire at a random non-containment location
+/// Spawn fire at a random location outside containment
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/proc/SpawnRandomFire()
 	var/list/valid_turfs = list()
 	for(var/turf/open/T in GLOB.department_centers)
-		valid_turfs += T
-	// Find turfs outside containment zones
-	for(var/area/A in world)
-		if(!istype(A, /area/containment_zone))
-			for(var/turf/open/T in A)
-				if(prob(5) && !locate(/obj/effect/turf_fire) in T)
-					valid_turfs += T
+		if(!locate(/obj/effect/turf_fire) in T)
+			valid_turfs += T
 	if(length(valid_turfs))
 		var/turf/fire_turf = pick(valid_turfs)
 		new /obj/effect/turf_fire(fire_turf)
@@ -131,54 +120,49 @@
 	. = ..()
 	if(!.)
 		return
-	// Increase light during breach
+	icon = 'ModularLobotomy/_Lobotomyicons/64x64.dmi'
+	icon_state = "wildashe"
+	icon_living = "wildashe"
+	pixel_x = -16
+	base_pixel_x = -16
 	light_range = 15
 	light_power = 10
 	update_light()
-	// Spawn some initial fires
 	for(var/i in 1 to 5)
 		SpawnRandomFire()
 
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/Life()
 	. = ..()
-	if(!.)
-		return FALSE
-	if(status_flags & GODMODE)
-		return FALSE
+	if(!. || (status_flags & GODMODE))
+		return
 	// Burn humans in hallways
 	if(hall_burn_cooldown < world.time)
 		BurnHallwayHumans()
-		hall_burn_cooldown = world.time + hall_burn_cooldown_time
+		hall_burn_cooldown = world.time + 3 SECONDS
 
 /// Burn humans who are outside containment zones
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/proc/BurnHallwayHumans()
-	var/burn_damage = 10
 	for(var/mob/living/carbon/human/H in GLOB.human_list)
-		if(H.stat == DEAD)
-			continue
-		if(H.z != z)
+		if(H.stat == DEAD || H.z != z)
 			continue
 		var/area/A = get_area(H)
-		if(!A)
+		if(!A || istype(A, /area/containment_zone))
 			continue
-		// Check if outside containment zones
-		if(!istype(A, /area/containment_zone))
-			H.deal_damage(burn_damage, FIRE, src, attack_type = ATTACK_TYPE_SPECIAL)
-			if(prob(20))
-				to_chat(H, span_danger("The oppressive heat burns you!"))
-				H.adjust_fire_stacks(1)
-				H.IgniteMob()
+		H.deal_damage(10, FIRE, src)
+		if(prob(20))
+			to_chat(H, span_danger("The oppressive heat burns you!"))
+			H.adjust_fire_stacks(1)
+			H.IgniteMob()
 
-/// Override attack to deal massive damage to burning targets
+/// Attacking burning targets deals 500 RED
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/AttackingTarget(atom/attacked_target)
 	if(!ishuman(attacked_target))
 		return ..()
 	var/mob/living/carbon/human/H = attacked_target
-	// Check if target is on fire
 	if(H.on_fire)
 		visible_message(span_danger("[src] unleashes a devastating inferno upon the burning [H]!"))
 		playsound(get_turf(H), 'sound/effects/explosion1.ogg', 75, TRUE)
-		H.deal_damage(burning_target_damage, RED_DAMAGE, src, attack_type = (ATTACK_TYPE_MELEE | ATTACK_TYPE_SPECIAL))
+		H.deal_damage(500, RED_DAMAGE, src)
 		new /obj/effect/temp_visual/fire/fast(get_turf(H))
 		return TRUE
 	return ..()
@@ -194,12 +178,9 @@
 
 /mob/living/simple_animal/hostile/abnormality/wild_ashe/update_icon_state()
 	if(status_flags & GODMODE)
-		// Contained
 		light_range = 5
 		light_power = 3
-		update_light()
 	else
-		// Breached
 		light_range = 15
 		light_power = 10
-		update_light()
+	update_light()

@@ -824,3 +824,51 @@
 				human.adjustBruteLoss(-heal_brute)
 				human.apply_lc_protection(2)
 		cooldown = world.time + cooldown_duration
+
+/obj/item/ego_weapon/hallowed
+	name = "treatbag"
+	desc = "It's just a craving, Yet it's so strong."
+	special = "This E.G.O. fires hard candies at enemies."
+	icon_state = "zauberhorn"
+	force = 16
+	damtype = PALE_DAMAGE
+	attack_speed = 0.7
+	attack_verb_continuous = list("whomps", "whacks")
+	attack_verb_simple = list("whomp", "whack")
+	hitsound = 'sound/weapons/fixer/generic/club2.ogg'
+
+	var/gun_cooldown
+	var/gun_cooldown_time = 1 SECONDS
+
+/obj/item/ego_weapon/hallowed/Initialize()
+	RegisterSignal(src, COMSIG_PROJECTILE_ON_HIT, PROC_REF(projectile_hit))
+	return ..()
+
+/obj/item/ego_weapon/hallowed/afterattack(atom/target, mob/living/user, proximity_flag, clickparams)
+	if(!CanUseEgo(user))
+		return
+	if(!proximity_flag && gun_cooldown <= world.time)
+		var/turf/proj_turf = user.loc
+		if(!isturf(proj_turf))
+			return
+		var/obj/projectile/ego_bullet/hallowed/G = new /obj/projectile/ego_bullet/hallowed(proj_turf)
+		G.fired_from = src //for signal check
+		playsound(user, 'sound/abnormalities/pagoda/throw.ogg', 100, TRUE) //this is just zauber but we got silly in a vc
+		G.firer = user
+		G.preparePixelProjectile(target, user, clickparams)
+		G.fire()
+		G.damage*=force_multiplier
+		gun_cooldown = world.time + gun_cooldown_time
+		return
+
+/obj/item/ego_weapon/hallowed/proc/projectile_hit(atom/fired_from, atom/movable/firer, atom/target, Angle)
+	SIGNAL_HANDLER
+	return TRUE
+
+/obj/projectile/ego_bullet/hallowed
+	name = "hard candy"
+	icon = 'icons/obj/food/food.dmi'
+	icon_state = "candycorn"
+	hitsound = 'sound/weapons/fixer/generic/club3.ogg'
+	damage = 10
+	damage_type = PALE_DAMAGE

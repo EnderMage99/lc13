@@ -547,3 +547,12 @@
 	item_path = /obj/item/ego_weapon/encompassing
 	cost = 50
 
+// Eve of Winter - Merryment
+/datum/ego_datum/weapon/merryment
+	item_path = /obj/item/ego_weapon/merryment
+	cost = 50
+
+/datum/ego_datum/armor/merryment
+	item_path = /obj/item/clothing/suit/armor/ego_gear/waw/merryment
+	cost = 50
+
