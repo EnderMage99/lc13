@@ -26,10 +26,10 @@
 	playsound(get_turf(src), 'sound/machines/cryo_warning.ogg', 50, TRUE, -1)
 	var/mob/living/carbon/human/H = target
 
-	// Check for existing skill modification
+	// Check for existing implanted skill modification
 	var/obj/item/organ/cyberimp/chest/body_modification/SA = H.getorganslot(ORGAN_SLOT_HEART_AID)
 	if(SA && istype(SA, /obj/item/organ/cyberimp/chest/body_modification))
-		to_chat(user, span_notice("The target currently has a Rank [SA.rank] skill modification installed."))
+		to_chat(user, span_notice("The target currently has a Rank [SA.rank] implanted skill modification."))
 		to_chat(user, span_notice("Modification Info:"))
 		to_chat(user, span_notice("- Slots: [SA.max_slots]"))
 		to_chat(user, span_notice("- Max Charge: [SA.max_charge]"))
@@ -38,6 +38,20 @@
 		for(var/skill_type in SA.attached_skills)
 			var/datum/action/A = skill_type
 			to_chat(user, span_notice("  • [initial(A.name)]"))
+
+	// Check for existing injectable skill modification
+	for(var/obj/item/body_modification_injectable/inj in H.contents)
+		if(inj.used)
+			to_chat(user, span_notice("The target currently has a Rank [inj.rank] injectable skill modification."))
+			to_chat(user, span_notice("Modification Info:"))
+			to_chat(user, span_notice("- Slots: [inj.max_slots]"))
+			to_chat(user, span_notice("- Max Charge: [inj.max_charge]"))
+			to_chat(user, span_notice("- Current Charge: [inj.current_charge]"))
+			to_chat(user, span_notice("- Attached Skills: [length(inj.attached_skills)]"))
+			for(var/skill_type in inj.attached_skills)
+				var/datum/action/A = skill_type
+				to_chat(user, span_notice("  • [initial(A.name)]"))
+			break
 
 	// Calculate stat average
 	var/stattotal = 0
@@ -135,18 +149,7 @@
 				to_chat(user, span_warning("You stop the removal process."))
 				return
 
-			// Remove all skills granted by this injectable
-			for(var/skill_type in inj.attached_skills)
-				for(var/datum/action/A in H.actions)
-					if(A.type == skill_type)
-						UnregisterSignal(A, COMSIG_ACTION_TRIGGER)
-						A.Remove(H)
-						qdel(A)
-						break
-
-			// Remove the injectable and place it on the ground
-			inj.forceMove(get_turf(H))
-			inj.used = FALSE
+			inj.remove_skills()
 
 			to_chat(user, span_notice("You successfully remove the injectable skill modification from [H]!"))
 			to_chat(H, span_warning("You feel your modificationed abilities fading away."))

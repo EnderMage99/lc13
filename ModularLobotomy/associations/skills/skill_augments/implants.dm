@@ -141,6 +141,7 @@
 	var/max_charge = 40
 	var/current_charge = 40
 	var/list/attached_skills = list()
+	var/list/granted_actions = list()
 	var/list/skill_charge_costs = list()
 	var/used = FALSE
 
@@ -221,6 +222,7 @@
 	for(var/skill_type in attached_skills)
 		var/datum/action/A = new skill_type()
 		A.Grant(H)
+		granted_actions += A
 
 		// Hook into the action's Trigger to consume charge
 		if(istype(A, /datum/action/cooldown))
@@ -230,6 +232,20 @@
 	to_chat(user, span_notice("You successfully inject [src] into [H]!"))
 	to_chat(H, span_notice("You feel new abilities coursing through your body!"))
 	playsound(get_turf(H), 'sound/items/syringeproj.ogg', 50, FALSE)
+
+/// Removes all granted skills from the host and cleans up
+/obj/item/body_modification_injectable/proc/remove_skills()
+	if(!ishuman(loc))
+		return
+	var/mob/living/carbon/human/H = loc
+	for(var/datum/action/A in granted_actions)
+		UnregisterSignal(A, COMSIG_ACTION_TRIGGER)
+		A.Remove(H)
+		qdel(A)
+	granted_actions.Cut()
+	used = FALSE
+	to_chat(H, span_notice("The injectable skill modification is removed from your body."))
+	forceMove(get_turf(H))
 
 /obj/item/body_modification_injectable/proc/on_skill_used(datum/action/source)
 	SIGNAL_HANDLER

@@ -357,10 +357,10 @@
 	to_chat(user, span_notice("Average Stats: [avg_stats]"))
 	to_chat(user, span_notice("Maximum Compatible Rank: [max_rank]"))
 
-	// Check for existing modification
+	// Check for existing organ-based modification
 	var/obj/item/organ/cyberimp/chest/body_modification/existing = H.getorganslot(ORGAN_SLOT_HEART_AID)
 	if(existing && istype(existing))
-		to_chat(user, span_notice("--- CURRENT MODIFICATION ---"))
+		to_chat(user, span_notice("--- CURRENT MODIFICATION (Implant) ---"))
 		to_chat(user, span_notice("Type: [existing.name]"))
 		to_chat(user, span_notice("Rank: [existing.rank] | Max Slots: [existing.max_slots]"))
 		to_chat(user, span_notice("Charge: [existing.current_charge]/[existing.max_charge]"))
@@ -372,7 +372,27 @@
 				var/list/skill_info = current_skill_data[skill_type]
 				if(skill_info)
 					to_chat(user, span_notice("• [skill_info["name"]] ([skill_info["charge_cost"]] charge)"))
-	else
+
+	// Check for existing injectable modification
+	var/found_injectable = FALSE
+	for(var/obj/item/body_modification_injectable/inj in H.contents)
+		if(inj.used)
+			found_injectable = TRUE
+			to_chat(user, span_notice("--- CURRENT MODIFICATION (Injectable) ---"))
+			to_chat(user, span_notice("Type: [inj.name]"))
+			to_chat(user, span_notice("Rank: [inj.rank] | Max Slots: [inj.max_slots]"))
+			to_chat(user, span_notice("Charge: [inj.current_charge]/[inj.max_charge]"))
+
+			if(length(inj.attached_skills))
+				to_chat(user, span_notice("Installed Skills:"))
+				var/list/current_skill_data = get_skill_data()
+				for(var/skill_type in inj.attached_skills)
+					var/list/skill_info = current_skill_data[skill_type]
+					if(skill_info)
+						to_chat(user, span_notice("• [skill_info["name"]] ([skill_info["charge_cost"]] charge)"))
+			break
+
+	if(!existing && !found_injectable)
 		to_chat(user, span_notice("No body modification detected."))
 
 	playsound(src, 'sound/machines/ping.ogg', 50, FALSE)
@@ -384,9 +404,18 @@
 
 	var/mob/living/carbon/human/H = user
 
-	// Check for existing modification
-	var/obj/item/organ/cyberimp/chest/body_modification/existing = H.getorganslot(ORGAN_SLOT_HEART_AID)
-	if(!existing || !istype(existing))
+	// Check for existing organ-based modification
+	var/obj/item/organ/cyberimp/chest/body_modification/existing_organ = H.getorganslot(ORGAN_SLOT_HEART_AID)
+	var/has_organ = existing_organ && istype(existing_organ)
+
+	// Check for existing injectable modification
+	var/obj/item/body_modification_injectable/existing_injectable
+	for(var/obj/item/body_modification_injectable/inj in H.contents)
+		if(inj.used)
+			existing_injectable = inj
+			break
+
+	if(!has_organ && !existing_injectable)
 		to_chat(user, span_warning("No body modification detected to remove!"))
 		return
 
@@ -410,8 +439,12 @@
 	playsound(src, 'sound/machines/defib_SaftyOn.ogg', 50, FALSE)
 
 	if(do_after(user, 3 SECONDS, target = src))
-		existing.Remove(H, special = TRUE)
-		qdel(existing)
+		if(has_organ)
+			existing_organ.Remove(H, special = TRUE)
+			qdel(existing_organ)
+		if(existing_injectable)
+			existing_injectable.remove_skills()
+			qdel(existing_injectable)
 		to_chat(user, span_notice("Body modification successfully removed!"))
 		playsound(src, 'sound/machines/defib_success.ogg', 50, FALSE)
 	else
