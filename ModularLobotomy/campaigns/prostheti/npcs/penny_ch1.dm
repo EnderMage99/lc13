@@ -15,10 +15,10 @@
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells
 	name = "Penny Wells"
 	desc = "A young woman with an infectious energy. She seems to know every corner of this factory."
-	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// PLACEHOLDER
-	icon_state = "elliot"	// PLACEHOLDER
-	icon_living = "elliot"	// PLACEHOLDER
-	portrait = "the-goat.PNG"	// PLACEHOLDER — needs 192x192 Penny portrait
+	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP — young female NPC, needs custom Penny sprite
+	icon_state = "electic"	// TEMP — Amber Knight stand-in
+	icon_living = "electic"	// TEMP
+	portrait = "tinkerer.PNG"	// TEMP — needs 192x192 Penny portrait
 	typing_interval = 40
 	random_emotes = "looks around excitedly;hums a tune;waves at someone on the factory floor"
 

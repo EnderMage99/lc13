@@ -16,7 +16,8 @@
 #define PROSTHETI_PHASE_BRIEFING 1
 #define PROSTHETI_PHASE_DESIGN 2
 #define PROSTHETI_PHASE_RESULTS 3
-#define PROSTHETI_PHASE_FINAL 4
+#define PROSTHETI_PHASE_SHOP 4
+#define PROSTHETI_PHASE_FINAL 5
 
 // Persistence file path
 #define FILE_PROSTHETI_PROGRESS "data/ProsthetiProgress.json"

@@ -13,10 +13,10 @@
 /mob/living/simple_animal/hostile/ui_npc/prostheti/hector
 	name = "Hector"
 	desc = "A weathered man with kind eyes and a blade at his hip. He moves like someone who's spent a lifetime fighting."
-	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// PLACEHOLDER
-	icon_state = "elliot"	// PLACEHOLDER
-	icon_living = "elliot"	// PLACEHOLDER
-	portrait = "the-goat.PNG"	// PLACEHOLDER — needs 192x192 Hector portrait
+	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP — fixer/warrior NPC, needs custom Hector sprite
+	icon_state = "elliot"	// TEMP — Elliot fixer stand-in
+	icon_living = "elliot"	// TEMP
+	portrait = "elliot.PNG"	// TEMP — needs 192x192 Hector portrait
 	typing_interval = 55
 	random_emotes = "rests a hand on his blade;rolls his shoulder;watches the yard quietly"
 

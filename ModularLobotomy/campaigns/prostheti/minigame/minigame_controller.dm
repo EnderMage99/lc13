@@ -17,16 +17,20 @@
 	var/current_day = 1
 	/// Total number of days in the minigame
 	var/total_days = 3
-	/// Number of designs required per day
-	var/designs_per_day = 4
+	/// Number of designs required per day (one per client)
+	var/designs_per_day = 3
 	/// Current design number within the day (1-indexed)
 	var/current_design_num = 0
 	/// Current minigame phase (PROSTHETI_PHASE_*)
 	var/phase = PROSTHETI_PHASE_BRIEFING
 
 	// --- Market State ---
-	/// The client type for the current day (assoc list from GLOB.prostheti_client_types)
+	/// The client type for the current design (assoc list from GLOB.prostheti_client_types)
 	var/list/current_client
+	/// List of all clients for this day (one per design)
+	var/list/day_clients = list()
+	/// List of effect IDs used in previous designs this day — locked out for remaining designs
+	var/list/used_effects_today = list()
 	/// List of trending tag strings (2-3 tags, +bonus to sell price)
 	var/list/trending_tags = list()
 	/// List of oversaturated tag strings (1-2 tags, -penalty to sell price)
@@ -58,6 +62,12 @@
 	/// Number of fixer-type client designs completed (gates Penny's intro)
 	var/fixer_designs_count = 0
 
+	// --- Workshop Partnerships ---
+	/// List of workshop IDs the player has unlocked this session
+	var/list/unlocked_workshops = list()
+	/// Ahn available to spend in the workshop shop (carried from profits)
+	var/shop_budget = 0
+
 	/// Reference to the campaign controller
 	var/datum/campaign_controller/prostheti/campaign
 
@@ -74,10 +84,33 @@
 // Day Management
 // =============================================
 
-/// Sets up a new day: picks a client, sets trending/oversaturated tags, applies market changes.
+/// Sets up a new day: picks unique clients per design, sets trending/oversaturated tags, applies market changes.
 /datum/prostheti_minigame/proc/StartNewDay()
-	// Pick a random client type
-	current_client = pick(GLOB.prostheti_client_types)
+	// Pick clients by ascending difficulty — easy, medium, hard
+	day_clients = list()
+	var/list/easy = list()
+	var/list/medium = list()
+	var/list/hard = list()
+	for(var/list/cl in GLOB.prostheti_client_types)
+		switch(cl["difficulty"])
+			if(1)
+				easy += list(cl)
+			if(2)
+				medium += list(cl)
+			if(3)
+				hard += list(cl)
+
+	// Pick one from each tier (with fallback if a tier is empty)
+	var/list/tiers = list(easy, medium, hard)
+	for(var/i in 1 to designs_per_day)
+		var/list/tier = (i <= length(tiers)) ? tiers[i] : GLOB.prostheti_client_types
+		if(!length(tier))
+			tier = GLOB.prostheti_client_types
+		var/list/picked = pick(tier)
+		day_clients += list(picked)
+		// Remove from its tier to avoid duplicates
+		tier -= list(picked)
+	current_client = day_clients[1]
 
 	// Pick trending tags (2-3 from all tags)
 	trending_tags = list()
@@ -106,6 +139,7 @@
 	// Reset design state
 	current_design_num = 0
 	day_designs = list()
+	used_effects_today = list()
 	selected_form = ""
 	selected_rank = 1
 	selected_effects = list()
@@ -142,6 +176,34 @@
 		if(def["special"])
 			copy["special"] = def["special"]
 		effect_pool += list(copy)
+
+	// Add unlocked workshop effects to the pool
+	for(var/ws_id in unlocked_workshops)
+		var/list/ws = GLOB.prostheti_workshops[ws_id]
+		if(!ws)
+			continue
+		for(var/eff_id in ws["effects"])
+			var/list/ws_def = GLOB.prostheti_workshop_effects[eff_id]
+			if(!ws_def)
+				continue
+			// Build an effect entry matching the standard pool format
+			var/list/ws_effect = list(
+				"id" = eff_id,
+				"name" = capitalize(replacetext(eff_id, "_", " ")),
+				"ahn_cost" = 40,
+				"current_ahn_cost" = 40,
+				"ep_cost" = 2,
+				"desc" = "Workshop-exclusive augment from [ws["name"]].",
+				"repeatable" = 1,
+				"sale_percent" = 0,
+				"markup_percent" = 0,
+				"tags" = ws_def["tags"],
+				"attributes" = ws_def["attributes"],
+				"workshop" = ws_id,
+			)
+			if(ws_def["special"])
+				ws_effect["special"] = ws_def["special"]
+			effect_pool += list(ws_effect)
 
 	// Apply random sales and markups
 	ApplyMinigameMarketChanges()
@@ -224,9 +286,11 @@
 		for(var/attr in form_bonus)
 			current_attributes[attr] += form_bonus[attr]
 
-	// Effect modifiers
+	// Effect modifiers (check both base and workshop definitions)
 	for(var/eid in selected_effects)
 		var/list/def = GLOB.prostheti_effect_definitions[eid]
+		if(!def)
+			def = GLOB.prostheti_workshop_effects[eid]
 		if(!def || !def["attributes"])
 			continue
 		var/list/attrs = def["attributes"]
@@ -236,6 +300,8 @@
 	// Special/conditional bonuses (single pass — specials don't chain)
 	for(var/eid in selected_effects)
 		var/list/def = GLOB.prostheti_effect_definitions[eid]
+		if(!def)
+			def = GLOB.prostheti_workshop_effects[eid]
 		if(!def || !def["special"])
 			continue
 		var/list/special = def["special"]
@@ -259,6 +325,7 @@
 /datum/prostheti_minigame/proc/BeginDesigning()
 	phase = PROSTHETI_PHASE_DESIGN
 	current_design_num = 1
+	current_client = day_clients[1]
 	selected_form = "prosthetic"
 	selected_rank = current_client["rank_min"]
 	selected_effects = list()
@@ -272,6 +339,10 @@
 	// Find the effect in the pool
 	var/list/effect = GetPoolEffect(effect_id)
 	if(!effect)
+		return FALSE
+
+	// Check if this effect was used in a previous design today
+	if(effect_id in used_effects_today)
 		return FALSE
 
 	// Check if already at max repeats
@@ -358,6 +429,10 @@
 	if(current_client["is_fixer"])
 		fixer_designs_count++
 
+	// Lock all effects used in this design for the rest of the day
+	for(var/eid in selected_effects)
+		used_effects_today |= list(eid)
+
 	// Advance to next design or results
 	current_design_num++
 	if(current_design_num > designs_per_day)
@@ -369,7 +444,8 @@
 		total_profit += day_total
 		phase = PROSTHETI_PHASE_RESULTS
 	else
-		// Reset design state for next design
+		// Switch to next client and reset design state
+		current_client = day_clients[current_design_num]
 		selected_form = "prosthetic"
 		selected_rank = current_client["rank_min"]
 		selected_effects = list()
@@ -377,30 +453,75 @@
 
 	return TRUE
 
-/// Advances to the next day, or to the final score screen.
+/// Advances from results to the workshop shop phase.
 /datum/prostheti_minigame/proc/AdvanceToNextDay()
 	if(phase != PROSTHETI_PHASE_RESULTS)
 		return FALSE
 
-	current_day++
-	if(current_day > total_days)
-		phase = PROSTHETI_PHASE_FINAL
-		// Update NPC vars on the campaign NPCs
-		if(campaign)
-			for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/penny in campaign.current_npcs)
-				penny.SetSharedVar("fixer_designs", fixer_designs_count)
-				break
-			for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch1/clyde in campaign.current_npcs)
-				clyde.SetSharedVar("completed_work_days", total_days)
-				break
-	else
-		// Update Clyde's completed days tracker (current_day was already incremented, so -1)
-		if(campaign)
-			for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch1/clyde in campaign.current_npcs)
-				clyde.SetSharedVar("completed_work_days", current_day - 1)
-				break
-		StartNewDay()
+	// Set shop budget from current total profit (can't go below 0)
+	shop_budget = max(0, total_profit)
+
+	// If this is the last day, skip shop and go to final
+	if(current_day >= total_days)
+		FinishMinigame()
+		return TRUE
+
+	// Go to workshop shop phase
+	phase = PROSTHETI_PHASE_SHOP
 	return TRUE
+
+/// Called when player is done shopping (or skips). Advances to next day or final.
+/datum/prostheti_minigame/proc/AdvanceFromShop()
+	if(phase != PROSTHETI_PHASE_SHOP)
+		return FALSE
+
+	current_day++
+	// Update Clyde's completed days tracker
+	if(campaign)
+		for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch1/clyde in campaign.current_npcs)
+			clyde.SetSharedVar("completed_work_days", current_day - 1)
+			break
+	StartNewDay()
+	return TRUE
+
+/// Purchases a workshop partnership. Deducts cost from total_profit.
+/datum/prostheti_minigame/proc/PurchaseWorkshop(workshop_id)
+	if(phase != PROSTHETI_PHASE_SHOP)
+		return FALSE
+	if(workshop_id in unlocked_workshops)
+		return FALSE
+	var/list/ws = GLOB.prostheti_workshops[workshop_id]
+	if(!ws)
+		return FALSE
+	var/cost = ws["cost"]
+	if(total_profit < cost)
+		return FALSE
+
+	// Deduct cost from total profit and shop budget
+	total_profit -= cost
+	shop_budget = max(0, total_profit)
+
+	// Register the workshop effects in the global definitions
+	// so CalculateAttributes() can find them
+	for(var/eff_id in ws["effects"])
+		var/list/ws_def = GLOB.prostheti_workshop_effects[eff_id]
+		if(ws_def && !(eff_id in GLOB.prostheti_effect_definitions))
+			GLOB.prostheti_effect_definitions[eff_id] = ws_def
+
+	unlocked_workshops += workshop_id
+	return TRUE
+
+/// Finishes the minigame — final score screen.
+/datum/prostheti_minigame/proc/FinishMinigame()
+	phase = PROSTHETI_PHASE_FINAL
+	// Update NPC vars on the campaign NPCs
+	if(campaign)
+		for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/penny in campaign.current_npcs)
+			penny.SetSharedVar("fixer_designs", fixer_designs_count)
+			break
+		for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch1/clyde in campaign.current_npcs)
+			clyde.SetSharedVar("completed_work_days", total_days)
+			break
 
 // =============================================
 // Profit Calculation — Pentagon Overlap
@@ -474,6 +595,8 @@
 	var/list/design_tags = list()
 	for(var/eid in effects)
 		var/list/def = GLOB.prostheti_effect_definitions[eid]
+		if(!def)
+			def = GLOB.prostheti_workshop_effects[eid]
 		if(def && def["tags"])
 			for(var/tag in def["tags"])
 				design_tags[tag] = (design_tags[tag] || 0) + 1
@@ -532,6 +655,7 @@
 		"rank" = rank,
 		"effects" = effect_names,
 		"effect_ids" = effects,
+		"client_name" = current_client["name"],
 		"material_cost" = material_cost,
 		"base_sell" = base_sell,
 		"overlap" = overlap,

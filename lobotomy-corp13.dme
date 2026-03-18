@@ -4204,6 +4204,7 @@
 #include "ModularLobotomy\associations\skills\zwei\director.dm"
 #include "ModularLobotomy\associations\skills\zwei\skillgranter.dm"
 #include "ModularLobotomy\associations\skills\zwei\veteran.dm"
+#include "ModularLobotomy\campaigns\prostheti\areas.dm"
 #include "ModularLobotomy\campaigns\prostheti\_prostheti.dm"
 #include "ModularLobotomy\campaigns\prostheti\persistence.dm"
 #include "ModularLobotomy\campaigns\prostheti\chapter_select.dm"

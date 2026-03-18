@@ -240,16 +240,27 @@ export const ProsthetiMinigame = (props, context) => {
 
   const phase = data.phase;
 
+  let width = 560;
+  let height = 620;
+  if (phase === 2) {
+    width = 820;
+    height = 700;
+  } else if (phase === 4) {
+    width = 640;
+    height = 650;
+  }
+
   return (
     <Window
       title="Augment Design Terminal"
-      width={phase === 2 ? 820 : 560}
-      height={phase === 2 ? 700 : 620}>
+      width={width}
+      height={height}>
       <Window.Content scrollable>
         {phase === 1 && <BriefingPhase />}
         {phase === 2 && <DesignPhase />}
         {phase === 3 && <ResultsPhase />}
-        {phase === 4 && <FinalPhase />}
+        {phase === 4 && <ShopPhase />}
+        {phase === 5 && <FinalPhase />}
       </Window.Content>
     </Window>
   );
@@ -264,12 +275,8 @@ const BriefingPhase = (props, context) => {
   const {
     current_day = 1,
     total_days = 3,
-    designs_per_day = 4,
-    client_name = '',
-    client_hint = '',
-    client_rank_min = 1,
-    client_rank_max = 5,
-    client_required_tags = [],
+    designs_per_day = 3,
+    day_clients = [],
     trending_tags = [],
     oversaturated_tags = [],
     tag_colors = {},
@@ -284,44 +291,58 @@ const BriefingPhase = (props, context) => {
             Day {current_day} of {total_days} — Morning Briefing
           </span>
         }>
-        {/* Client Card */}
-        <Box
-          p={2}
-          mb={2}
-          style={{
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: '4px',
-            background: 'rgba(255,255,255,0.03)',
-          }}>
-          <Box fontSize="14px" bold mb={1}>
-            Client: {client_name}
-          </Box>
+        <Box bold mb={1} fontSize="12px">
+          Today&apos;s Clients ({designs_per_day} designs):
+        </Box>
+        {/* Client Cards */}
+        {day_clients.map((client, i) => (
           <Box
-            color="label"
+            key={i}
+            p={1.5}
             mb={1}
-            italic
-            p={1}
             style={{
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: '4px',
               background: 'rgba(255,255,255,0.03)',
-              borderLeft: '3px solid rgba(255,215,0,0.4)',
-              borderRadius: '2px',
             }}>
-            &ldquo;{client_hint}&rdquo;
-          </Box>
-          <Box color="grey" fontSize="11px" mb={1}>
-            Preferred Rank: {client_rank_min}–{client_rank_max} | Designs
-            Required: {designs_per_day}
-          </Box>
-          {client_required_tags.length > 0 && (
-            <Box fontSize="11px">
-              <Box as="span" bold>
-                Required:{' '}
-              </Box>
-              {client_required_tags.map((tag) => (
-                <TagBadge key={tag} tag={tag} colors={tag_colors} />
-              ))}
+            <Box fontSize="13px" bold mb={0.5}>
+              #{i + 1}: {client.name}
             </Box>
-          )}
+            <Box
+              color="label"
+              mb={0.5}
+              italic
+              p={0.5}
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                borderLeft: '3px solid rgba(255,215,0,0.4)',
+                borderRadius: '2px',
+              }}>
+              &ldquo;{client.hint}&rdquo;
+            </Box>
+            <Box color="grey" fontSize="11px" mb={0.5}>
+              Preferred Rank: {client.rank_min}–{client.rank_max}
+            </Box>
+            {client.required_tags
+              && client.required_tags.length > 0 && (
+              <Box fontSize="11px">
+                <Box as="span" bold>
+                  Required:{' '}
+                </Box>
+                {client.required_tags.map((tag) => (
+                  <TagBadge
+                    key={tag}
+                    tag={tag}
+                    colors={tag_colors}
+                  />
+                ))}
+              </Box>
+            )}
+          </Box>
+        ))}
+        <Box color="grey" fontSize="10px" italic mt={1}>
+          Effects used in one design cannot be reused in
+          another design today.
         </Box>
       </Section>
 
@@ -426,16 +447,71 @@ const DesignPhase = (props, context) => {
     attribute_colors = {},
   } = data;
 
+  const usedEffectsToday = data.used_effects_today || [];
+
+  // Attribute abbreviation map for search
+  const ATTR_ABBREVS = {
+    le: 'lethality',
+    en: 'endurance',
+    ag: 'agility',
+    co: 'control',
+    ef: 'efficiency',
+    lethality: 'lethality',
+    endurance: 'endurance',
+    agility: 'agility',
+    control: 'control',
+    efficiency: 'efficiency',
+  };
+
   // Filter effects
   let filteredEffects = effects;
   if (searchFilter) {
-    const lowerSearch = searchFilter.toLowerCase();
-    filteredEffects = effects.filter(
-      (e) =>
-        e.name.toLowerCase().includes(lowerSearch) ||
-        (e.desc && e.desc.toLowerCase().includes(lowerSearch)) ||
-        (e.tags && e.tags.some((t) => t.toLowerCase().includes(lowerSearch)))
-    );
+    const lowerSearch = searchFilter.toLowerCase().trim();
+    filteredEffects = effects.filter((e) => {
+      // Match name
+      if (e.name.toLowerCase().includes(lowerSearch)) {
+        return true;
+      }
+      // Match description
+      if (e.desc && e.desc.toLowerCase().includes(lowerSearch)) {
+        return true;
+      }
+      // Match tags
+      if (
+        e.tags
+        && e.tags.some((t) => t.toLowerCase().includes(lowerSearch))
+      ) {
+        return true;
+      }
+      // Match attribute keys/abbreviations
+      if (e.attributes) {
+        const matchedAttr = ATTR_ABBREVS[lowerSearch];
+        if (matchedAttr && e.attributes[matchedAttr]) {
+          return true;
+        }
+        // Also partial match attribute names
+        for (const attrKey of Object.keys(e.attributes)) {
+          if (
+            e.attributes[attrKey] !== 0
+            && attrKey.includes(lowerSearch)
+          ) {
+            return true;
+          }
+        }
+      }
+      // Match +/- attribute searches like "le+" or "ag-"
+      const modMatch = lowerSearch.match(/^(\w+)([+-])$/);
+      if (modMatch && e.attributes) {
+        const attr = ATTR_ABBREVS[modMatch[1]];
+        const wantPositive = modMatch[2] === '+';
+        if (attr && e.attributes[attr]) {
+          return wantPositive
+            ? e.attributes[attr] > 0
+            : e.attributes[attr] < 0;
+        }
+      }
+      return false;
+    });
   }
   if (activeTab !== 'all') {
     filteredEffects = filteredEffects.filter(
@@ -460,7 +536,12 @@ const DesignPhase = (props, context) => {
       {/* Left Panel — Pentagon + Client Reference */}
       <Flex.Item width="260px" mr={1}>
         <Section
-          title={`Day ${current_day} — Design ${current_design_num}/${designs_per_day}`}>
+          title={
+            'Day ' + current_day
+            + ' \u2014 Design ' + current_design_num
+            + '/' + designs_per_day
+            + ': ' + client_name
+          }>
           {/* Live Pentagon Chart */}
           <Box textAlign="center" mb={1}>
             <PentagonChart
@@ -696,6 +777,7 @@ const DesignPhase = (props, context) => {
                 attribute_colors={attribute_colors}
                 trending_tags={trending_tags}
                 oversaturated_tags={oversaturated_tags}
+                locked={usedEffectsToday.includes(eff.id)}
               />
             ))}
             {!filteredEffects.length && (
@@ -719,19 +801,23 @@ const EffectRow = (props, context) => {
     attribute_colors = {},
     trending_tags = [],
     oversaturated_tags = [],
+    locked = false,
   } = props;
 
   // Check if any tag is trending or oversaturated
   const hasTrending =
-    effect.tags && effect.tags.some((t) => trending_tags.includes(t));
+    effect.tags
+    && effect.tags.some((t) => trending_tags.includes(t));
   const hasOversaturated =
-    effect.tags && effect.tags.some((t) => oversaturated_tags.includes(t));
+    effect.tags
+    && effect.tags.some((t) => oversaturated_tags.includes(t));
 
   let borderColor = 'rgba(255,255,255,0.08)';
-  if (hasTrending) {
+  if (locked) {
+    borderColor = 'rgba(128,128,128,0.3)';
+  } else if (hasTrending) {
     borderColor = 'rgba(0,200,0,0.3)';
-  }
-  if (hasOversaturated) {
+  } else if (hasOversaturated) {
     borderColor = 'rgba(200,0,0,0.3)';
   }
 
@@ -742,7 +828,10 @@ const EffectRow = (props, context) => {
       style={{
         border: `1px solid ${borderColor}`,
         borderRadius: '3px',
-        background: 'rgba(255,255,255,0.02)',
+        background: locked
+          ? 'rgba(128,128,128,0.08)'
+          : 'rgba(255,255,255,0.02)',
+        opacity: locked ? 0.45 : 1,
       }}>
       <Flex align="center">
         <Flex.Item grow={1}>
@@ -752,7 +841,11 @@ const EffectRow = (props, context) => {
                 as="span"
                 color="gold"
                 mr={0.5}
-                title={`While ${effect.special.condition} >= ${effect.special.threshold}: bonus`}>
+                title={
+                  'While ' + effect.special.condition
+                  + ' >= ' + effect.special.threshold
+                  + ': bonus'
+                }>
                 ★
               </Box>
             )}
@@ -822,10 +915,20 @@ const EffectRow = (props, context) => {
           </Flex>
         </Flex.Item>
         <Flex.Item>
-          <Button
-            icon="plus"
-            onClick={() => act('add_effect', { effect_id: effect.id })}
-          />
+          {locked ? (
+            <Button
+              icon="lock"
+              color="grey"
+              disabled
+              tooltip="Used in a previous design today"
+            />
+          ) : (
+            <Button
+              icon="plus"
+              onClick={() =>
+                act('add_effect', { effect_id: effect.id })}
+            />
+          )}
         </Flex.Item>
       </Flex>
     </Box>
@@ -868,7 +971,8 @@ const ResultsPhase = (props, context) => {
               background: 'rgba(255,255,255,0.02)',
             }}>
             <Box bold mb={1}>
-              Design #{i + 1}: {design.form} (Rank {design.rank})
+              Design #{i + 1}: {design.client_name} — {design.form}
+              {' '}(Rank {design.rank})
             </Box>
 
             {/* Pentagon Overlay — player (orange) vs client (white) */}
@@ -1026,7 +1130,190 @@ const ResultsPhase = (props, context) => {
 };
 
 // =============================================
-// Phase 4: Final Score
+// Phase 4: Workshop Shop
+// =============================================
+
+const ShopPhase = (props, context) => {
+  const { data = {}, act } = useBackend(context);
+  const {
+    total_profit = 0,
+    workshops = [],
+    tag_colors = {},
+    attribute_names = {},
+    attribute_colors = {},
+    current_day = 1,
+    total_days = 3,
+  } = data;
+
+  return (
+    <Box>
+      <Section
+        title={
+          <span
+            style={{
+              fontFamily: 'Baskerville, Georgia, serif',
+            }}>
+            Workshop Partnerships
+          </span>
+        }>
+        <Box mb={1} fontSize="12px">
+          Invest your profits in workshop partnerships
+          to unlock exclusive augment effects for
+          future designs.
+        </Box>
+        <Box bold mb={2} fontSize="13px">
+          Available Budget:{' '}
+          <Box
+            as="span"
+            color={total_profit >= 0 ? 'good' : 'bad'}>
+            {total_profit} ahn
+          </Box>
+        </Box>
+
+        {workshops.map((ws) => (
+          <WorkshopCard
+            key={ws.id}
+            workshop={ws}
+            budget={total_profit}
+            tag_colors={tag_colors}
+            attribute_colors={attribute_colors}
+          />
+        ))}
+
+        <Box textAlign="center" mt={2}>
+          <Button
+            content={
+              'Continue to Day ' + (current_day + 1)
+            }
+            icon="arrow-right"
+            color="good"
+            fontSize="13px"
+            onClick={() => act('advance_from_shop')}
+          />
+        </Box>
+      </Section>
+    </Box>
+  );
+};
+
+const WorkshopCard = (props, context) => {
+  const { act } = useBackend(context);
+  const {
+    workshop,
+    budget = 0,
+    tag_colors = {},
+    attribute_colors = {},
+  } = props;
+
+  const canAfford = budget >= workshop.cost;
+  const isUnlocked = workshop.unlocked;
+
+  return (
+    <Box
+      mb={1}
+      p={1.5}
+      style={{
+        border: '2px solid ' + (
+          isUnlocked
+            ? 'rgba(0,200,0,0.4)'
+            : workshop.color + '66'
+        ),
+        borderRadius: '4px',
+        borderLeft: '4px solid ' + workshop.color,
+        background: isUnlocked
+          ? 'rgba(0,200,0,0.05)'
+          : 'rgba(255,255,255,0.02)',
+      }}>
+      <Flex align="center" mb={1}>
+        <Flex.Item grow={1}>
+          <Box bold fontSize="13px" color={workshop.color}>
+            {workshop.name}
+            {isUnlocked && (
+              <Box
+                as="span"
+                color="green"
+                ml={1}
+                fontSize="10px">
+                PARTNERED
+              </Box>
+            )}
+          </Box>
+          <Box
+            color="label"
+            fontSize="11px"
+            mt={0.5}
+            italic>
+            {workshop.desc}
+          </Box>
+        </Flex.Item>
+        <Flex.Item>
+          {isUnlocked ? (
+            <Button
+              icon="check"
+              color="green"
+              disabled
+              content="Unlocked"
+            />
+          ) : (
+            <Button
+              icon="handshake"
+              color={canAfford ? 'good' : 'grey'}
+              disabled={!canAfford}
+              content={workshop.cost + ' ahn'}
+              onClick={() =>
+                act('purchase_workshop', {
+                  workshop_id: workshop.id,
+                })}
+            />
+          )}
+        </Flex.Item>
+      </Flex>
+
+      {/* Preview effects */}
+      <Box fontSize="10px" color="grey" mb={0.5}>
+        Unlocks {workshop.effects.length} effects:
+      </Box>
+      {workshop.effects.map((eff) => (
+        <Box
+          key={eff.id}
+          ml={1}
+          mb={0.5}
+          fontSize="10px"
+          style={{
+            opacity: isUnlocked ? 1 : 0.7,
+          }}>
+          <Box as="span" bold mr={0.5}>
+            {eff.name}
+          </Box>
+          <AttributeModifiers
+            attributes={eff.attributes}
+            attributeColors={attribute_colors}
+          />
+          {eff.tags
+            && eff.tags.map((tag) => (
+              <TagBadge
+                key={tag}
+                tag={tag}
+                colors={tag_colors}
+                small
+              />
+            ))}
+          {eff.special && (
+            <Box
+              as="span"
+              color="gold"
+              ml={0.5}>
+              ★
+            </Box>
+          )}
+        </Box>
+      ))}
+    </Box>
+  );
+};
+
+// =============================================
+// Phase 5: Final Score
 // =============================================
 
 const FinalPhase = (props, context) => {
@@ -1036,6 +1323,7 @@ const FinalPhase = (props, context) => {
     day_profits = [],
     fixer_designs = 0,
     ranking = {},
+    unlocked_workshops = [],
   } = data;
 
   return (
@@ -1118,6 +1406,25 @@ const FinalPhase = (props, context) => {
             </Box>
           )}
         </Box>
+
+        {/* Workshop Partnerships */}
+        {unlocked_workshops.length > 0 && (
+          <Box
+            mt={2}
+            p={1.5}
+            textAlign="center"
+            style={{
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '4px',
+            }}>
+            <Box color="label" mb={0.5}>
+              Workshop Partnerships:
+            </Box>
+            <Box bold fontSize="14px">
+              {unlocked_workshops.length}
+            </Box>
+          </Box>
+        )}
 
         {/* Ranking Thresholds */}
         <Box mt={2} color="grey" fontSize="10px" textAlign="center">

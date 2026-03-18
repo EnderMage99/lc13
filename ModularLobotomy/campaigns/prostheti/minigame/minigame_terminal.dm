@@ -60,6 +60,18 @@
 		data["client_rank_max"] = game.current_client["rank_max"]
 		data["client_required_tags"] = game.current_client["required_tags"]
 
+	// All clients for today (for briefing display)
+	var/list/day_clients_data = list()
+	for(var/list/cl in game.day_clients)
+		day_clients_data += list(list(
+			"name" = cl["name"],
+			"hint" = cl["hint"],
+			"rank_min" = cl["rank_min"],
+			"rank_max" = cl["rank_max"],
+			"required_tags" = cl["required_tags"],
+		))
+	data["day_clients"] = day_clients_data
+
 	// Market info
 	data["trending_tags"] = game.trending_tags
 	data["oversaturated_tags"] = game.oversaturated_tags
@@ -82,6 +94,8 @@
 			data["price_changes"] = price_changes
 
 		if(PROSTHETI_PHASE_DESIGN)
+			// Effects locked out from previous designs today
+			data["used_effects_today"] = game.used_effects_today
 			// Full effect pool for selection
 			var/list/effects = list()
 			for(var/list/eff in game.effect_pool)
@@ -142,11 +156,43 @@
 			data["total_profit"] = game.total_profit
 			data["is_last_day"] = (game.current_day >= game.total_days)
 
+		if(PROSTHETI_PHASE_SHOP)
+			// Workshop shop between days
+			data["shop_budget"] = game.shop_budget
+			data["total_profit"] = game.total_profit
+			data["unlocked_workshops"] = game.unlocked_workshops
+			// Build workshop list for UI
+			var/list/workshops = list()
+			for(var/ws_id in GLOB.prostheti_workshops)
+				var/list/ws = GLOB.prostheti_workshops[ws_id]
+				var/list/ws_effects = list()
+				for(var/eff_id in ws["effects"])
+					var/list/eff_def = GLOB.prostheti_workshop_effects[eff_id]
+					if(eff_def)
+						ws_effects += list(list(
+							"id" = eff_id,
+							"name" = capitalize(replacetext(eff_id, "_", " ")),
+							"tags" = eff_def["tags"],
+							"attributes" = eff_def["attributes"],
+							"special" = eff_def["special"],
+						))
+				workshops += list(list(
+					"id" = ws_id,
+					"name" = ws["name"],
+					"desc" = ws["desc"],
+					"color" = ws["color"],
+					"cost" = ws["cost"],
+					"unlocked" = (ws_id in game.unlocked_workshops),
+					"effects" = ws_effects,
+				))
+			data["workshops"] = workshops
+
 		if(PROSTHETI_PHASE_FINAL)
 			// Final score
 			data["total_profit"] = game.total_profit
 			data["day_profits"] = game.day_profits
 			data["fixer_designs"] = game.fixer_designs_count
+			data["unlocked_workshops"] = game.unlocked_workshops
 			var/list/ranking = game.GetFinalRanking()
 			data["ranking"] = ranking
 
@@ -210,6 +256,19 @@
 			if(!game)
 				return FALSE
 			return game.AdvanceToNextDay()
+
+		if("purchase_workshop")
+			if(!game)
+				return FALSE
+			var/ws_id = params["workshop_id"]
+			if(!ws_id)
+				return FALSE
+			return game.PurchaseWorkshop(ws_id)
+
+		if("advance_from_shop")
+			if(!game)
+				return FALSE
+			return game.AdvanceFromShop()
 
 		if("close_game")
 			if(game)

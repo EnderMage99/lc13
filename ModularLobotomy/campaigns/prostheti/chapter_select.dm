@@ -9,8 +9,8 @@
 /obj/structure/prostheti_chapter_select
 	name = "Prostheti Innovations Directory"
 	desc = "A polished terminal displaying the Prostheti Innovations logo. It seems to track ongoing projects."
-	icon = 'icons/obj/machines/computer.dmi' // PLACEHOLDER — needs custom sprite
-	icon_state = "computer" // PLACEHOLDER
+	icon = 'icons/obj/stationobjs.dmi'	// TEMP — signpost stand-in, needs custom chapter select sprite
+	icon_state = "signpost"	// TEMP
 	anchored = TRUE
 	density = TRUE
 	resistance_flags = INDESTRUCTIBLE

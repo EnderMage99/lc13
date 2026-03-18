@@ -14,9 +14,9 @@
 /mob/living/simple_animal/hostile/prostheti/penny_combat
 	name = "Penny Wells"
 	desc = "Penny in her training gear, moving with surprising speed and confidence."
-	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// PLACEHOLDER
-	icon_state = "elliot"	// PLACEHOLDER
-	icon_living = "elliot"	// PLACEHOLDER
+	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP — training combat mob, needs custom sprite
+	icon_state = "electic"	// TEMP — reuses Penny's temp sprite for her combat form
+	icon_living = "electic"	// TEMP
 	maxHealth = 150
 	health = 150
 	melee_damage_lower = 6
