@@ -140,8 +140,14 @@ GLOBAL_DATUM(prostheti_campaign, /datum/campaign_controller/prostheti)
 			current_npcs += hector
 		if(2)
 			// Chapter 2: Clyde in office, Penny in Training Yard (settled), Hector visible in Training Yard
+			// Unlock the training yard door (Ch1 locks it; Ch2 needs it open)
+			var/turf/door_turf = GLOB.prostheti_npc_landmarks["training_door"]
+			if(door_turf)
+				for(var/obj/machinery/door/D in door_turf)
+					D.locked = FALSE
+					D.update_icon()
 			var/turf/clyde_turf = GLOB.prostheti_npc_landmarks["clyde_spawn"]
-			var/turf/penny_turf = GLOB.prostheti_npc_landmarks["penny_spawn"]
+			var/turf/penny_turf = GLOB.prostheti_npc_landmarks["penny_yard_destination"]
 			var/turf/hector_turf = GLOB.prostheti_npc_landmarks["hector_spawn"]
 			if(clyde_turf)
 				var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch2/clyde = new(clyde_turf)

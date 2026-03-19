@@ -24,6 +24,14 @@
 	var/mob/living/penny_ui_npc
 	/// Reference to campaign controller
 	var/datum/campaign_controller/prostheti/campaign
+	/// Boss room door landmark (for bolting/unbolting and Zwei breach)
+	var/obj/effect/landmark/prostheti_npc_spawn/boss_door/boss_door_landmark
+	/// Boss room entry trigger landmark
+	var/obj/effect/landmark/boss_room_trigger/boss_trigger
+	/// Director mob spawn landmark (deferred spawning)
+	var/obj/effect/landmark/mission_mob_spawn/factory_director/director_landmark
+	/// Whether the boss room trap has been triggered
+	var/trap_triggered = FALSE
 
 /datum/prostheti_mission/factory_infiltration/Destroy()
 	if(penny_companion && !QDELETED(penny_companion))
@@ -32,6 +40,9 @@
 	director = null
 	penny_ui_npc = null
 	campaign = null
+	boss_door_landmark = null
+	boss_trigger = null
+	director_landmark = null
 	return ..()
 
 // =============================================
@@ -45,7 +56,7 @@
 		CRASH("Factory infiltration mission started without campaign controller")
 
 	// Load the factory away map
-	LoadMissionMap("_maps/templates/prostheti_campaign/competitor_factory.dmm")
+	LoadMissionMap("_maps/Quests/competitor_factory.dmm")
 
 	// Collect spawn turfs from the loaded z-level
 	for(var/turf/T in GLOB.prostheti_player_spawns)
@@ -78,17 +89,45 @@
 		P.forceMove(null)
 		break
 
-	// Find the director mob for signal registration
-	for(var/mob/living/simple_animal/hostile/prostheti/factory_director/D in GLOB.mob_list)
-		if(mission_level && D.z == mission_level.z_value)
-			director = D
-			director.penny_target = penny_companion
-			RegisterSignal(director, COMSIG_DIRECTOR_EXECUTION, PROC_REF(OnDirectorExecution))
+	// Find boss room landmarks on the factory z-level
+	for(var/obj/effect/landmark/prostheti_npc_spawn/boss_door/BD in GLOB.prostheti_mob_landmarks)
+		if(mission_level && BD.z == mission_level.z_value)
+			boss_door_landmark = BD
 			break
+	for(var/obj/effect/landmark/boss_room_trigger/BT in GLOB.prostheti_mob_landmarks)
+		if(mission_level && BT.z == mission_level.z_value)
+			boss_trigger = BT
+			boss_trigger.mission = src
+			break
+	for(var/obj/effect/landmark/mission_mob_spawn/factory_director/DL in mob_landmarks)
+		director_landmark = DL
+		break
 
 	// Teleport players to factory
 	TeleportParticipants()
 	mission_state = PROSTHETI_MISSION_ACTIVE
+
+// =============================================
+// Boss Room Trap
+// =============================================
+
+/// Called by the boss_room_trigger when all participants have entered the boss room.
+/// Bolts the door shut and spawns the Factory Director.
+/datum/prostheti_mission/factory_infiltration/proc/OnBossRoomTrapTriggered()
+	trap_triggered = TRUE
+
+	// Bolt the boss room door
+	if(boss_door_landmark)
+		boss_door_landmark.BoltDoor()
+
+	// Spawn the director
+	if(director_landmark)
+		director_landmark.spawn_enabled = TRUE
+		director_landmark.SpawnMob()
+		director = director_landmark.spawned_mob
+		if(director)
+			director.penny_target = penny_companion
+			RegisterSignal(director, COMSIG_DIRECTOR_EXECUTION, PROC_REF(OnDirectorExecution))
 
 // =============================================
 // Director Execution Signal Handler
@@ -219,6 +258,20 @@
 
 /// Chapter-specific reset logic for Broken Fate party wipe.
 /datum/prostheti_mission/factory_infiltration/OnBrokenFate()
+	// Reset boss room trap (ResetZLevelMobs already ran — director may have respawned)
+	trap_triggered = FALSE
+	if(boss_door_landmark)
+		boss_door_landmark.UnboltDoor()
+	if(boss_trigger)
+		boss_trigger.ResetTrigger()
+	// Disable deferred director spawning and qdel any director that ResetZLevelMobs respawned
+	if(director_landmark)
+		director_landmark.spawn_enabled = FALSE
+		if(director_landmark.spawned_mob && !QDELETED(director_landmark.spawned_mob))
+			qdel(director_landmark.spawned_mob)
+			director_landmark.spawned_mob = null
+	director = null
+
 	// Qdel old companion before respawning
 	if(penny_companion && !QDELETED(penny_companion))
 		qdel(penny_companion)
@@ -230,17 +283,6 @@
 		penny_companion.ApplyTrainingData()
 		if(length(participants))
 			penny_companion.leader = participants[1]
-
-	// Reset director execution state
-	for(var/mob/living/simple_animal/hostile/prostheti/factory_director/D in GLOB.mob_list)
-		if(mission_level && D.z == mission_level.z_value)
-			director = D
-			director.execution_triggered = FALSE
-			director.can_act = TRUE
-			director.status_flags &= ~GODMODE
-			director.penny_target = penny_companion
-			RegisterSignal(director, COMSIG_DIRECTOR_EXECUTION, PROC_REF(OnDirectorExecution))
-			break
 
 	// Move Penny's hub NPC back to Training Yard
 	if(penny_ui_npc)

@@ -16,6 +16,8 @@
 	resistance_flags = INDESTRUCTIBLE
 	/// Reference to the campaign controller
 	var/datum/campaign_controller/prostheti/campaign
+	/// DEBUG: When TRUE, all chapters are selectable regardless of progress
+	var/debug_unlock_all = FALSE
 
 /obj/structure/prostheti_chapter_select/Initialize(mapload)
 	. = ..()
@@ -66,7 +68,7 @@
 		chapter["subtitle"] = ch_data ? ch_data["subtitle"] : ""
 		chapter["color"] = ch_data ? ch_data["color"] : "#FFFFFF"
 		chapter["description"] = campaign?.chapter_descriptions[chapter_key] || ""
-		chapter["unlocked"] = (i <= highest_completed + 1)
+		chapter["unlocked"] = (debug_unlock_all || i <= highest_completed + 1)
 		chapter["is_new"] = (i == highest_completed + 1 && highest_completed > 0)
 		chapters += list(chapter)
 	data["chapters"] = chapters
@@ -95,7 +97,7 @@
 			var/highest_completed = 0
 			if(usr.client && usr.ckey)
 				highest_completed = SSpersistence.GetProsthetiProgress(usr.ckey)
-			if(chapter_num > highest_completed + 1)
+			if(!debug_unlock_all && chapter_num > highest_completed + 1)
 				to_chat(usr, span_warning("You haven't unlocked that chapter yet."))
 				return TRUE
 

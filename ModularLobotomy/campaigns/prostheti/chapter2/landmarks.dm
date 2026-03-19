@@ -61,6 +61,112 @@
 	landmark_id = "rally_point_spawn"
 
 // =============================================
+// Factory Mission — Boss Room Door Landmark (Factory Map)
+// =============================================
+// Persistent landmark placed on the same turf as the boss room door.
+// Stores a reference to the door for bolting (trap) and unbolting (Zwei breach).
+// Also used by the Zwei rescue cutscene as the breach entry point.
+
+/obj/effect/landmark/prostheti_npc_spawn/boss_door
+	name = "Boss room door"
+	landmark_id = "boss_door"
+	/// The airlock sitting on this turf
+	var/obj/machinery/door/airlock/door
+
+/obj/effect/landmark/prostheti_npc_spawn/boss_door/Initialize(mapload)
+	. = ..()
+	// Parent returns INITIALIZE_HINT_QDEL — override to persist
+	. = INITIALIZE_HINT_NORMAL
+	// Register in mob landmarks so BeginMission() can find us by type on z-level
+	GLOB.prostheti_mob_landmarks += src
+	// Doors may not be fully initialized yet; find ours after a short delay
+	addtimer(CALLBACK(src, PROC_REF(FindDoor)), 3 SECONDS)
+
+/obj/effect/landmark/prostheti_npc_spawn/boss_door/Destroy()
+	GLOB.prostheti_mob_landmarks -= src
+	door = null
+	return ..()
+
+/// Finds and stores the airlock on our turf.
+/obj/effect/landmark/prostheti_npc_spawn/boss_door/proc/FindDoor()
+	for(var/obj/machinery/door/airlock/D in get_turf(src))
+		door = D
+		break
+
+/// Bolts the boss room door shut.
+/obj/effect/landmark/prostheti_npc_spawn/boss_door/proc/BoltDoor()
+	if(door)
+		door.bolt()
+
+/// Unbolts the boss room door.
+/obj/effect/landmark/prostheti_npc_spawn/boss_door/proc/UnboltDoor()
+	if(door)
+		door.unbolt()
+
+// =============================================
+// Factory Mission — Boss Room Trigger (Factory Map)
+// =============================================
+// Persistent invisible landmark placed one tile inside the boss room.
+// Tracks mission participants via Crossed(). When all have entered,
+// triggers the trap: bolts the door and spawns the Factory Director.
+
+/obj/effect/landmark/boss_room_trigger
+	name = "boss room trigger"
+	icon = 'icons/effects/effects.dmi'
+	icon_state = "yourpath"
+	alpha = 0
+	anchored = TRUE
+	/// Participants who have crossed this trigger
+	var/list/mob/living/crossed_participants = list()
+	/// Whether the trap has already fired
+	var/triggered = FALSE
+	/// The mission datum that owns this trigger
+	var/datum/prostheti_mission/factory_infiltration/mission
+
+/obj/effect/landmark/boss_room_trigger/Initialize(mapload)
+	. = ..()
+	GLOB.prostheti_mob_landmarks += src
+
+/obj/effect/landmark/boss_room_trigger/Destroy()
+	GLOB.prostheti_mob_landmarks -= src
+	crossed_participants.Cut()
+	mission = null
+	return ..()
+
+/obj/effect/landmark/boss_room_trigger/Crossed(atom/movable/AM, oldloc)
+	. = ..()
+	if(triggered)
+		return
+	if(!mission)
+		return
+	if(!isliving(AM))
+		return
+	if(!(AM in mission.participants))
+		return
+	if(AM in crossed_participants)
+		return
+	crossed_participants += AM
+	CheckAllCrossed()
+
+/// Checks if all mission participants have crossed; if so, fires the trap.
+/obj/effect/landmark/boss_room_trigger/proc/CheckAllCrossed()
+	if(!mission || !length(mission.participants))
+		return
+	if(length(crossed_participants) >= length(mission.participants))
+		TriggerTrap()
+
+/// Fires the boss room trap — bolts door, spawns director.
+/obj/effect/landmark/boss_room_trigger/proc/TriggerTrap()
+	triggered = TRUE
+	if(mission)
+		mission.OnBossRoomTrapTriggered()
+
+/// Resets the trigger for Broken Fate. Clears tracked players and re-arms.
+/obj/effect/landmark/boss_room_trigger/proc/ResetTrigger()
+	crossed_participants.Cut()
+	triggered = FALSE
+
+// =============================================
 // Factory Mission — Mob Spawn Subtypes
 // =============================================
 // These are placed on the factory away map (competitor_factory.dmm).
@@ -78,3 +184,11 @@
 	name = "factory director spawn"
 	mob_type = /mob/living/simple_animal/hostile/prostheti/factory_director
 	segment_id = "office"
+	/// Director spawn is deferred until the boss room trap triggers
+	var/spawn_enabled = FALSE
+
+/// Only spawns the director if the trap has enabled spawning.
+/obj/effect/landmark/mission_mob_spawn/factory_director/SpawnMob()
+	if(!spawn_enabled)
+		return
+	return ..()

@@ -23,6 +23,11 @@
 	name = "asphalt"
 	},
 /area/awaymission/prostheti/entrance)
+"gJ" = (
+/obj/effect/landmark/prostheti_npc_spawn/medical_bed_4,
+/obj/structure/bed/holobed,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "hN" = (
 /obj/effect/turf_decal/trimline/red/filled/warning{
 	dir = 5
@@ -103,6 +108,13 @@
 /obj/machinery/door/airlock/survival_pod,
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/factory_floor)
+"kN" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/obj/structure/curtain,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "kP" = (
 /obj/effect/turf_decal/trimline/red/filled/warning,
 /turf/open/floor/plating/ashplanet{
@@ -263,6 +275,11 @@
 "vo" = (
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/medical_wing)
+"vK" = (
+/obj/effect/landmark/prostheti_npc_spawn/medical_bed_2,
+/obj/structure/bed/holobed,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "wG" = (
 /obj/machinery/light{
 	dir = 1
@@ -277,6 +294,11 @@
 	name = "asphalt"
 	},
 /area/awaymission/prostheti/entrance)
+"zO" = (
+/obj/effect/landmark/prostheti_npc_spawn/medical_bed_3,
+/obj/structure/bed/holobed,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "zW" = (
 /obj/effect/landmark/prostheti_duel/fixer_spawn/penny,
 /turf/open/floor/facility/dark,
@@ -418,6 +440,12 @@
 	},
 /turf/closed/indestructible/reinforced,
 /area/awaymission/prostheti/entrance)
+"Lu" = (
+/obj/effect/landmark/prostheti_npc_spawn/rally_point,
+/turf/open/floor/plating/ashplanet/rocky{
+	layer = 1.98
+	},
+/area/awaymission/prostheti/training_yard)
 "LA" = (
 /obj/structure/mineral_door/wood,
 /turf/open/floor/carpet/black,
@@ -464,6 +492,11 @@
 	name = "asphalt"
 	},
 /area/awaymission/prostheti/entrance)
+"Nh" = (
+/obj/effect/landmark/prostheti_npc_spawn/penny_medical_bed,
+/obj/structure/bed/holobed,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "Nv" = (
 /obj/machinery/hydroponics,
 /turf/open/floor/wood,
@@ -479,6 +512,10 @@
 "Od" = (
 /turf/open/floor/holofloor/grass,
 /area/awaymission/prostheti/entrance)
+"OG" = (
+/obj/effect/landmark/prostheti_npc_spawn/clyde_medical_stand,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "PL" = (
 /obj/effect/turf_decal/trimline/yellow/filled/line{
 	pixel_y = 5
@@ -572,6 +609,11 @@
 	name = "asphalt"
 	},
 /area/awaymission/prostheti/entrance)
+"VQ" = (
+/obj/effect/landmark/prostheti_npc_spawn/medical_bed_1,
+/obj/structure/bed/holobed,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "VT" = (
 /obj/structure/dresser,
 /obj/machinery/light{
@@ -589,6 +631,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
+/obj/structure/curtain,
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/medical_wing)
 "Zt" = (
@@ -597,6 +640,10 @@
 	layer = 1.98
 	},
 /area/awaymission/prostheti/entrance)
+"ZA" = (
+/obj/structure/curtain,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "ZZ" = (
 /obj/effect/landmark/penny_waypoint,
 /turf/open/floor/facility/dark,
@@ -12294,13 +12341,13 @@ ll
 ll
 ll
 uJ
-vo
-vo
-vo
+VQ
+ZA
+vK
 YI
-vo
-vo
-vo
+zO
+ZA
+gJ
 YI
 vo
 vo
@@ -12396,14 +12443,14 @@ ll
 ll
 ll
 uJ
-if
-vo
-vo
-vo
-vo
-vo
-vo
-vo
+kN
+ZA
+ZA
+ZA
+ZA
+ZA
+ZA
+ZA
 vo
 MF
 UA
@@ -12501,7 +12548,7 @@ uJ
 vo
 vo
 vo
-vo
+Nh
 vo
 vo
 vo
@@ -12705,7 +12752,7 @@ uJ
 vo
 vo
 vo
-vo
+OG
 vo
 vo
 vo
@@ -12805,7 +12852,7 @@ ll
 ll
 uJ
 if
-MF
+vo
 vo
 vo
 vo
@@ -13309,7 +13356,7 @@ li
 ll
 rJ
 ll
-ll
+Lu
 ll
 ll
 ll

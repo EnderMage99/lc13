@@ -23,7 +23,13 @@
 
 	// --- Door Breach ---
 	var/turf/breach_turf
-	if(director && !QDELETED(director))
+	if(mission.boss_door_landmark)
+		breach_turf = get_turf(mission.boss_door_landmark)
+		// Unbolt and open the door as part of the breach
+		mission.boss_door_landmark.UnboltDoor()
+		if(mission.boss_door_landmark.door)
+			INVOKE_ASYNC(mission.boss_door_landmark.door, TYPE_PROC_REF(/obj/machinery/door, open))
+	else if(director && !QDELETED(director))
 		breach_turf = get_step(get_turf(director), pick(GLOB.cardinals))
 		if(!breach_turf)
 			breach_turf = get_turf(director)

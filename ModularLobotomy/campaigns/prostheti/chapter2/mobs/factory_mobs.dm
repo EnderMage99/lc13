@@ -22,9 +22,9 @@
 /mob/living/simple_animal/hostile/prostheti/factory_worker
 	name = "Factory Worker"
 	desc = "An augmented factory worker with mechanical arms that hum with latent energy."
-	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP
-	icon_state = "clan_citzen"	// TEMP
-	icon_living = "clan_citzen"	// TEMP
+	icon = 'ModularLobotomy/_Lobotomyicons/tegumobs.dmi'	// TEMP
+	icon_state = "humanoid_hostile"	// TEMP
+	icon_living = "humanoid_hostile"	// TEMP
 	maxHealth = 150
 	health = 150
 	melee_damage_lower = 8
@@ -56,8 +56,8 @@
 /mob/living/simple_animal/hostile/prostheti/factory_worker/heavy
 	name = "Factory Foreman"
 	desc = "A hulking foreman with heavy industrial augments. The ground seems to tremble with each step."
-	icon_state = "clan_citzen"	// TEMP — needs bulkier sprite
-	icon_living = "clan_citzen"	// TEMP
+	icon_state = "humanoid_hostile"	// TEMP — needs bulkier sprite
+	icon_living = "humanoid_hostile"	// TEMP
 	maxHealth = 250
 	health = 250
 	melee_damage_lower = 12
@@ -131,8 +131,8 @@
 	name = "Factory Director"
 	desc = "The competitor's director, clad in sleek corporate-grade augments that radiate an unsettling black energy."
 	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP
-	icon_state = "clan_citzen"	// TEMP — needs imposing boss sprite
-	icon_living = "clan_citzen"	// TEMP
+	icon_state = "stone_guard"	// TEMP — needs imposing boss sprite
+	icon_living = "stone_guard"	// TEMP
 	maxHealth = 2400
 	health = 2400
 	melee_damage_lower = 15
@@ -367,9 +367,9 @@
 /mob/living/simple_animal/hostile/prostheti/zwei_lead
 	name = "Zwei Lead Fixer"
 	desc = "A professional Zwei Association fixer. Efficient. Dangerous."
-	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP — needs Zwei Director sprite
-	icon_state = "clan_citzen"	// TEMP
-	icon_living = "clan_citzen"	// TEMP
+	icon = 'ModularLobotomy/_Lobotomyicons/tegumobs.dmi'	// TEMP — needs Zwei Director sprite
+	icon_state = "fixer_r"	// TEMP
+	icon_living = "fixer_r"	// TEMP
 	maxHealth = 800
 	health = 800
 	melee_damage_lower = 35
@@ -393,9 +393,9 @@
 /mob/living/simple_animal/hostile/prostheti/zwei_fixer
 	name = "Zwei Fixer"
 	desc = "A standard Zwei Association fixer, moving with practiced precision."
-	icon = 'ModularLobotomy/_Lobotomyicons/teaser_mobs.dmi'	// TEMP — needs Zwei Fixer sprite
-	icon_state = "clan_citzen"	// TEMP
-	icon_living = "clan_citzen"	// TEMP
+	icon = 'ModularLobotomy/_Lobotomyicons/tegumobs.dmi'	// TEMP — needs Zwei Fixer sprite
+	icon_state = "fixer_p"	// TEMP
+	icon_living = "fixer_p"	// TEMP
 	maxHealth = 500
 	health = 500
 	melee_damage_lower = 25
