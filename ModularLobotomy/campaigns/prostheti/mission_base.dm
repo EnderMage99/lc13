@@ -114,7 +114,18 @@
 	// Step 2: Wait for the cinematic to play (~4 seconds)
 	sleep(40)
 
-	// Step 3: Revive all participants
+	// Step 3: Return ghosted players to their bodies
+	for(var/mob/living/P in participants)
+		if(!P)
+			continue
+		if(!P.client && P.mind?.current == P)
+			for(var/mob/dead/observer/ghost in GLOB.player_list)
+				if(ghost.mind?.current == P)
+					P.key = ghost.key
+					qdel(ghost)
+					break
+
+	// Step 4: Revive all participants
 	for(var/mob/living/P in participants)
 		if(P)
 			P.revive(full_heal = TRUE)

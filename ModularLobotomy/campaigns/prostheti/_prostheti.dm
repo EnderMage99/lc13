@@ -45,6 +45,18 @@ GLOBAL_DATUM(prostheti_campaign, /datum/campaign_controller/prostheti)
 	/// The z-level of the factory hub map
 	var/datum/space_level/hub_level
 
+	// --- Penny training data (preserved across chapter transitions) ---
+	/// Total duels Penny completed in Chapter 1
+	var/penny_total_duels = 0
+	/// Cumulative health bonus from training
+	var/penny_learned_health_bonus = 0
+	/// Damage type Penny adapted to
+	var/penny_learned_damage_type = RED_DAMAGE
+	/// Resistance coefficients Penny developed
+	var/list/penny_learned_resistances = list(RED_DAMAGE = 1, WHITE_DAMAGE = 1, BLACK_DAMAGE = 1, PALE_DAMAGE = 1)
+	/// Number of training wins
+	var/penny_training_wins = 0
+
 	/// Chapter data: title, subtitle, text color per chapter
 	var/list/chapter_data = list(
 		"1" = list("title" = "Polished Surfaces", "subtitle" = "The Job", "color" = "#FFD700"),
@@ -82,6 +94,15 @@ GLOBAL_DATUM(prostheti_campaign, /datum/campaign_controller/prostheti)
 /// Qdels all current chapter NPCs and spawns the correct NPC set for the given chapter.
 /// Each chapter is independent — no cumulative state needed.
 /datum/campaign_controller/prostheti/proc/InitializeAtChapter(chapter_number)
+	// Extract Penny's training data before qdeling ch1 NPCs
+	for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/penny in current_npcs)
+		penny_total_duels = penny.total_duels
+		penny_learned_health_bonus = penny.learned_health_bonus
+		penny_learned_damage_type = penny.learned_damage_type
+		penny_learned_resistances = penny.learned_resistances.Copy()
+		penny_training_wins = penny.GetSharedVar("training_wins") || 0
+		break
+
 	// Clean up existing NPCs
 	for(var/mob/M in current_npcs)
 		qdel(M)
@@ -89,6 +110,14 @@ GLOBAL_DATUM(prostheti_campaign, /datum/campaign_controller/prostheti)
 
 	current_chapter = chapter_number
 	SpawnChapterNPCs(chapter_number)
+
+	// Show chapter blurb to all players on the hub z-level
+	var/list/clients = list()
+	for(var/mob/living/carbon/human/H in GLOB.player_list)
+		if(H.client && hub_level && H.z == hub_level.z_value)
+			clients += H.client
+	if(length(clients))
+		ShowChapterBlurb(clients, chapter_number)
 
 /// Spawns the correct NPC variant subtypes for the given chapter at their landmark positions.
 /datum/campaign_controller/prostheti/proc/SpawnChapterNPCs(chapter_number)
@@ -109,9 +138,24 @@ GLOBAL_DATUM(prostheti_campaign, /datum/campaign_controller/prostheti)
 			var/mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch1/hector = new(null)
 			hector.campaign = src
 			current_npcs += hector
-		// Chapters 2-7: will be added in future implementations
-		// if(2)
-		//     ...
+		if(2)
+			// Chapter 2: Clyde in office, Penny in Training Yard (settled), Hector visible in Training Yard
+			var/turf/clyde_turf = GLOB.prostheti_npc_landmarks["clyde_spawn"]
+			var/turf/penny_turf = GLOB.prostheti_npc_landmarks["penny_spawn"]
+			var/turf/hector_turf = GLOB.prostheti_npc_landmarks["hector_spawn"]
+			if(clyde_turf)
+				var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch2/clyde = new(clyde_turf)
+				clyde.campaign = src
+				current_npcs += clyde
+			if(penny_turf)
+				var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/penny = new(penny_turf)
+				penny.campaign = src
+				current_npcs += penny
+			if(hector_turf)
+				var/mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch2/hector = new(hector_turf)
+				hector.campaign = src
+				current_npcs += hector
+		// Chapters 3-7: will be added in future implementations
 
 /// Called when a chapter's objectives are met.
 /// Saves progress, plays transition blurb, cleans up, advances to next chapter.
@@ -123,14 +167,7 @@ GLOBAL_DATUM(prostheti_campaign, /datum/campaign_controller/prostheti)
 		if(hub_level && H.z == hub_level.z_value)
 			SSpersistence.UpdateProsthetiProgress(H.ckey, chapter_number)
 
-	// Play chapter transition blurb to all players on the hub
-	var/list/clients = list()
-	for(var/mob/living/carbon/human/H in GLOB.player_list)
-		if(H.client && hub_level && H.z == hub_level.z_value)
-			clients += H.client
 	var/next_chapter = chapter_number + 1
-	if(next_chapter <= 7)
-		ShowChapterBlurb(clients, next_chapter)
 
 	// Clean up away mission z-level if one exists
 	if(active_mission)

@@ -242,16 +242,18 @@
 			break
 
 		if(get_dist(src, mark_target) <= 1)
-			var/dir_to_penny = get_dir(mark_target, src)
-			if(mark_target.dir & dir_to_penny)
+			// Parry check: player must face the direction Penny dashed from
+			// Use dash_dir (the known cardinal) instead of get_dir which can return 0 if on same tile
+			if(mark_target.dir == dash_dir)
 				// Parried! Target was facing Penny
 				parry_count++
+				playsound(src, 'sound/weapons/parry.ogg', 50, TRUE)
 				visible_message(span_notice("[mark_target] reads the strike and parries [src]!"))
 				// Stagger back 1 tile with pixel animation
-				var/stagger_dir = get_dir(mark_target, src)
+				var/stagger_dir = dash_dir
 				var/turf/stagger_turf = get_step(src, stagger_dir)
 				if(stagger_turf && ClearSky(stagger_turf))
-					// Pixel slide animation
+					// Smooth pixel slide: lurch toward stagger dir, then snap back
 					var/px_offset = 0
 					var/py_offset = 0
 					if(stagger_dir & NORTH)
@@ -265,6 +267,11 @@
 					animate(src, pixel_x = base_pixel_x + px_offset, pixel_y = base_pixel_y + py_offset, time = 2)
 					forceMove(stagger_turf)
 					animate(src, pixel_x = base_pixel_x, pixel_y = base_pixel_y, time = 2)
+				else
+					// No room to stagger — just do a pixel shake in place
+					animate(src, pixel_x = base_pixel_x + 4, time = 1)
+					animate(src, pixel_x = base_pixel_x - 4, time = 1)
+					animate(src, pixel_x = base_pixel_x, time = 1)
 				SLEEP_CHECK_DEATH(5) // 0.5s stagger before next dash
 			else
 				// Hit! Target wasn't facing Penny

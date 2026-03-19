@@ -231,8 +231,6 @@
 			if(isnull(current_wins))
 				current_wins = 0
 			SetSharedVar("training_wins", current_wins + 1)
-			// Set cooldown
-			set_duel_cooldown(duelist)
 			// Attribute reward for civilians (capped at 40)
 			if(ishuman(duelist))
 				var/mob/living/carbon/human/duelist_human = duelist

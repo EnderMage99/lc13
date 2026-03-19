@@ -250,7 +250,14 @@
 		if("submit_design")
 			if(!game)
 				return FALSE
-			return game.SubmitDesign()
+			var/prev_fixer_count = game.fixer_designs_count
+			. = game.SubmitDesign()
+			// Notify player when they've designed enough fixer augments to impress Penny
+			if(. && game.fixer_designs_count >= 3 && prev_fixer_count < 3)
+				var/mob/living/player = usr
+				if(isliving(player))
+					to_chat(player, span_nicegreen("You've worked with enough Fixer clients to know how their augments really get used in the field. Penny might be interested to hear about your experience."))
+			return
 
 		if("next_day")
 			if(!game)

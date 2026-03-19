@@ -129,8 +129,27 @@
 					"text" = "You seem to know a lot about Fixers too.",
 					"default_scene" = "about_fixers"
 				),
+				"fixer_exp" = list(
+					"text" = "I've been designing augments for Fixer clients — I could tell you how they actually use their gear.",
+					"visibility_expression" = "npc.fixer_designs >= 2 && npc.fixer_designs < [fixer_designs_threshold] && !npc.introduced_hector",
+					"default_scene" = "fixer_tease"
+				),
 				"back" = list(
 					"text" = "Sounds like a lot of work.",
+					"default_scene" = "main_menu"
+				),
+			)
+		),
+
+		"fixer_tease" = list(
+			"text" = "You — wait, seriously? You know what Fixers actually need from their \
+				augments? Not what the catalogs say, but what they ask for when they walk \
+				in? That's... that's exactly the kind of thing I can't learn from books. \
+				Keep designing for them. When you've seen enough of what real Fixers need, \
+				I have something I want to show you.",
+			"actions" = list(
+				"back" = list(
+					"text" = "Now I'm curious.",
 					"default_scene" = "main_menu"
 				),
 			)
@@ -139,10 +158,30 @@
 		"about_fixers" = list(
 			"text" = "I've read about them! The Associations, the grades, the contracts — \
 				it's fascinating. Real combat augments, not just factory tools. \
-				Someday I want to... well. Nevermind. Dad wouldn't approve.",
+				Someday I want to... well. Nevermind. Dad wouldn't approve. \
+				But if you ever work with real Fixers — Zwei, Cinq, any of them — \
+				I'd love to hear what their gear is actually like. Books only tell you so much.",
 			"actions" = list(
+				"fixer_hint" = list(
+					"text" = "I've done a few Fixer designs, actually.",
+					"visibility_expression" = "npc.fixer_designs >= 1 && npc.fixer_designs < [fixer_designs_threshold]",
+					"default_scene" = "fixer_not_enough"
+				),
 				"back" = list(
 					"text" = "Maybe someday.",
+					"default_scene" = "main_menu"
+				),
+			)
+		),
+
+		"fixer_not_enough" = list(
+			"text" = "Wait, really? You've actually designed for Fixers? That's — okay, \
+				tell me everything. What Association? What did they need? ...Actually, \
+				keep working with them. The more you learn, the more I want to hear. \
+				Come back when you've got some real stories.",
+			"actions" = list(
+				"back" = list(
+					"text" = "I'll keep at it.",
 					"default_scene" = "main_menu"
 				),
 			)
@@ -211,8 +250,7 @@
 			"actions" = list(
 				"accept" = list(
 					"text" = "Let's do it.",
-					"proc_callbacks" = list(CALLBACK(src, PROC_REF(StartDuel))),
-					"default_scene" = "duel_start"
+					"proc_callbacks" = list(CALLBACK(src, PROC_REF(StartDuel)))
 				),
 				"decline" = list(
 					"text" = "Not right now.",
@@ -447,7 +485,7 @@
 
 /// Override: check if enough training wins to complete Chapter 1.
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/OnDuelVictory(mob/living/winner, total_wins)
-	if(total_wins >= 5 && campaign)
+	if(total_wins >= 8 && campaign)
 		addtimer(CALLBACK(campaign, TYPE_PROC_REF(/datum/campaign_controller/prostheti, CompleteChapter), 1), 30)
 
 // =============================================
@@ -467,6 +505,8 @@
 	if(!istype(P))
 		return
 	RecordLearning(P)
+	// Schedule post-duel cutscene after EndDuel finishes and NPC is back on the map
+	addtimer(CALLBACK(src, PROC_REF(PostDuelCutscene)), 3 SECONDS)
 
 /// Processes the duel results and updates Penny's learning state for next time.
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/RecordLearning(mob/living/simple_animal/hostile/prostheti/penny_combat/fighter)
@@ -497,3 +537,152 @@
 			best_type = dtype
 	if(best_outgoing > 0)
 		learned_damage_type = best_type
+
+// =============================================
+// Post-Duel Cutscenes — Penny & Hector Development
+// =============================================
+
+/// Plays a milestone conversation between Penny and Hector after specific duel counts.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/PostDuelCutscene()
+	if(!hector_npc || QDELETED(hector_npc))
+		return
+	switch(total_duels)
+		if(2)
+			PostDuelFootwork()
+		if(3)
+			PostDuelMark()
+		if(5)
+			PostDuelDebts()
+		if(7)
+			PostDuelChoices()
+
+/// Cutscene setup — locks both NPCs and faces them toward each other.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/StartPostDuelCutscene()
+	in_cutscene = TRUE
+	hector_npc.in_cutscene = TRUE
+	face_atom(hector_npc)
+	hector_npc.face_atom(src)
+
+/// Cutscene cleanup — faces both NPCs south and unlocks them.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/EndPostDuelCutscene()
+	dir = SOUTH
+	hector_npc.dir = SOUTH
+	in_cutscene = FALSE
+	hector_npc.in_cutscene = FALSE
+
+/// Duel 2 — Footwork. Hector teaches Penny to read opponents. Foreshadows his manipulation skills.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/PostDuelFootwork()
+	StartPostDuelCutscene()
+
+	say("That was closer! I almost had them.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("You're still planting your feet. A fighter who stands still is a fighter who gets hit.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("So I should just keep moving?")
+	SLEEP_CHECK_DEATH(20)
+
+	hector_npc.say("Not just move — read them. Watch where their weight shifts, which way they lean. You'll know where the strike lands before they throw it.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("Like you always say — pay attention to people.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("...Exactly like that.")
+	SLEEP_CHECK_DEATH(20)
+
+	EndPostDuelCutscene()
+
+/// Duel 3 — The Mark. Hector teaches a Cinq-style technique. Foreshadows Vivian Wells.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/PostDuelMark()
+	StartPostDuelCutscene()
+
+	hector_npc.say("You're ready for something new. A technique I learned from... someone I used to know.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("What kind of technique?")
+	SLEEP_CHECK_DEATH(20)
+
+	hector_npc.say("You mark your target, then commit — strike from every angle. The only way to stop it is to face you head-on. No tricks, no hiding. Just courage.")
+	SLEEP_CHECK_DEATH(35)
+
+	say("Sounds like Cinq style. Face-to-face, honor-bound.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("...Something like that.")
+	SLEEP_CHECK_DEATH(20)
+
+	say("Who taught you this?")
+	SLEEP_CHECK_DEATH(20)
+
+	hector_npc.say("Someone who deserved better than they got.")
+	SLEEP_CHECK_DEATH(25)
+
+	EndPostDuelCutscene()
+
+/// Duel 5 — Debts. Hector hints at obligations. Foreshadows Insurgence Clan ties.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/PostDuelDebts()
+	StartPostDuelCutscene()
+
+	say("I can feel myself adapting — hitting differently, reading their defenses. It's like my body knows what to do before I think about it.")
+	SLEEP_CHECK_DEATH(35)
+
+	hector_npc.say("Good. The best fighters don't just get stronger. They learn from every hit they take and every hit they land.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("You sound like you're speaking from experience.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("I've been around long enough to learn a few things. People gave me a chance when no one else would.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("The company you work for?")
+	SLEEP_CHECK_DEATH(20)
+
+	hector_npc.say("...Yeah. Something like that.")
+	SLEEP_CHECK_DEATH(20)
+
+	say("You okay? You seem distracted.")
+	SLEEP_CHECK_DEATH(20)
+
+	hector_npc.say("Just thinking about debts. Everyone in this City owes somebody.")
+	SLEEP_CHECK_DEATH(25)
+
+	EndPostDuelCutscene()
+
+/// Duel 7 — Choices. Heavy foreshadowing. Hector describes the kidnapping without naming it.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/PostDuelChoices()
+	StartPostDuelCutscene()
+
+	say("I'm getting close, aren't I? To being ready.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("Closer than you think. You've grown faster than I expected.")
+	SLEEP_CHECK_DEATH(25)
+
+	say("One more year until I can apply for my Hana license. Then it's real.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("...Yeah. One more year.")
+	SLEEP_CHECK_DEATH(20)
+
+	say("What's wrong?")
+	SLEEP_CHECK_DEATH(15)
+
+	hector_npc.say("Nothing. I just want you to be safe, Penny. Whatever happens next.")
+	SLEEP_CHECK_DEATH(25)
+
+	say("That's sweet, but I don't need protecting. I need a sparring partner.")
+	SLEEP_CHECK_DEATH(25)
+
+	hector_npc.say("I know. But sometimes keeping someone safe means making choices they wouldn't agree with.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("Now you sound like my dad.")
+	SLEEP_CHECK_DEATH(20)
+
+	hector_npc.say("...Maybe your father and I aren't as different as you think.")
+	SLEEP_CHECK_DEATH(25)
+
+	EndPostDuelCutscene()
