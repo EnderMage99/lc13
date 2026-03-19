@@ -23,7 +23,7 @@
 	icon_state = "clan_citzen"	// TEMP
 	icon_living = "clan_citzen"	// TEMP
 	portrait = "rat_leader.PNG"	// TEMP — needs 192x192 Clyde portrait
-	typing_interval = 60
+	typing_interval = 24
 	random_emotes = "adjusts his tie;glances toward the factory floor;takes a drag from his cigarette"
 
 /mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch1

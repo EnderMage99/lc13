@@ -149,6 +149,9 @@
 	spawned_fixer = new duel_fixer_type(get_turf(fixer_landmark))
 	spawned_fixer.faction = list("training_enemy")
 
+	// Let subtypes customize the fighter
+	OnFighterSpawned(spawned_fixer)
+
 	// Hide the NPC during the duel
 	moveToNullspace()
 
@@ -190,49 +193,77 @@
 	if(!in_duel)
 		return
 
+	// Capture references and reset state FIRST to prevent stuck states
+	// If any cleanup below throws a runtime, the NPC won't be stuck in_duel
+	var/mob/living/duelist = current_duelist
+	var/mob/living/fighter = spawned_fixer
+	var/turf/return_turf = duelist_return_turf
+	in_duel = FALSE
+	current_duelist = null
+	duelist_return_turf = null
+	spawned_fixer = null
+
 	// Unregister signals
-	if(current_duelist)
-		UnregisterSignal(current_duelist, list(COMSIG_MOB_STATCHANGE, COMSIG_HUMAN_INSANE))
-	if(spawned_fixer && !QDELETED(spawned_fixer))
-		UnregisterSignal(spawned_fixer, COMSIG_LIVING_DEATH)
-		qdel(spawned_fixer)
+	if(duelist)
+		UnregisterSignal(duelist, list(COMSIG_MOB_STATCHANGE, COMSIG_HUMAN_INSANE))
+	if(fighter && !QDELETED(fighter))
+		UnregisterSignal(fighter, COMSIG_LIVING_DEATH)
+		// Let subtypes record duel data before cleanup
+		OnFighterDefeated(fighter, player_won)
+		qdel(fighter)
 
 	// Teleport player back
-	if(current_duelist && !QDELETED(current_duelist))
-		if(duelist_return_turf)
-			current_duelist.forceMove(duelist_return_turf)
+	if(duelist && !QDELETED(duelist))
+		if(return_turf)
+			duelist.forceMove(return_turf)
 
 		// Fully heal the player (unless skipped for insanity handling)
 		if(!skip_heal)
-			current_duelist.fully_heal(admin_revive = TRUE)
+			duelist.fully_heal(admin_revive = TRUE)
 
 		// Remove status effect stacks
-		current_duelist.remove_status_effect(/datum/status_effect/stacking/lc_overheat)
+		duelist.remove_status_effect(/datum/status_effect/stacking/lc_overheat)
 
 		if(player_won)
-			to_chat(current_duelist, span_boldnotice("You won the sparring match!"))
+			to_chat(duelist, span_boldnotice("You won the sparring match!"))
 			// Track wins via shared NPC var
 			var/current_wins = GetSharedVar("training_wins")
 			if(isnull(current_wins))
 				current_wins = 0
 			SetSharedVar("training_wins", current_wins + 1)
 			// Set cooldown
-			set_duel_cooldown(current_duelist)
+			set_duel_cooldown(duelist)
+			// Attribute reward for civilians (capped at 40)
+			if(ishuman(duelist))
+				var/mob/living/carbon/human/duelist_human = duelist
+				if(duelist_human.mind?.assigned_role == "Civilian")
+					if(get_attribute_level(duelist_human, TEMPERANCE_ATTRIBUTE) < 40)
+						duelist_human.adjust_all_attribute_levels(4)
+						to_chat(duelist_human, span_nicegreen("The combat experience sharpens your abilities. (+4 to all stats)"))
 			// Check for chapter completion
-			OnDuelVictory(current_duelist, current_wins + 1)
+			OnDuelVictory(duelist, current_wins + 1)
 		else
-			to_chat(current_duelist, span_boldwarning("You were defeated. Dust yourself off and try again."))
+			to_chat(duelist, span_boldwarning("You were defeated. Dust yourself off and try again."))
+
+		// Reset conversation state so player returns to main_menu next interaction
+		if(scene_manager)
+			var/user_ref = "\ref[duelist]"
+			if(user_ref in scene_manager.user_states)
+				var/datum/ui_npc/conversation_state/state = scene_manager.user_states[user_ref]
+				state.current_scene_id = "main_menu"
 
 	// Show the NPC again
 	if(npc_original_turf)
 		forceMove(npc_original_turf)
 
-	// Reset duel state
-	in_duel = FALSE
-	current_duelist = null
-	duelist_return_turf = null
-	spawned_fixer = null
-
 /// Called after a player wins a duel. Override in subtypes for chapter-specific logic.
 /mob/living/simple_animal/hostile/ui_npc/prostheti/proc/OnDuelVictory(mob/living/winner, total_wins)
+	return
+
+/// Called after the combat mob is spawned. Override to customize the fighter.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/proc/OnFighterSpawned(mob/living/fighter)
+	return
+
+/// Called before the combat mob is qdel'd. Override to record duel data.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/proc/OnFighterDefeated(mob/living/fighter, player_won)
 	return

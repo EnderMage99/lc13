@@ -571,11 +571,11 @@
 
 		if(player_val >= client_val)
 			diff = player_val - client_val
-			axis_score = 1.0 + min(diff * 0.03, 0.15)
+			axis_score = 1.0 + min(diff * 0.05, 0.25)
 		else
 			diff = player_val - client_val // Negative
 			if(client_val > 0)
-				axis_score = player_val / client_val
+				axis_score = max(player_val / client_val, 0.2)
 			else
 				axis_score = 1.0
 
@@ -591,6 +591,19 @@
 	var/overlap = total_axis_score / 5
 	var/overlap_sell = round(base_sell * overlap)
 
+	// --- Overlap Tier Bonus (rewards good pentagon matching) ---
+	var/list/breakdown = list()
+	var/overlap_bonus = 0
+	if(overlap >= 0.95)
+		overlap_bonus = round(overlap_sell * 0.40)
+		breakdown += list(list("label" = "Excellent Match", "value" = overlap_bonus, "positive" = TRUE))
+	else if(overlap >= 0.80)
+		overlap_bonus = round(overlap_sell * 0.25)
+		breakdown += list(list("label" = "Great Match", "value" = overlap_bonus, "positive" = TRUE))
+	else if(overlap >= 0.65)
+		overlap_bonus = round(overlap_sell * 0.15)
+		breakdown += list(list("label" = "Good Match", "value" = overlap_bonus, "positive" = TRUE))
+
 	// --- Tag Analysis ---
 	var/list/design_tags = list()
 	for(var/eid in effects)
@@ -601,44 +614,43 @@
 			for(var/tag in def["tags"])
 				design_tags[tag] = (design_tags[tag] || 0) + 1
 
-	var/list/breakdown = list()
 	var/tag_bonus_total = 0
 
-	// Required tag check (+8% present, -15% missing)
+	// Required tag check (+8% present, -15% missing) — scales with overlap
 	var/list/required_tags = current_client["required_tags"]
 	if(required_tags)
 		for(var/tag in required_tags)
 			if(design_tags[tag])
-				var/bonus = round(base_sell * 0.08)
+				var/bonus = round(overlap_sell * 0.08)
 				tag_bonus_total += bonus
 				breakdown += list(list("label" = "Required: [tag]", "value" = bonus, "positive" = TRUE))
 			else
-				var/penalty = round(base_sell * 0.15)
+				var/penalty = round(overlap_sell * 0.15)
 				tag_bonus_total -= penalty
 				breakdown += list(list("label" = "Missing required: [tag]", "value" = -penalty, "positive" = FALSE))
 
-	// Trending bonuses (+8% per matching tag)
+	// Trending bonuses (+8% per matching tag) — scales with overlap
 	for(var/tag in trending_tags)
 		if(design_tags[tag])
-			var/bonus = round(base_sell * 0.08)
+			var/bonus = round(overlap_sell * 0.08)
 			tag_bonus_total += bonus
 			breakdown += list(list("label" = "Trending: [tag]", "value" = bonus, "positive" = TRUE))
 
-	// Oversaturated penalties (-6% per matching tag)
+	// Oversaturated penalties (-6% per matching tag) — scales with overlap
 	for(var/tag in oversaturated_tags)
 		if(design_tags[tag])
-			var/penalty = round(base_sell * 0.06)
+			var/penalty = round(overlap_sell * 0.06)
 			tag_bonus_total -= penalty
 			breakdown += list(list("label" = "Oversaturated: [tag]", "value" = -penalty, "positive" = FALSE))
 
 	// --- Rank Mismatch Penalty ---
 	var/rank_penalty = 0
 	if(rank < current_client["rank_min"] || rank > current_client["rank_max"])
-		rank_penalty = round(base_sell * 0.25)
+		rank_penalty = round(overlap_sell * 0.25)
 		breakdown += list(list("label" = "Rank mismatch", "value" = -rank_penalty, "positive" = FALSE))
 
 	// --- Final Calculation ---
-	var/final_sell = overlap_sell + tag_bonus_total - rank_penalty
+	var/final_sell = overlap_sell + overlap_bonus + tag_bonus_total - rank_penalty
 	if(final_sell < 0)
 		final_sell = 0
 	var/profit = final_sell - material_cost

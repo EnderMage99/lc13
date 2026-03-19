@@ -73,3 +73,11 @@
 /obj/effect/landmark/prostheti_npc_spawn/training_door
 	name = "Training yard door"
 	landmark_id = "training_door"
+
+/obj/effect/landmark/prostheti_npc_spawn/training_door/Initialize(mapload)
+	. = ..()
+	// Bolt the door shut so players can't access the Training Yard early
+	var/turf/T = get_turf(src)
+	for(var/obj/machinery/door/D in T)
+		D.locked = TRUE
+		D.update_icon()

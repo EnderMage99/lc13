@@ -17,7 +17,7 @@
 	icon_state = "elliot"	// TEMP — Elliot fixer stand-in
 	icon_living = "elliot"	// TEMP
 	portrait = "elliot.PNG"	// TEMP — needs 192x192 Hector portrait
-	typing_interval = 55
+	typing_interval = 22
 	random_emotes = "rests a hand on his blade;rolls his shoulder;watches the yard quietly"
 
 /mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch1

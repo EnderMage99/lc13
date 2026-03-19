@@ -13,7 +13,7 @@
 	name = "Augment Design Terminal"
 	desc = "A sleek terminal for the augment design challenge. Prostheti Innovations wants to see what you can do."
 	icon = 'icons/obj/machines/research.dmi'
-	icon_state = "rdconsole"
+	icon_state = "nanite_programmer_t"
 	anchored = TRUE
 	density = TRUE
 	/// The active minigame instance. Created on first interaction.

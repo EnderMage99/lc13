@@ -19,7 +19,7 @@
 	icon_state = "electic"	// TEMP — Amber Knight stand-in
 	icon_living = "electic"	// TEMP
 	portrait = "tinkerer.PNG"	// TEMP — needs 192x192 Penny portrait
-	typing_interval = 40
+	typing_interval = 16
 	random_emotes = "looks around excitedly;hums a tune;waves at someone on the factory floor"
 
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1
@@ -51,6 +51,18 @@
 
 	/// Number of fixer designs needed to unlock the introduction trigger
 	var/fixer_designs_threshold = 3
+
+	// Adaptive learning system — persists between duels
+	/// How many duels Penny has completed (wins + losses)
+	var/total_duels = 0
+	/// Damage received by type in the last duel
+	var/list/last_duel_damage = list(RED_DAMAGE = 0, WHITE_DAMAGE = 0, BLACK_DAMAGE = 0, PALE_DAMAGE = 0)
+	/// Learned resistance coefficients (lower = more resistant, min 0.5)
+	var/list/learned_resistances = list(RED_DAMAGE = 1, WHITE_DAMAGE = 1, BLACK_DAMAGE = 1, PALE_DAMAGE = 1)
+	/// What damage type Penny currently deals
+	var/learned_damage_type = RED_DAMAGE
+	/// Bonus max health from learning (capped at +500)
+	var/learned_health_bonus = 0
 
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/Initialize(mapload)
 	. = ..()
@@ -152,12 +164,20 @@
 			"text" = "What else do you want to know?",
 			"actions" = list(
 				"about_work" = list(
-					"text" = "Tell me about the work again.",
+					"text" = "Tell me about the work.",
 					"default_scene" = "about_work"
+				),
+				"about_you" = list(
+					"text" = "What do you do around here?",
+					"default_scene" = "about_you"
+				),
+				"about_dad" = list(
+					"text" = "Tell me about your dad.",
+					"default_scene" = "about_dad"
 				),
 				"fixer_knowledge" = list(
 					"text" = "I've been building augments for Fixers — Zwei squads, Cinq duelists...",
-					"visibility_expression" = "npc.fixer_designs >= [fixer_designs_threshold]",
+					"visibility_expression" = "npc.fixer_designs >= [fixer_designs_threshold] && !npc.introduced_hector",
 					"proc_callbacks" = list(CALLBACK(src, PROC_REF(TriggerIntroduction))),
 					"default_scene" = "fixer_trigger"
 				),
@@ -336,13 +356,15 @@
 	settled_in_yard = TRUE
 	walk(src, 0)
 
-	// Unlock the training yard door
+	// Unlock and open the training yard door
 	if(training_door)
+		training_door.locked = FALSE
+		training_door.update_icon()
 		training_door.open()
 
 	// Penny speaks aloud
 	say("Follow me — there's someone you should meet.")
-	SLEEP_CHECK_DEATH(20)
+	SLEEP_CHECK_DEATH(30)
 
 	// Walk toward the training yard
 	if(yard_turf)
@@ -365,48 +387,54 @@
 		hector_npc.forceMove(hector_spawn_turf)
 		hector_npc.speaking_on()
 
-	SLEEP_CHECK_DEATH(15)
+	SLEEP_CHECK_DEATH(25)
+
+	// Face each other for the conversation
+	if(hector_npc)
+		face_atom(hector_npc)
+		hector_npc.face_atom(src)
 
 	// Back-and-forth say() cutscene
 	say("Hector! It's been a while.")
-	SLEEP_CHECK_DEATH(20)
+	SLEEP_CHECK_DEATH(30)
 
 	if(hector_npc)
-		hector_npc.say("Penny. You look well. Still dragging strangers to meet me, I see.")
-	SLEEP_CHECK_DEATH(20)
+		hector_npc.say("Penny. Still dragging strangers to meet me, I see.")
+	SLEEP_CHECK_DEATH(30)
 
-	say("They're not strangers — they're my father's new designers. \
-		And they've been building gear for Fixers.")
-	SLEEP_CHECK_DEATH(20)
+	say("They're not strangers — they've been building gear for real Fixers.")
+	SLEEP_CHECK_DEATH(30)
 
 	if(hector_npc)
 		hector_npc.say("Is that so.")
-	SLEEP_CHECK_DEATH(15)
-
-	say("Real combat augments. Zwei patrol loadouts, Cinq dueling rigs — \
-		the kind of work that matters.")
-	SLEEP_CHECK_DEATH(20)
-
-	if(hector_npc)
-		hector_npc.say("Hmm. Designing for Fixers is one thing. \
-			Knowing what a Fixer actually needs is another.")
-	SLEEP_CHECK_DEATH(20)
-
-	say("That's why I brought them here. Hector used to run jobs — real ones. \
-		If anyone can show you what your augments need to survive, it's him.")
 	SLEEP_CHECK_DEATH(25)
 
-	if(hector_npc)
-		hector_npc.say("I don't run jobs anymore. But I can still swing a blade. \
-			If your designers want to learn what their work feels like \
-			from the other side — I'm here.")
-	SLEEP_CHECK_DEATH(20)
+	say("Zwei loadouts, Cinq dueling rigs — the real stuff.")
+	SLEEP_CHECK_DEATH(30)
 
-	say("And I'll be here too! Hector's been training me — if you want to spar, just ask!")
-	SLEEP_CHECK_DEATH(15)
+	if(hector_npc)
+		hector_npc.say("Designing for Fixers is one thing. Knowing what they need is another.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("That's why I brought them here — Hector knows what augments need to survive.")
+	SLEEP_CHECK_DEATH(35)
+
+	if(hector_npc)
+		hector_npc.say("I don't run jobs anymore, but I can still swing a blade. I'm here if they want to learn.")
+	SLEEP_CHECK_DEATH(30)
+
+	say("And I'll spar too — just ask!")
+	SLEEP_CHECK_DEATH(25)
 
 	// Set shared state
 	SetSharedVar("introduced_hector", TRUE)
+	if(hector_npc)
+		hector_npc.SetSharedVar("introduced_hector", TRUE)
+
+	// Face south after the conversation
+	dir = SOUTH
+	if(hector_npc)
+		hector_npc.dir = SOUTH
 
 	// Unlock both NPCs
 	in_cutscene = FALSE
@@ -421,3 +449,51 @@
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/OnDuelVictory(mob/living/winner, total_wins)
 	if(total_wins >= 5 && campaign)
 		addtimer(CALLBACK(campaign, TYPE_PROC_REF(/datum/campaign_controller/prostheti, CompleteChapter), 1), 30)
+
+// =============================================
+// Adaptive Learning System
+// =============================================
+
+/// Apply learning data to the freshly-spawned combat mob.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/OnFighterSpawned(mob/living/fighter)
+	var/mob/living/simple_animal/hostile/prostheti/penny_combat/P = fighter
+	if(!istype(P))
+		return
+	P.ApplyLearning(src)
+
+/// Record what happened in the duel before the combat mob is deleted.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/OnFighterDefeated(mob/living/fighter, player_won)
+	var/mob/living/simple_animal/hostile/prostheti/penny_combat/P = fighter
+	if(!istype(P))
+		return
+	RecordLearning(P)
+
+/// Processes the duel results and updates Penny's learning state for next time.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch1/proc/RecordLearning(mob/living/simple_animal/hostile/prostheti/penny_combat/fighter)
+	total_duels++
+
+	// Copy damage tracking
+	last_duel_damage = fighter.damage_received.Copy()
+
+	// Health bonus: +50 per duel, cap +500 (ZAYIN 500 → HE 1000)
+	learned_health_bonus = min(total_duels * 50, 500)
+
+	// Resistance adaptation: find most-taken damage type, reduce coeff by 0.05 (min 0.5)
+	var/worst_type = RED_DAMAGE
+	var/worst_amount = 0
+	for(var/dtype in last_duel_damage)
+		if(last_duel_damage[dtype] > worst_amount)
+			worst_amount = last_duel_damage[dtype]
+			worst_type = dtype
+	if(worst_amount > 0)
+		learned_resistances[worst_type] = max(learned_resistances[worst_type] - 0.05, 0.5)
+
+	// Damage type adaptation: switch to whatever type dealt the most to the player
+	var/best_type = RED_DAMAGE
+	var/best_outgoing = 0
+	for(var/dtype in fighter.damage_dealt)
+		if(fighter.damage_dealt[dtype] > best_outgoing)
+			best_outgoing = fighter.damage_dealt[dtype]
+			best_type = dtype
+	if(best_outgoing > 0)
+		learned_damage_type = best_type

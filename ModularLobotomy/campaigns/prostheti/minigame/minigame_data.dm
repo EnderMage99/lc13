@@ -80,11 +80,11 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		// =====================
 		"ES_red" = list(
 			"tags" = list("defensive"),
-			"attributes" = list("endurance" = 2, "lethality" = -1),
+			"attributes" = list("endurance" = 3, "control" = 1, "lethality" = -1),
 		),
 		"ES_black" = list(
 			"tags" = list("defensive"),
-			"attributes" = list("endurance" = 2, "agility" = -1),
+			"attributes" = list("endurance" = 3, "efficiency" = 1, "agility" = -1),
 		),
 		"ES_white" = list(
 			"tags" = list("defensive"),
@@ -100,12 +100,12 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"stalwart_form" = list(
 			"tags" = list("defensive"),
-			"attributes" = list("endurance" = 4, "agility" = -3),
-			"special" = list("condition" = "endurance", "threshold" = 8, "bonus" = list("lethality" = 1)),
+			"attributes" = list("endurance" = 4, "control" = 1, "agility" = -2),
+			"special" = list("condition" = "endurance", "threshold" = 8, "bonus" = list("lethality" = 2)),
 		),
 		"fireproof" = list(
 			"tags" = list("defensive"),
-			"attributes" = list("endurance" = 2, "efficiency" = -1),
+			"attributes" = list("endurance" = 3, "control" = 1, "efficiency" = -1),
 		),
 
 		// =====================
@@ -113,23 +113,23 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		// =====================
 		"struggling_strength" = list(
 			"tags" = list("offensive"),
-			"attributes" = list("lethality" = 3, "endurance" = -2),
+			"attributes" = list("lethality" = 3, "endurance" = -1),
 		),
 		"ar_red" = list(
 			"tags" = list("offensive"),
-			"attributes" = list("lethality" = 2),
+			"attributes" = list("lethality" = 2, "agility" = 1),
 		),
 		"ar_black" = list(
 			"tags" = list("offensive"),
-			"attributes" = list("lethality" = 2, "control" = 1, "efficiency" = -1),
+			"attributes" = list("lethality" = 2, "control" = 1),
 		),
 		"dual_wield" = list(
 			"tags" = list("offensive"),
-			"attributes" = list("lethality" = 3, "agility" = 1, "control" = -2),
+			"attributes" = list("lethality" = 4, "agility" = 2, "control" = -1),
 		),
 		"unstable" = list(
 			"tags" = list("offensive"),
-			"attributes" = list("lethality" = 3, "control" = -1, "efficiency" = -2),
+			"attributes" = list("lethality" = 3, "agility" = 1, "efficiency" = -1),
 		),
 		"shattering_mind_red" = list(
 			"tags" = list("offensive"),
@@ -145,12 +145,12 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"inner_ardor" = list(
 			"tags" = list("offensive", "overheat"),
-			"attributes" = list("lethality" = 2, "efficiency" = -1),
-			"special" = list("condition" = "lethality", "threshold" = 8, "bonus" = list("control" = 2)),
+			"attributes" = list("lethality" = 2, "control" = 1, "efficiency" = -1),
+			"special" = list("condition" = "lethality", "threshold" = 8, "bonus" = list("control" = 3)),
 		),
 		"ink_over" = list(
 			"tags" = list("offensive", "bleed"),
-			"attributes" = list("lethality" = 2, "agility" = 1, "endurance" = -1),
+			"attributes" = list("lethality" = 2, "agility" = 2, "endurance" = -1),
 		),
 
 		// =====================
@@ -166,7 +166,7 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"regenerative_warmth" = list(
 			"tags" = list("healing", "overheat"),
-			"attributes" = list("endurance" = 2, "efficiency" = 1, "control" = -1),
+			"attributes" = list("endurance" = 2, "efficiency" = 2, "control" = -1),
 		),
 		"blood_cycler" = list(
 			"tags" = list("healing", "bleed"),
@@ -186,15 +186,15 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"blood_jaunt" = list(
 			"tags" = list("bleed", "offensive"),
-			"attributes" = list("lethality" = 2, "agility" = 1, "efficiency" = -1),
+			"attributes" = list("lethality" = 3, "agility" = 2, "control" = 1, "efficiency" = -1),
 		),
 		"sanguine_desire" = list(
 			"tags" = list("bleed", "healing"),
-			"attributes" = list("lethality" = 1, "endurance" = 1, "agility" = 1, "efficiency" = -1),
+			"attributes" = list("lethality" = 1, "endurance" = 1, "agility" = 1, "efficiency" = 1, "control" = -1),
 		),
 		"hemomaniac" = list(
 			"tags" = list("bleed"),
-			"attributes" = list("lethality" = 2, "agility" = 1, "control" = -1),
+			"attributes" = list("lethality" = 2, "agility" = 1, "endurance" = 1, "control" = -1),
 		),
 		"bleed_vigor" = list(
 			"tags" = list("bleed", "offensive"),
@@ -202,8 +202,8 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"crimson_cascade" = list(
 			"tags" = list("bleed", "offensive"),
-			"attributes" = list("lethality" = 3, "agility" = 2, "endurance" = -2, "control" = -1),
-			"special" = list("condition" = "lethality", "threshold" = 7, "bonus" = list("agility" = 1)),
+			"attributes" = list("lethality" = 3, "agility" = 2, "endurance" = -1, "control" = -1),
+			"special" = list("condition" = "lethality", "threshold" = 7, "bonus" = list("agility" = 2)),
 		),
 		"faint_drain" = list(
 			"tags" = list("bleed", "support"),
@@ -231,28 +231,28 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"combustion" = list(
 			"tags" = list("overheat", "offensive"),
-			"attributes" = list("lethality" = 3, "agility" = 1, "efficiency" = -2),
+			"attributes" = list("lethality" = 3, "control" = 2, "efficiency" = -1),
 		),
 		"pyromaniac" = list(
 			"tags" = list("overheat"),
-			"attributes" = list("lethality" = 2, "control" = 2, "efficiency" = -2),
-			"special" = list("condition" = "lethality", "threshold" = 6, "bonus" = list("efficiency" = 1)),
+			"attributes" = list("lethality" = 2, "control" = 2, "efficiency" = -1),
+			"special" = list("condition" = "lethality", "threshold" = 6, "bonus" = list("efficiency" = 2)),
 		),
 		"spreading_embers" = list(
 			"tags" = list("overheat"),
-			"attributes" = list("lethality" = 2, "control" = 1, "efficiency" = -1),
+			"attributes" = list("lethality" = 2, "control" = 1, "agility" = 1, "efficiency" = -1),
 		),
 		"burn_vigor" = list(
 			"tags" = list("overheat", "offensive"),
-			"attributes" = list("lethality" = 3, "endurance" = -1, "efficiency" = -1),
+			"attributes" = list("lethality" = 2, "agility" = 1, "efficiency" = -1),
 		),
 		"rekindled_flame" = list(
 			"tags" = list("overheat"),
-			"attributes" = list("lethality" = 1, "endurance" = 1, "efficiency" = -1),
+			"attributes" = list("lethality" = 1, "endurance" = 1, "agility" = 1, "efficiency" = -1),
 		),
 		"force_of_a_wildfire" = list(
 			"tags" = list("overheat", "on-kill"),
-			"attributes" = list("lethality" = 3, "agility" = 1, "efficiency" = -2),
+			"attributes" = list("lethality" = 3, "agility" = 2, "efficiency" = -1),
 		),
 
 		// =====================
@@ -260,32 +260,32 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		// =====================
 		"slothful_decay" = list(
 			"tags" = list("tremor"),
-			"attributes" = list("control" = 2, "endurance" = 1, "agility" = -2),
+			"attributes" = list("control" = 2, "endurance" = 1, "agility" = -1),
 		),
 		"earthquake" = list(
 			"tags" = list("tremor", "offensive"),
-			"attributes" = list("control" = 2, "lethality" = 2, "agility" = -2),
+			"attributes" = list("control" = 3, "lethality" = 3, "agility" = -1),
 		),
 		"tremor_break" = list(
 			"tags" = list("tremor"),
-			"attributes" = list("control" = 2, "endurance" = 1, "agility" = -1),
+			"attributes" = list("control" = 2, "endurance" = 2, "agility" = -1),
 		),
 		"tremor_burst" = list(
 			"tags" = list("tremor"),
-			"attributes" = list("control" = 3, "agility" = -2),
+			"attributes" = list("control" = 3, "agility" = -1),
 		),
 		"reflective_tremor" = list(
 			"tags" = list("tremor", "defensive"),
-			"attributes" = list("control" = 2, "endurance" = 2, "agility" = -2),
+			"attributes" = list("control" = 2, "endurance" = 1, "agility" = -1),
 		),
 		"time_moratorium" = list(
 			"tags" = list("tremor"),
-			"attributes" = list("control" = 3, "efficiency" = 1, "agility" = -3),
-			"special" = list("condition" = "control", "threshold" = 8, "bonus" = list("efficiency" = 2)),
+			"attributes" = list("control" = 3, "efficiency" = 2, "agility" = -2),
+			"special" = list("condition" = "control", "threshold" = 8, "bonus" = list("efficiency" = 3)),
 		),
 		"tremor_everlasting" = list(
 			"tags" = list("tremor"),
-			"attributes" = list("control" = 2, "endurance" = 2, "agility" = -2),
+			"attributes" = list("control" = 2, "endurance" = 2, "agility" = -1),
 		),
 		"tremor_deterioration" = list(
 			"tags" = list("tremor"),
@@ -293,20 +293,20 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"vibroweld_morph_combat_effect" = list(
 			"tags" = list("tremor"),
-			"attributes" = list("control" = 2, "endurance" = 1, "agility" = -1),
+			"attributes" = list("control" = 3, "endurance" = 1, "agility" = -1),
 		),
 		"tremor_ruin" = list(
 			"tags" = list("tremor", "offensive"),
-			"attributes" = list("control" = 2, "lethality" = 2, "agility" = -2, "efficiency" = -1),
+			"attributes" = list("control" = 2, "lethality" = 2, "agility" = -1),
 		),
 		"stoneward_form" = list(
 			"tags" = list("tremor", "support"),
-			"attributes" = list("control" = 3, "endurance" = 2, "agility" = -3),
-			"special" = list("condition" = "endurance", "threshold" = 7, "bonus" = list("control" = 1)),
+			"attributes" = list("control" = 3, "endurance" = 2, "agility" = -2),
+			"special" = list("condition" = "endurance", "threshold" = 7, "bonus" = list("control" = 2)),
 		),
 		"unstable_inertia" = list(
 			"tags" = list("tremor", "risky"),
-			"attributes" = list("control" = 2, "lethality" = 1, "agility" = -1, "efficiency" = -1),
+			"attributes" = list("control" = 2, "lethality" = 1, "efficiency" = -1),
 		),
 
 		// =====================
@@ -314,7 +314,7 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		// =====================
 		"absorption" = list(
 			"tags" = list("on-kill", "healing"),
-			"attributes" = list("lethality" = 1, "efficiency" = 2, "control" = -1),
+			"attributes" = list("lethality" = 2, "efficiency" = 3, "control" = -1),
 		),
 		"brutalize" = list(
 			"tags" = list("on-kill", "offensive"),
@@ -330,7 +330,7 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"blood_rush" = list(
 			"tags" = list("on-kill", "bleed"),
-			"attributes" = list("lethality" = 2, "agility" = 1, "control" = -1),
+			"attributes" = list("lethality" = 2, "agility" = 2, "control" = -1),
 		),
 
 		// =====================
@@ -342,55 +342,55 @@ GLOBAL_LIST_INIT(prostheti_effect_definitions, init_prostheti_effect_definitions
 		),
 		"bus" = list(
 			"tags" = list("risky"),
-			"attributes" = list("lethality" = -2, "agility" = -2),
+			"attributes" = list("lethality" = -1, "agility" = -1),
 		),
 		"overheated" = list(
 			"tags" = list("risky", "overheat"),
-			"attributes" = list("lethality" = 1, "efficiency" = -3),
+			"attributes" = list("lethality" = 1, "efficiency" = -2),
 		),
 		"thanatophobia" = list(
 			"tags" = list("risky"),
-			"attributes" = list("endurance" = -2, "control" = -1),
+			"attributes" = list("endurance" = -2),
 		),
 		"pacifist" = list(
 			"tags" = list("risky"),
-			"attributes" = list("lethality" = -3, "control" = 1),
+			"attributes" = list("lethality" = -2, "control" = 1),
 		),
 		"struggling_weakness" = list(
 			"tags" = list("risky"),
-			"attributes" = list("lethality" = -2, "endurance" = -1),
+			"attributes" = list("lethality" = -1, "endurance" = -1),
 		),
 		"struggling_fragility" = list(
 			"tags" = list("risky"),
-			"attributes" = list("endurance" = -3, "lethality" = -1),
+			"attributes" = list("endurance" = -2),
 		),
 		"algophobia" = list(
 			"tags" = list("risky"),
-			"attributes" = list("agility" = -2, "control" = -1),
+			"attributes" = list("agility" = -2),
 		),
 		"weak_arms" = list(
 			"tags" = list("risky"),
-			"attributes" = list("lethality" = -2, "agility" = -1),
+			"attributes" = list("lethality" = -1, "agility" = -1),
 		),
 		"annoyance" = list(
 			"tags" = list("risky"),
-			"attributes" = list("control" = -2, "lethality" = -1),
+			"attributes" = list("control" = -1, "lethality" = -1),
 		),
 		"allodynia" = list(
 			"tags" = list("risky", "bleed"),
-			"attributes" = list("lethality" = 1, "endurance" = -2, "agility" = -1),
+			"attributes" = list("lethality" = 1, "endurance" = -2),
 		),
 		"internal_vibrations" = list(
 			"tags" = list("risky", "tremor"),
-			"attributes" = list("control" = 1, "agility" = -2, "endurance" = -1),
+			"attributes" = list("control" = 1, "agility" = -2),
 		),
 		"scalding_skin" = list(
 			"tags" = list("risky", "overheat"),
-			"attributes" = list("lethality" = 1, "endurance" = -1, "efficiency" = -2),
+			"attributes" = list("lethality" = 1, "efficiency" = -2),
 		),
 		"open_wound" = list(
 			"tags" = list("risky", "bleed"),
-			"attributes" = list("agility" = 1, "endurance" = -2, "efficiency" = -1),
+			"attributes" = list("agility" = 1, "endurance" = -2),
 		),
 	)
 
@@ -461,7 +461,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"rs_tremor_sync" = list(
 			"tags" = list("tremor", "support"),
 			"attributes" = list("control" = 3, "efficiency" = 2, "agility" = -1),
-			"special" = list("condition" = "control", "threshold" = 7, "bonus" = list("endurance" = 2)),
+			"special" = list("condition" = "control", "threshold" = 7, "bonus" = list("endurance" = 3)),
 		),
 		"rs_resonant_core" = list(
 			"tags" = list("tremor", "offensive"),
@@ -474,7 +474,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"rs_sloth_drive" = list(
 			"tags" = list("tremor"),
 			"attributes" = list("control" = 4, "agility" = -2, "efficiency" = 1),
-			"special" = list("condition" = "control", "threshold" = 9, "bonus" = list("lethality" = 2)),
+			"special" = list("condition" = "control", "threshold" = 9, "bonus" = list("lethality" = 3)),
 		),
 
 		// --- Molar Boatworks (Scrap Efficiency) ---
@@ -485,7 +485,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"mb_scrap_compression" = list(
 			"tags" = list("support"),
 			"attributes" = list("efficiency" = 4, "control" = 1, "agility" = -2),
-			"special" = list("condition" = "efficiency", "threshold" = 8, "bonus" = list("endurance" = 2)),
+			"special" = list("condition" = "efficiency", "threshold" = 8, "bonus" = list("endurance" = 3)),
 		),
 		"mb_jury_rig" = list(
 			"tags" = list("support", "risky"),
@@ -504,7 +504,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"lf_smoke_overflow" = list(
 			"tags" = list("support"),
 			"attributes" = list("efficiency" = 2, "lethality" = 2, "agility" = -1),
-			"special" = list("condition" = "efficiency", "threshold" = 7, "bonus" = list("lethality" = 2)),
+			"special" = list("condition" = "efficiency", "threshold" = 7, "bonus" = list("lethality" = 3)),
 		),
 		"lf_excess_supply" = list(
 			"tags" = list("offensive"),
@@ -512,14 +512,14 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		),
 		"lf_madness_engine" = list(
 			"tags" = list("risky", "offensive"),
-			"attributes" = list("lethality" = 2, "agility" = 2, "endurance" = 2, "control" = -3),
+			"attributes" = list("lethality" = 2, "agility" = 2, "endurance" = 2, "control" = -2),
 		),
 
 		// --- Atelier Logic (Precision Ranged) ---
 		"al_focused_payload" = list(
 			"tags" = list("offensive"),
 			"attributes" = list("lethality" = 4, "control" = 2, "agility" = -2),
-			"special" = list("condition" = "lethality", "threshold" = 9, "bonus" = list("efficiency" = 2)),
+			"special" = list("condition" = "lethality", "threshold" = 9, "bonus" = list("efficiency" = 3)),
 		),
 		"al_trigger_discipline" = list(
 			"tags" = list("offensive", "support"),
@@ -542,7 +542,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"ca_evasion_protocol" = list(
 			"tags" = list("defensive"),
 			"attributes" = list("agility" = 4, "endurance" = 1, "control" = -2),
-			"special" = list("condition" = "agility", "threshold" = 8, "bonus" = list("lethality" = 2)),
+			"special" = list("condition" = "agility", "threshold" = 8, "bonus" = list("lethality" = 3)),
 		),
 		"ca_burst_combo" = list(
 			"tags" = list("offensive"),
@@ -550,7 +550,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		),
 		"ca_glass_cannon" = list(
 			"tags" = list("offensive", "risky"),
-			"attributes" = list("lethality" = 4, "agility" = 2, "endurance" = -3),
+			"attributes" = list("lethality" = 4, "agility" = 2, "endurance" = -2),
 		),
 
 		// --- Zelkova Workshop (Momentum/Exchange) ---
@@ -561,7 +561,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"zk_exchange_mastery" = list(
 			"tags" = list("support"),
 			"attributes" = list("agility" = 3, "control" = 2, "lethality" = -1),
-			"special" = list("condition" = "agility", "threshold" = 7, "bonus" = list("efficiency" = 2)),
+			"special" = list("condition" = "agility", "threshold" = 7, "bonus" = list("efficiency" = 3)),
 		),
 		"zk_axe_mace_cycle" = list(
 			"tags" = list("offensive", "tremor"),
@@ -570,7 +570,7 @@ GLOBAL_LIST_INIT(prostheti_workshop_effects, init_prostheti_workshop_effects())
 		"zk_escalating_force" = list(
 			"tags" = list("offensive"),
 			"attributes" = list("lethality" = 2, "endurance" = 2, "efficiency" = -1),
-			"special" = list("condition" = "lethality", "threshold" = 8, "bonus" = list("agility" = 2)),
+			"special" = list("condition" = "lethality", "threshold" = 8, "bonus" = list("agility" = 3)),
 		),
 	)
 

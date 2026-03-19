@@ -46,6 +46,12 @@
 	density = 1
 	},
 /area/awaymission/prostheti/entrance)
+"if" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "il" = (
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/training_yard)
@@ -57,6 +63,12 @@
 	name = "asphalt"
 	},
 /area/awaymission/prostheti/entrance)
+"iK" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/design_floor)
 "iO" = (
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/factory_floor)
@@ -72,6 +84,7 @@
 /area/awaymission/prostheti/design_floor)
 "kv" = (
 /obj/effect/landmark/prostheti_npc_spawn/training_door,
+/obj/machinery/door/airlock/survival_pod,
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/factory_floor)
 "kP" = (
@@ -83,6 +96,10 @@
 "lj" = (
 /turf/closed/indestructible/reinforced/cheap/green,
 /area/awaymission/prostheti/design_floor/office)
+"ls" = (
+/obj/machinery/light,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/factory_floor)
 "lG" = (
 /obj/machinery/hydroponics,
 /obj/machinery/light{
@@ -90,6 +107,22 @@
 	},
 /turf/open/floor/wood,
 /area/awaymission/prostheti/entrance)
+"lL" = (
+/obj/machinery/light{
+	dir = 8
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/factory_floor)
+"lZ" = (
+/obj/machinery/light,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/training_yard)
+"mH" = (
+/obj/machinery/light{
+	dir = 8
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/training_yard)
 "mI" = (
 /turf/closed/indestructible/reinforced/cheap/green,
 /area/awaymission/prostheti/training_yard)
@@ -109,6 +142,17 @@
 	pixel_y = 34
 	},
 /turf/open/indestructible/hoteltile,
+/area/awaymission/prostheti/entrance)
+"oE" = (
+/obj/effect/light_emitter{
+	light_power = 4;
+	light_range = 25;
+	set_cap = 3;
+	set_luminosity = 24
+	},
+/turf/open/floor/plating/ashplanet/rocky{
+	layer = 1.98
+	},
 /area/awaymission/prostheti/entrance)
 "pW" = (
 /obj/structure/table/wood,
@@ -160,6 +204,12 @@
 "uJ" = (
 /turf/closed/indestructible/reinforced/cheap/green,
 /area/awaymission/prostheti/medical_wing)
+"uN" = (
+/obj/machinery/light{
+	dir = 4
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/design_floor)
 "vn" = (
 /obj/structure/mineral_door/wood,
 /turf/open/indestructible/hoteltile,
@@ -167,6 +217,12 @@
 "vo" = (
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/medical_wing)
+"wG" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/training_yard)
 "zG" = (
 /obj/effect/turf_decal/trimline/red/filled/warning{
 	dir = 9
@@ -179,8 +235,18 @@
 /obj/effect/landmark/prostheti_duel/fixer_spawn/penny,
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/training_yard)
+"AK" = (
+/obj/machinery/light{
+	dir = 4
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/training_yard)
 "Bf" = (
 /obj/effect/landmark/prostheti_npc_spawn/penny,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/factory_floor)
+"Bu" = (
+/obj/machinery/door/airlock/survival_pod,
 /turf/open/floor/facility/dark,
 /area/awaymission/prostheti/factory_floor)
 "Cg" = (
@@ -328,6 +394,10 @@
 	name = "asphalt"
 	},
 /area/awaymission/prostheti/entrance)
+"LX" = (
+/obj/machinery/light,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/design_floor)
 "MF" = (
 /obj/effect/landmark/penny_waypoint,
 /turf/open/floor/facility/dark,
@@ -411,6 +481,12 @@
 /obj/item/flashlight/lamp,
 /turf/open/floor/carpet/black,
 /area/awaymission/prostheti/entrance)
+"SH" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/factory_floor)
 "SM" = (
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 1
@@ -428,6 +504,10 @@
 "Uh" = (
 /turf/closed/indestructible/reinforced,
 /area/awaymission/prostheti/entrance)
+"UA" = (
+/obj/machinery/light,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "Vg" = (
 /turf/open/floor/plating/ashplanet{
 	name = "asphalt"
@@ -440,12 +520,28 @@
 	},
 /turf/open/floor/carpet/black,
 /area/awaymission/prostheti/entrance)
+"WK" = (
+/obj/machinery/light{
+	dir = 1
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/design_floor/office)
+"YI" = (
+/obj/machinery/light{
+	dir = 8
+	},
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/medical_wing)
 "Zt" = (
 /obj/structure/prostheti_chapter_select,
 /turf/open/floor/plating/ashplanet/rocky{
 	layer = 1.98
 	},
 /area/awaymission/prostheti/entrance)
+"ZZ" = (
+/obj/effect/landmark/penny_waypoint,
+/turf/open/floor/facility/dark,
+/area/awaymission/prostheti/factory_floor)
 
 (1,1,1) = {"
 FB
@@ -10946,7 +11042,7 @@ sY
 sY
 sY
 sY
-sY
+oE
 sY
 Uh
 FB
@@ -11847,12 +11943,12 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
+sY
+sY
+sY
+sY
+sY
+sY
 Uh
 Uh
 Uh
@@ -11949,12 +12045,12 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
+sY
+sY
+sY
+sY
+sY
+sY
 Uh
 VT
 Tk
@@ -12054,9 +12150,9 @@ lj
 lj
 lj
 lj
-FB
-FB
-FB
+sY
+sY
+sY
 Uh
 SA
 GC
@@ -12142,16 +12238,16 @@ uJ
 vo
 vo
 vo
+YI
 vo
 vo
 vo
-vo
-vo
+YI
 vo
 vo
 vo
 lj
-Kq
+WK
 Kq
 Kq
 Kq
@@ -12241,7 +12337,7 @@ FB
 FB
 FB
 uJ
-vo
+if
 vo
 vo
 vo
@@ -12251,7 +12347,7 @@ vo
 vo
 vo
 MF
-vo
+UA
 lj
 Kq
 eS
@@ -12419,19 +12515,19 @@ FB
 FB
 FB
 FB
+mI
+mI
+mI
+mI
+mI
+mI
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+mI
+mI
+mI
+mI
+mI
+mI
 FB
 FB
 FB
@@ -12521,19 +12617,19 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+mI
+il
+il
+il
+il
+mI
+mI
+mI
+il
+il
+il
+il
+mI
 FB
 FB
 FB
@@ -12623,19 +12719,19 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+mI
+il
+il
+il
+il
+il
+mH
+il
+il
+il
+il
+il
+mI
 FB
 FB
 FB
@@ -12649,7 +12745,7 @@ FB
 FB
 FB
 uJ
-vo
+if
 MF
 vo
 vo
@@ -12659,7 +12755,7 @@ vo
 vo
 vo
 vo
-vo
+UA
 lj
 Kq
 Kq
@@ -12725,19 +12821,19 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
+il
+il
+il
+il
+il
+su
+il
+il
+il
+il
+il
 mI
-mI
-mI
-mI
-mI
-mI
-mI
-mI
-FB
-FB
 FB
 FB
 FB
@@ -12763,7 +12859,7 @@ vo
 vo
 vo
 lj
-Kq
+WK
 Kq
 Kq
 Kq
@@ -12827,8 +12923,6 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
 il
 il
@@ -12837,17 +12931,19 @@ il
 il
 il
 il
+il
+il
+il
+il
 mI
 FB
 FB
 FB
 FB
-FB
-FB
 mI
 il
 il
-il
+mH
 il
 il
 il
@@ -12929,19 +13025,19 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
 il
 il
 il
-su
+il
+il
+il
+il
+il
 il
 il
 il
 mI
-FB
-FB
 FB
 FB
 FB
@@ -12956,6 +13052,7 @@ il
 il
 hQ
 iO
+lL
 iO
 iO
 iO
@@ -12964,8 +13061,7 @@ iO
 iO
 iO
 iO
-iO
-iO
+lL
 iO
 iO
 iO
@@ -13031,9 +13127,8 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
+AK
 il
 il
 il
@@ -13041,9 +13136,10 @@ il
 il
 il
 il
+il
+il
+AK
 mI
-FB
-FB
 FB
 FB
 FB
@@ -13133,8 +13229,7 @@ FB
 FB
 FB
 FB
-FB
-FB
+mI
 mI
 il
 il
@@ -13143,9 +13238,10 @@ il
 il
 il
 il
+il
+il
 mI
-FB
-FB
+mI
 FB
 FB
 FB
@@ -13175,7 +13271,7 @@ iO
 iO
 iO
 iO
-iO
+Bu
 sY
 sY
 sY
@@ -13190,7 +13286,7 @@ sY
 sY
 sY
 sY
-sY
+oE
 sY
 sY
 Uh
@@ -13236,17 +13332,17 @@ FB
 FB
 FB
 FB
-FB
 mI
-il
-il
-il
-il
-il
-il
-il
 mI
-FB
+wG
+il
+il
+il
+il
+il
+lZ
+mI
+mI
 FB
 FB
 FB
@@ -13337,8 +13433,7 @@ FB
 FB
 FB
 FB
-FB
-FB
+mI
 mI
 il
 il
@@ -13347,9 +13442,10 @@ il
 il
 il
 il
+il
+il
 mI
-FB
-FB
+mI
 FB
 FB
 FB
@@ -13439,27 +13535,27 @@ FB
 FB
 FB
 FB
+mI
+mH
+il
+il
+il
+il
+il
+il
+il
+il
+il
+mH
+mI
+FB
+FB
 FB
 FB
 mI
 il
 il
-il
-il
-il
-il
-il
-mI
-FB
-FB
-FB
-FB
-FB
-FB
-mI
-il
-il
-il
+AK
 il
 il
 il
@@ -13469,9 +13565,9 @@ Cp
 Cp
 Cp
 Cp
+iK
 et
-et
-et
+LX
 Cp
 Cp
 Cp
@@ -13541,19 +13637,19 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
 il
 il
 il
-zW
+il
+il
+il
+il
+il
 il
 il
 il
 mI
-FB
-FB
 FB
 FB
 FB
@@ -13579,7 +13675,7 @@ et
 et
 et
 Cp
-iO
+SH
 iO
 iO
 iO
@@ -13590,8 +13686,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 FB
@@ -13643,8 +13739,6 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
 il
 il
@@ -13653,9 +13747,11 @@ il
 il
 il
 il
+il
+il
+il
+il
 mI
-FB
-FB
 FB
 FB
 FB
@@ -13669,7 +13765,7 @@ FB
 FB
 FB
 Cp
-et
+iK
 It
 et
 Cp
@@ -13677,7 +13773,7 @@ et
 et
 et
 Cp
-et
+iK
 It
 et
 Cp
@@ -13692,8 +13788,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -13745,19 +13841,19 @@ FB
 FB
 FB
 FB
-FB
-FB
 mI
+il
+il
+il
+il
+il
+zW
+il
+il
+il
+il
+il
 mI
-mI
-mI
-mI
-mI
-mI
-mI
-mI
-FB
-FB
 FB
 FB
 FB
@@ -13794,8 +13890,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -13847,19 +13943,19 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+mI
+il
+il
+il
+il
+il
+AK
+il
+il
+il
+il
+il
+mI
 FB
 FB
 FB
@@ -13888,7 +13984,7 @@ Cp
 iO
 iO
 iO
-iO
+ls
 hQ
 sY
 sY
@@ -13896,8 +13992,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -13949,19 +14045,19 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+mI
+il
+il
+il
+il
+mI
+mI
+mI
+il
+il
+il
+il
+mI
 FB
 FB
 FB
@@ -13998,8 +14094,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -14051,19 +14147,19 @@ FB
 FB
 FB
 FB
+mI
+mI
+mI
+mI
+mI
+mI
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+mI
+mI
+mI
+mI
+mI
+mI
 FB
 FB
 FB
@@ -14100,8 +14196,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -14179,7 +14275,7 @@ FB
 FB
 FB
 Cp
-et
+iK
 jz
 et
 Cp
@@ -14187,13 +14283,13 @@ et
 It
 et
 Cp
-et
+iK
 jz
 et
 Cp
-iO
+SH
 Bf
-iO
+ZZ
 iO
 hQ
 sY
@@ -14202,8 +14298,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -14286,7 +14382,7 @@ et
 et
 Cp
 et
-et
+uN
 et
 Cp
 et
@@ -14304,8 +14400,8 @@ sY
 sY
 sY
 sY
-FB
-FB
+sY
+sY
 FB
 FB
 Uh
@@ -14400,14 +14496,14 @@ hQ
 hQ
 hQ
 hQ
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+sY
+sY
+sY
+sY
+sY
+sY
+sY
+sY
 FB
 FB
 Uh
@@ -14502,14 +14598,14 @@ FB
 FB
 FB
 FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
-FB
+sY
+sY
+sY
+sY
+sY
+sY
+sY
+sY
 FB
 FB
 Uh

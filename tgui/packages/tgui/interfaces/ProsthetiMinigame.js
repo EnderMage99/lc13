@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Flex,
+  Input,
   NumberInput,
   Section,
   Table,
@@ -83,7 +84,7 @@ const PentagonChart = (props) => {
   }));
 
   // Label positions (slightly beyond the pentagon)
-  const labelRadius = radius + 22;
+  const labelRadius = radius + 28;
 
   return (
     <svg
@@ -420,6 +421,11 @@ const DesignPhase = (props, context) => {
     'effectTab',
     'all'
   );
+  const [attrFilter, setAttrFilter] = useSharedState(
+    context,
+    'attrFilter',
+    ''
+  );
 
   const {
     current_day = 1,
@@ -512,11 +518,39 @@ const DesignPhase = (props, context) => {
       }
       return false;
     });
+    // Sort by matched attribute if searching
+    const sortAttr = ATTR_ABBREVS[lowerSearch]
+      || ATTR_ABBREVS[
+        lowerSearch.replace(/[+-]$/, '')
+      ];
+    if (sortAttr) {
+      filteredEffects.sort((a, b) => {
+        const aVal = (a.attributes
+          && a.attributes[sortAttr]) || 0;
+        const bVal = (b.attributes
+          && b.attributes[sortAttr]) || 0;
+        return bVal - aVal;
+      });
+    }
   }
   if (activeTab !== 'all') {
     filteredEffects = filteredEffects.filter(
       (e) => e.tags && e.tags.includes(activeTab)
     );
+  }
+  if (attrFilter) {
+    filteredEffects = filteredEffects
+      .filter(
+        (e) => e.attributes
+          && e.attributes[attrFilter]
+      )
+      .sort((a, b) => {
+        const aVal = (a.attributes
+          && a.attributes[attrFilter]) || 0;
+        const bVal = (b.attributes
+          && b.attributes[attrFilter]) || 0;
+        return bVal - aVal;
+      });
   }
 
   // Check required tags
@@ -534,7 +568,7 @@ const DesignPhase = (props, context) => {
   return (
     <Flex>
       {/* Left Panel — Pentagon + Client Reference */}
-      <Flex.Item width="260px" mr={1}>
+      <Flex.Item width="310px" mr={1}>
         <Section
           title={
             'Day ' + current_day
@@ -547,7 +581,7 @@ const DesignPhase = (props, context) => {
             <PentagonChart
               values={current_attributes}
               maxValue={12}
-              size={220}
+              size={290}
               attributeNames={attribute_names}
               attributeColors={attribute_colors}
               showValues
@@ -723,21 +757,37 @@ const DesignPhase = (props, context) => {
         <Section title="Available Effects">
           {/* Search */}
           <Box mb={1}>
-            <input
-              type="text"
+            <Input
+              fluid
               placeholder="Search effects..."
               value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '4px 8px',
-                background: 'rgba(0,0,0,0.3)',
-                border: '1px solid rgba(255,255,255,0.15)',
-                borderRadius: '2px',
-                color: '#fff',
-                fontSize: '12px',
-              }}
+              onInput={(e, value) =>
+                setSearchFilter(value)}
             />
+            <Box mt={0.5}>
+              {ATTRIBUTE_ORDER.map((attr) => (
+                <Button
+                  key={attr}
+                  content={
+                    attr.substring(0, 3)
+                      .toUpperCase()
+                  }
+                  selected={attrFilter === attr}
+                  color={
+                    attrFilter === attr
+                      ? 'good'
+                      : null
+                  }
+                  onClick={() =>
+                    setAttrFilter(
+                      attrFilter === attr
+                        ? ''
+                        : attr
+                    )}
+                  mr={0.5}
+                />
+              ))}
+            </Box>
           </Box>
 
           {/* Tag Filter Tabs */}
@@ -981,7 +1031,7 @@ const ResultsPhase = (props, context) => {
                 <PentagonChart
                   values={design.player_attributes || {}}
                   maxValue={12}
-                  size={180}
+                  size={220}
                   overlayValues={design.client_attributes || null}
                   attributeNames={attribute_names}
                   attributeColors={attribute_colors}
