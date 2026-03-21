@@ -1,7 +1,7 @@
 
 /datum/reagent/abnormality/healing_gel
 	name = "L-Corp Healing Gel"
-	description = "Gel used by L-Corp for healing agents.."
+	description = "Restores 3 HP per cycle. Stops working if overdosed. Overdose threshold: 30 units."
 	color = "#6baf65"
 	health_restore = 3
 	overdose_threshold = 30
@@ -14,7 +14,7 @@
 
 /datum/reagent/abnormality/sanity_gel
 	name = "L-Corp SP Plus"
-	description = "Gel used by L-Corp for healing agent's mental state."
+	description = "Restores 3 sanity per cycle. Stops working if overdosed. Overdose threshold: 30 units."
 	color = "#6baf65"
 	sanity_restore = 3
 	overdose_threshold = 30
@@ -28,7 +28,7 @@
 
 /datum/reagent/abnormality/burn_salve
 	name = "L-Corp BurnSalve"
-	description = "Gel used by L-Corp for healing agent's burns. Works slowly, and damages eyes."
+	description = "Heals 2 burn damage per cycle, but slightly damages eyes as a side effect. No overdose protection."
 	color = "#6baf65"
 
 /datum/reagent/abnormality/burn_salve/on_mob_life(mob/living/M)
@@ -40,7 +40,7 @@
 
 /datum/reagent/abnormality/mixed_gel
 	name = "L-Corp mixed drink"
-	description = "Gel used by L-Corp for healing agents physical and mental state."
+	description = "Restores 1 HP and 1 sanity per cycle. Stops working if overdosed. Overdose threshold: 30 units."
 	color = "#6baf65"
 	health_restore = 1
 	sanity_restore = 1
@@ -55,7 +55,7 @@
 //mostly hard to get medicines
 /datum/reagent/abnormality/healing_fast
 	name = "K-Corp regeneration solution"
-	description = "Goo used by K-Corp for healing agents Overdose leads to your body rotting away."
+	description = "Restores 8 HP per cycle. Overdose causes severe cellular damage. Overdose threshold: 10 units."
 	metabolization_rate = REAGENTS_METABOLISM
 	color = "#6baf65"
 	health_restore = 8
@@ -69,7 +69,7 @@
 
 /datum/reagent/abnormality/sanity_fast
 	name = "M-Corp powdered moonstone"
-	description = "powdered M-Corp moonstone used for regenerating sanity."
+	description = "Restores 8 sanity per cycle. Stops working if overdosed. Overdose threshold: 30 units."
 	metabolization_rate = REAGENTS_METABOLISM
 	color = "#6baf65"
 	sanity_restore = 8
@@ -84,7 +84,7 @@
 //Weird stuff here
 /datum/reagent/antitoxin
 	name = "Universal antitoxin"
-	description = "A universal anti-toxin used in the city for various purposes."
+	description = "Removes 2 toxin damage per cycle. Stops working if overdosed. Overdose threshold: 30 units."
 	metabolization_rate = REAGENTS_METABOLISM
 	color = "#6baf65"
 	overdose_threshold = 30
@@ -112,7 +112,7 @@
 
 /datum/reagent/purgall
 	name = "K-Corp Purge-All"
-	description = "A serum that purges all chemicals from a system."
+	description = "Purges all other chemicals from the body at 2 units per cycle. Use to remove harmful or unwanted reagents."
 	metabolization_rate = REAGENTS_METABOLISM
 
 /datum/reagent/purgall/on_mob_life(mob/living/M)

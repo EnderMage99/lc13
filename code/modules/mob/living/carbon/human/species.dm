@@ -1600,8 +1600,8 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	// This snippet handles choosing a body part to apply the damage on, if we didn't choose to spread_damage.
 	var/obj/item/bodypart/BP = null
-	// On city maps, always target a specific bodypart to make limb damage meaningful
-	var/target_specific_limb = (flags & DAMAGE_NO_SPREAD) || (SSmaptype.maptype in SSmaptype.citymaps)
+	// On city maps, target a specific bodypart for PvP melee attacks to make limb damage meaningful
+	var/target_specific_limb = (flags & DAMAGE_NO_SPREAD) || ((SSmaptype.maptype in SSmaptype.citymaps) && (attack_type & ATTACK_TYPE_MELEE) && ishuman(source))
 	if(target_specific_limb)
 		if(isbodypart(def_zone))
 			BP = def_zone
@@ -1625,17 +1625,39 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 			H.damageoverlaytemp = 20
 			final_damage = piercing ? damage_amount : damage_amount * hit_percent * brutemod * H.physiology.brute_mod
 			if(BP)
-				if(BP.receive_damage(final_damage, 0, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
-					H.update_damage_overlays()
-				new /obj/effect/temp_visual/damage_effect/red(get_turf(H)) // Since bodypart damage bypasses bruteloss, we just make vfx here.
-			else//no bodypart, we deal damage with a more general method.
+				if(!BP.receive_damage(final_damage, 0, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
+					// City maps: if targeted bodypart is full, overflow to another limb
+					if(SSmaptype.maptype in SSmaptype.citymaps)
+						var/overflow_applied = FALSE
+						for(var/obj/item/bodypart/other_bp as anything in H.bodyparts)
+							if(other_bp == BP)
+								continue
+							if(other_bp.receive_damage(final_damage, 0, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
+								overflow_applied = TRUE
+								break
+						if(!overflow_applied)
+							H.adjustBruteLoss(final_damage)
+				H.update_damage_overlays()
+				new /obj/effect/temp_visual/damage_effect/red(get_turf(H))
+			else
 				H.adjustBruteLoss(final_damage)
 		if(FIRE, LASER, ENERGY, RAD)
 			H.damageoverlaytemp = 20
 			final_damage = piercing ? damage_amount : damage_amount * hit_percent * burnmod * H.physiology.burn_mod
 			if(BP)
-				if(BP.receive_damage(0, final_damage, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
-					H.update_damage_overlays()
+				if(!BP.receive_damage(0, final_damage, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
+					// City maps: if targeted bodypart is full, overflow to another limb
+					if(SSmaptype.maptype in SSmaptype.citymaps)
+						var/overflow_applied = FALSE
+						for(var/obj/item/bodypart/other_bp as anything in H.bodyparts)
+							if(other_bp == BP)
+								continue
+							if(other_bp.receive_damage(0, final_damage, wound_bonus = wound_bonus, bare_wound_bonus = bare_wound_bonus, sharpness = sharpness))
+								overflow_applied = TRUE
+								break
+						if(!overflow_applied)
+							H.adjustFireLoss(final_damage)
+				H.update_damage_overlays()
 				new /obj/effect/temp_visual/damage_effect/burn(get_turf(H))
 			else
 				H.adjustFireLoss(final_damage)

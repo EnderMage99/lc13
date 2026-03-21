@@ -1,5 +1,12 @@
 import { useBackend } from '../backend';
-import { Box, Button, LabeledList, ProgressBar, Section, AnimatedNumber } from '../components';
+import {
+  AnimatedNumber,
+  Box,
+  Button,
+  LabeledList,
+  ProgressBar,
+  Section,
+} from '../components';
 import { Window } from '../layouts';
 
 const damageTypes = [
@@ -33,39 +40,53 @@ export const Sleeper = (props, context) => {
     occupied,
   } = data;
   const preSortChems = data.chems || [];
-  const chems = preSortChems.sort((a, b) => {
-    const descA = a.name.toLowerCase();
-    const descB = b.name.toLowerCase();
-    if (descA < descB) {
-      return -1;
+  const chems = preSortChems.sort(
+    (a, b) => {
+      const descA = a.name.toLowerCase();
+      const descB = b.name.toLowerCase();
+      if (descA < descB) {
+        return -1;
+      }
+      if (descA > descB) {
+        return 1;
+      }
+      return 0;
     }
-    if (descA > descB) {
-      return 1;
-    }
-    return 0;
-  });
+  );
   return (
     <Window
       width={310}
       height={465}>
       <Window.Content>
         <Section
-          title={occupant.name ? occupant.name : 'No Occupant'}
+          title={
+            occupant.name
+              ? occupant.name
+              : 'No Occupant'
+          }
           minHeight="210px"
-          buttons={!!occupant.stat && (
-            <Box
-              inline
-              bold
-              color={occupant.statstate}>
-              {occupant.stat}
-            </Box>
-          )}>
+          buttons={
+            !!occupant.stat && (
+              <Box
+                inline
+                bold
+                color={
+                  occupant.statstate
+                }>
+                {occupant.stat}
+              </Box>
+            )
+          }>
           {!!occupied && (
             <>
               <ProgressBar
                 value={occupant.health}
-                minValue={occupant.minHealth}
-                maxValue={occupant.maxHealth}
+                minValue={
+                  occupant.minHealth
+                }
+                maxValue={
+                  occupant.maxHealth
+                }
                 ranges={{
                   good: [50, Infinity],
                   average: [0, 50],
@@ -78,21 +99,37 @@ export const Sleeper = (props, context) => {
                     key={type.type}
                     label={type.label}>
                     <ProgressBar
-                      value={occupant[type.type]}
+                      value={
+                        occupant[type.type]
+                      }
                       minValue={0}
-                      maxValue={occupant.maxHealth}
+                      maxValue={
+                        occupant.maxHealth
+                      }
                       color="bad" />
                   </LabeledList.Item>
                 ))}
                 <LabeledList.Item
                   label="Cells"
-                  color={occupant.cloneLoss ? 'bad' : 'good'}>
-                  {occupant.cloneLoss ? 'Damaged' : 'Healthy'}
+                  color={
+                    occupant.cloneLoss
+                      ? 'bad'
+                      : 'good'
+                  }>
+                  {occupant.cloneLoss
+                    ? 'Damaged'
+                    : 'Healthy'}
                 </LabeledList.Item>
                 <LabeledList.Item
                   label="Brain"
-                  color={occupant.brainLoss ? 'bad' : 'good'}>
-                  {occupant.brainLoss ? 'Abnormal' : 'Healthy'}
+                  color={
+                    occupant.brainLoss
+                      ? 'bad'
+                      : 'good'
+                  }>
+                  {occupant.brainLoss
+                    ? 'Abnormal'
+                    : 'Healthy'}
                 </LabeledList.Item>
               </LabeledList>
             </>
@@ -101,19 +138,25 @@ export const Sleeper = (props, context) => {
         {!!occupied && (
           <Section
             title="Reagents"
-            minHeight="50px"
-          >
-            {occupant.reagents.map(reagent => (
-              <Box key={reagent.name}>
-                {reagent.name} -
-                <AnimatedNumber
-                  value={reagent.volume}
-                  format={value => {
-                    return " " + Math.round(value * 100) / 100 + " units";
-                  }} />
-              </Box>
-
-            ))}
+            minHeight="50px">
+            {occupant.reagents.map(
+              reagent => (
+                <Box key={reagent.name}>
+                  {reagent.name} -
+                  <AnimatedNumber
+                    value={reagent.volume}
+                    format={value => {
+                      return (
+                        ' '
+                        + Math.round(
+                          value * 100
+                        ) / 100
+                        + ' units'
+                      );
+                    }} />
+                </Box>
+              )
+            )}
           </Section>
         )}
         <Section
@@ -121,20 +164,36 @@ export const Sleeper = (props, context) => {
           minHeight="205px"
           buttons={(
             <Button
-              icon={open ? 'door-open' : 'door-closed'}
-              content={open ? 'Open' : 'Closed'}
-              onClick={() => act('door')} />
+              icon={
+                open
+                  ? 'door-open'
+                  : 'door-closed'
+              }
+              content={
+                open
+                  ? 'Open'
+                  : 'Closed'
+              }
+              onClick={
+                () => act('door')
+              } />
           )}>
           {chems.map(chem => (
             <Button
               key={chem.name}
               icon="flask"
               content={chem.name}
-              disabled={!occupied || !chem.allowed}
+              tooltip={chem.desc}
+              tooltipPosition="right"
+              disabled={
+                !occupied
+                || !chem.allowed
+              }
               width="140px"
-              onClick={() => act('inject', {
-                chem: chem.id,
-              })} />
+              onClick={() => act(
+                'inject',
+                { chem: chem.id }
+              )} />
           ))}
         </Section>
       </Window.Content>

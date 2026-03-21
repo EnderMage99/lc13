@@ -1,5 +1,6 @@
-/// Surgery to mend damaged limbs on city maps, healing bodypart brute/burn damage.
-/// Only available when the targeted limb has accumulated damage.
+/// Surgery to mend damaged limbs on city maps, healing bodypart brute/burn damage
+/// and clearing locked debuff states from PvP injuries.
+/// Only available when the targeted limb has damage or a locked debuff tier.
 /datum/surgery/mend_limb
 	name = "Mend Limb"
 	desc = "A surgical procedure to mend an injured or mangled limb, restoring it to working condition."
@@ -24,10 +25,13 @@
 	var/obj/item/bodypart/BP = target.get_bodypart(user.zone_selected)
 	if(!BP)
 		return FALSE
-	// Only show if the limb has damage
-	if(BP.brute_dam <= 0 && BP.burn_dam <= 0)
-		return FALSE
-	return TRUE
+	// Show if the limb has damage or a locked debuff tier
+	if(BP.brute_dam > 0 || BP.burn_dam > 0)
+		return TRUE
+	var/datum/component/city_limb_debuffs/debuffs = target.GetComponent(/datum/component/city_limb_debuffs)
+	if(debuffs && debuffs.has_locked_tier(BP.body_zone))
+		return TRUE
+	return FALSE
 
 /// The actual mending step — heals bodypart damage over multiple repeats
 /datum/surgery_step/mend_limb
@@ -40,7 +44,14 @@
 
 /datum/surgery_step/mend_limb/preop(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery)
 	var/obj/item/bodypart/BP = target.get_bodypart(target_zone)
-	if(!BP || (BP.brute_dam <= 0 && BP.burn_dam <= 0))
+	if(!BP)
+		to_chat(user, span_notice("[target]'s [parse_zone(target_zone)] doesn't need mending."))
+		return -1
+	// Check if limb has damage or a locked tier
+	var/has_damage = (BP.brute_dam > 0 || BP.burn_dam > 0)
+	var/datum/component/city_limb_debuffs/debuffs = target.GetComponent(/datum/component/city_limb_debuffs)
+	var/has_locked = debuffs && debuffs.has_locked_tier(BP.body_zone)
+	if(!has_damage && !has_locked)
 		to_chat(user, span_notice("[target]'s [parse_zone(target_zone)] doesn't need mending."))
 		return -1
 	display_results(user, target, span_notice("You begin to mend [target]'s [BP.name]..."),
@@ -62,11 +73,16 @@
 		return ..()
 	var/brute_to_heal = min(BP.brute_dam, heal_amount)
 	var/burn_to_heal = min(BP.burn_dam, heal_amount)
-	BP.heal_damage(brute_to_heal, burn_to_heal)
+	if(brute_to_heal > 0 || burn_to_heal > 0)
+		BP.heal_damage(brute_to_heal, burn_to_heal)
 	display_results(user, target, span_notice("You mend some of the damage on [target]'s [BP.name]."),
 		span_notice("[user] mends some of the damage on [target]'s [BP.name] with [tool]."),
 		span_notice("[user] mends some of the damage on [target]'s [BP.name]."))
 	if(BP.brute_dam <= 0 && BP.burn_dam <= 0)
+		// Clear the locked debuff tier when fully healed
+		var/datum/component/city_limb_debuffs/debuffs = target.GetComponent(/datum/component/city_limb_debuffs)
+		if(debuffs)
+			debuffs.clear_locked_tier(target_zone)
 		to_chat(user, span_notice("[target]'s [BP.name] is fully mended."))
 		to_chat(target, span_notice("Your [BP.name] feels much better!"))
 	return ..()
