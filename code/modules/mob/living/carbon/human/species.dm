@@ -1600,7 +1600,9 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 
 	// This snippet handles choosing a body part to apply the damage on, if we didn't choose to spread_damage.
 	var/obj/item/bodypart/BP = null
-	if((flags & DAMAGE_NO_SPREAD)) // If we've been set to NOT spread damage, choose a body part to hit based on def_zone (we'll get one regardless if we have no def_zone)
+	// On city maps, always target a specific bodypart to make limb damage meaningful
+	var/target_specific_limb = (flags & DAMAGE_NO_SPREAD) || (SSmaptype.maptype in SSmaptype.citymaps)
+	if(target_specific_limb)
 		if(isbodypart(def_zone))
 			BP = def_zone
 		else
@@ -1613,6 +1615,10 @@ GLOBAL_LIST_EMPTY(roundstart_races)
 	var/final_damage = damage_amount
 
 	var/piercing = flags & DAMAGE_PIERCING
+
+	// City vulnerability: 4x damage from non-human sources
+	if(HAS_TRAIT(H, TRAIT_CITY_VULNERABILITY) && source && !ishuman(source))
+		damage_amount *= 4
 
 	switch(damage_type)
 		if(BRUTE, MELEE, BULLET, BOMB, ACID)

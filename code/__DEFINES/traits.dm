@@ -176,6 +176,7 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_NEVER_WOUNDED		"never_wounded"
 #define TRAIT_TOXINLOVER		"toxinlover"
 #define TRAIT_SANITYIMMUNE		"sanity_immune"
+#define TRAIT_CITY_VULNERABILITY	"city_vulnerability"
 #define TRAIT_WORKFEAR_IMMUNE		"work_fear_immune"
 #define TRAIT_COMBATFEAR_IMMUNE		"combat_fear_immune"
 #define TRAIT_WORK_KNOWLEDGE		"work_knowledge"
@@ -542,6 +543,8 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define BERSERK_TRAIT "berserk_trait"
 /// Trait granted by lipstick
 #define LIPSTICK_TRAIT "lipstick_trait"
+/// Trait granted by city vulnerability component
+#define CITY_VULNERABILITY_TRAIT "city_vulnerability_trait"
 
 /**
 * Trait granted by [/mob/living/carbon/Initialize] and

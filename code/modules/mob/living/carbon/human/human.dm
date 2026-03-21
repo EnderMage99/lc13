@@ -32,6 +32,9 @@
 	AddComponent(/datum/component/bloodysoles/feet)
 	AddElement(/datum/element/ridable, /datum/component/riding/creature/human)
 	GLOB.human_list += src
+	if(SSmaptype.maptype in SSmaptype.citymaps)
+		ADD_TRAIT(src, TRAIT_BRUTEPALE, CITY_VULNERABILITY_TRAIT)
+		AddComponent(/datum/component/city_limb_debuffs)
 
 /mob/living/carbon/human/proc/init_attributes()
 	for(var/type in GLOB.attribute_types)
@@ -1319,6 +1322,9 @@
 	if(LAZYLEN(attributes))
 		maxHealth = max(1, get_attribute_printed_level_bonus(src, FORTITUDE_ATTRIBUTE) + round(get_stat_bonus(src, FORTITUDE_ATTRIBUTE, no_neg = FALSE)))
 		maxSanity = max(1, get_attribute_printed_level_bonus(src, PRUDENCE_ATTRIBUTE) + round(get_stat_bonus(src, PRUDENCE_ATTRIBUTE, no_neg = FALSE)))
+		if(SSmaptype.maptype in SSmaptype.citymaps)
+			maxHealth *= 4
+			maxSanity *= 4
 	. = ..()
 	dna?.species.spec_updatehealth(src)
 	sanityhealth = maxSanity - sanityloss

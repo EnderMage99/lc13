@@ -47,6 +47,10 @@ sharpness - Irrelevant in most cases.
 
 	var/final_damage = bypass_resistance ? damage_amount : damage_amount * hit_percent
 
+	// City vulnerability: 4x damage from non-human sources
+	if(HAS_TRAIT(src, TRAIT_CITY_VULNERABILITY) && source && !ishuman(source))
+		final_damage *= 4
+
 	// Mind - apparently regular mobs don't have actual armor, their damage coeffs are the ones that handle reducing/increasing damage within the adjustXLoss procs.
 	switch(damage_type)
 		if(FIRE)

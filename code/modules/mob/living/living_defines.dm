@@ -193,6 +193,8 @@
 	var/extra_damage_white = 0
 	var/extra_damage_black = 0
 	var/extra_damage_pale = 0
+	/// Multiplier for healing received (1 = normal, 0.5 = half healing). Used by city limb debuffs.
+	var/city_heal_mod = 1
 
 	/// Index used to interact with the moblist of the area they are currently in.
 	var/area_index = MOB_LIVING_INDEX

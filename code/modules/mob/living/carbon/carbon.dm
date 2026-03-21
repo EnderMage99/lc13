@@ -8,6 +8,8 @@
 	ADD_TRAIT(src, TRAIT_AGEUSIA, NO_TONGUE_TRAIT)
 
 	GLOB.carbon_list += src
+	if(SSmaptype.maptype in SSmaptype.citymaps)
+		AddComponent(/datum/component/city_vulnerability)
 
 /mob/living/carbon/Destroy()
 	//This must be done first, so the mob ghosts correctly before DNA etc is nulled
