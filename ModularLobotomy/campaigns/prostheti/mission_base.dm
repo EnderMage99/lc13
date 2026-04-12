@@ -29,6 +29,8 @@
 	var/datum/map_template/mission_template
 	/// Grace period timer ID for wipe check
 	var/wipe_grace_timer
+	/// Assoc list: participant mob => list of tracked item refs (snapshot on entry)
+	var/list/tracked_items = list()
 
 /datum/prostheti_mission/Destroy()
 	// Unregister all participant signals
@@ -40,6 +42,7 @@
 	spawn_turfs = null
 	mission_template = null
 	mission_level = null
+	tracked_items = null
 	return ..()
 
 /// Adds a player to the mission and registers wipe-detection signals.
@@ -49,6 +52,8 @@
 	participants += player
 	RegisterSignal(player, COMSIG_LIVING_DEATH, PROC_REF(OnParticipantDeath))
 	RegisterSignal(player, COMSIG_MOB_STATCHANGE, PROC_REF(OnParticipantStatChange))
+	// Snapshot the player's items for Broken Fate recovery
+	SnapshotPlayerItems(player)
 
 /// Removes a player from participant tracking.
 /datum/prostheti_mission/proc/RemoveParticipant(mob/living/player)
@@ -108,13 +113,12 @@
 /datum/prostheti_mission/proc/TriggerBrokenFate()
 	wipe_in_progress = TRUE
 
-	// Step 1: Show the Broken Fate screen to all participants
-	ShowBrokenFateScreen(participants)
+	// Step 0: Apply GODMODE to all participants so nothing can hurt them during reset
+	for(var/mob/living/P in participants)
+		if(P)
+			P.status_flags |= GODMODE
 
-	// Step 2: Wait for the cinematic to play (~4 seconds)
-	sleep(40)
-
-	// Step 3: Return ghosted players to their bodies
+	// Step 1: Return ghosted players to their bodies
 	for(var/mob/living/P in participants)
 		if(!P)
 			continue
@@ -125,32 +129,97 @@
 					qdel(ghost)
 					break
 
-	// Step 4: Revive all participants
+	// Step 2: Clear insanity AI controllers and panic status effects
 	for(var/mob/living/P in participants)
-		if(P)
-			P.revive(full_heal = TRUE)
+		if(!P)
+			continue
+		if(istype(P.ai_controller, /datum/ai_controller/insane))
+			QDEL_NULL(P.ai_controller)
+		for(var/datum/status_effect/panicked_type/panic in P.status_effects)
+			P.remove_status_effect(panic.type)
 
-	// Step 4: Teleport all participants back to their return turfs on the hub
+	// Step 3: Teleport all participants back to their return turfs on the hub
 	for(var/mob/living/P in participants)
 		var/turf/return_turf = return_turfs[P]
 		if(return_turf)
 			P.forceMove(return_turf)
 
-	// Step 5: Reset z-level mobs from landmarks
+	// Step 4: Revive, restore sanity, and immediately show Broken Fate overlay
+	for(var/mob/living/P in participants)
+		if(!P)
+			continue
+		P.revive(full_heal = TRUE)
+		if(ishuman(P))
+			var/mob/living/carbon/human/H = P
+			H.adjustSanityLoss(-INFINITY, forced = TRUE)
+		P.overlay_fullscreen("broken_fate_bg", /atom/movable/screen/fullscreen/broken_fate_bg)
+
+	// Step 4b: Clear lingering visual/alert state from death
+	sleep(20)
+	for(var/mob/living/P in participants)
+		if(!P)
+			continue
+		// Remove all blind client colours (remove_client_colour only removes one at a time)
+		var/blind_removed = TRUE
+		while(blind_removed)
+			blind_removed = FALSE
+			for(var/datum/client_colour/monochrome/blind/cc in P.client_colours)
+				qdel(cc)
+				blind_removed = TRUE
+				break
+		P.clear_alert("not_enough_oxy")
+		P.clear_fullscreen("blind")
+		// Remove GODMODE now that cleanup is done
+		P.status_flags &= ~GODMODE
+
+	// Step 5: Return tracked items that were dropped during the mission
+	RestoreTrackedItems()
+
+	// Step 6: Reset z-level mobs from landmarks
 	ResetZLevelMobs()
 
-	// Step 6: Call chapter-specific reset logic
+	// Step 7: Call chapter-specific reset logic
 	OnBrokenFate()
 
-	// Step 7: Update mission state
+	// Step 8: Update mission state
 	mission_state = PROSTHETI_MISSION_READY
 	wipe_in_progress = FALSE
 	wipe_enabled = TRUE
 
-	// Step 8: Clear fullscreen overlays
+	// Step 9: Show Broken Fate text on top of the already-applied overlay
+	ShowBrokenFateText(participants)
+
+	// Step 10: Hold screen for 4 seconds then fade out
+	sleep(40)
 	for(var/mob/living/P in participants)
 		if(P)
 			P.clear_fullscreen("broken_fate_bg", 15)
+
+/// Snapshots a player's current items (contents + storage contents) for Broken Fate recovery.
+/datum/prostheti_mission/proc/SnapshotPlayerItems(mob/living/player)
+	var/list/items = list()
+	for(var/obj/item/I in player.contents)
+		items += I
+		// Also track items inside storage containers the player is carrying
+		if(istype(I, /obj/item/storage))
+			for(var/obj/item/sub in I.contents)
+				items += sub
+	tracked_items[player] = items
+
+/// Returns any tracked items that are no longer on their owner back to them.
+/datum/prostheti_mission/proc/RestoreTrackedItems()
+	for(var/mob/living/P in tracked_items)
+		if(!P || QDELETED(P))
+			continue
+		var/list/items = tracked_items[P]
+		if(!length(items))
+			continue
+		for(var/obj/item/I in items)
+			if(QDELETED(I))
+				continue
+			if(I.loc == P)
+				continue	// Already on the player
+			I.forceMove(P)
 
 /// Empty in base type — overridden by chapter subtypes for custom reset logic
 /// on the z-level and hub-side cleanup.

@@ -93,10 +93,14 @@
 		door = D
 		break
 
-/// Bolts the boss room door shut.
+/// Force-closes (if open or mid-animation) and bolts the boss room door shut.
 /obj/effect/landmark/prostheti_npc_spawn/boss_door/proc/BoltDoor()
-	if(door)
-		door.bolt()
+	if(!door)
+		return
+	if(!door.density)
+		door.operating = FALSE
+		door.close()
+	door.bolt()
 
 /// Unbolts the boss room door.
 /obj/effect/landmark/prostheti_npc_spawn/boss_door/proc/UnboltDoor()
@@ -192,3 +196,50 @@
 	if(!spawn_enabled)
 		return
 	return ..()
+
+// =============================================
+// Factory Mission — Boss Teleport Spot (Factory Map)
+// =============================================
+// Persistent landmarks for the Director's Borrowed Time ability.
+// Place 3-5 in the boss room at strategic positions.
+
+/obj/effect/landmark/prostheti_npc_spawn/boss_teleport
+	name = "boss teleport spot"
+	landmark_id = "boss_teleport"
+
+/obj/effect/landmark/prostheti_npc_spawn/boss_teleport/Initialize(mapload)
+	. = ..()
+	. = INITIALIZE_HINT_NORMAL
+	GLOB.prostheti_mob_landmarks += src
+
+/obj/effect/landmark/prostheti_npc_spawn/boss_teleport/Destroy()
+	GLOB.prostheti_mob_landmarks -= src
+	return ..()
+
+// =============================================
+// Factory Mission — Boss Room Safe (Factory Map)
+// =============================================
+// The "blueprint safe" that Penny tries to unlock, triggering the boss trap.
+
+/obj/structure/prostheti_safe
+	name = "reinforced safe"
+	desc = "A heavy corporate safe. Whatever's inside must be valuable."
+	icon = 'icons/obj/structures.dmi'
+	icon_state = "safe"
+	anchored = TRUE
+	density = TRUE
+	resistance_flags = INDESTRUCTIBLE
+
+/// Opens the safe — changes icon to empty.
+/obj/structure/prostheti_safe/proc/OpenSafe()
+	icon_state = "safe-open"
+	name = "open safe"
+	desc = "The safe is empty. It was a trap."
+	density = FALSE
+
+/// Resets the safe for Broken Fate.
+/obj/structure/prostheti_safe/proc/ResetSafe()
+	icon_state = "safe"
+	name = initial(name)
+	desc = initial(desc)
+	density = TRUE

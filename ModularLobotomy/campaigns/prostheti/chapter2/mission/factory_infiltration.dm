@@ -13,7 +13,7 @@
 
 /datum/prostheti_mission/factory_infiltration
 	/// Penny companion mob reference
-	var/mob/living/simple_animal/hostile/prostheti/penny_companion/penny_companion
+	var/mob/living/simple_animal/hostile/ui_npc/penny_companion/penny_companion
 	/// Penny companion spawn turf on the factory z-level
 	var/turf/penny_spawn_turf
 	/// Whether extraction has started (prevents double-triggering)
@@ -30,6 +30,10 @@
 	var/obj/effect/landmark/boss_room_trigger/boss_trigger
 	/// Director mob spawn landmark (deferred spawning)
 	var/obj/effect/landmark/mission_mob_spawn/factory_director/director_landmark
+	/// Reference to the rally point (persists for re-entry after Broken Fate)
+	var/obj/structure/mission_rally/factory_infiltration/rally_point
+	/// The boss room safe object
+	var/obj/structure/prostheti_safe/boss_safe
 	/// Whether the boss room trap has been triggered
 	var/trap_triggered = FALSE
 
@@ -40,9 +44,11 @@
 	director = null
 	penny_ui_npc = null
 	campaign = null
+	rally_point = null
 	boss_door_landmark = null
 	boss_trigger = null
 	director_landmark = null
+	boss_safe = null
 	return ..()
 
 // =============================================
@@ -77,11 +83,14 @@
 	if(!penny_spawn_turf && length(spawn_turfs))
 		penny_spawn_turf = spawn_turfs[1]
 
-	// Spawn Penny companion
+	// Spawn Penny companion (qdel any existing one first to prevent duplication)
+	if(penny_companion && !QDELETED(penny_companion))
+		qdel(penny_companion)
 	penny_companion = new(penny_spawn_turf)
 	penny_companion.ApplyTrainingData()
+	penny_companion.mission = src
 	if(length(participants))
-		penny_companion.leader = participants[1]
+		penny_companion.Leader = participants[1]
 
 	// Move Penny's hub NPC to nullspace (companion replaces her)
 	for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/P in campaign.current_npcs)
@@ -102,6 +111,11 @@
 	for(var/obj/effect/landmark/mission_mob_spawn/factory_director/DL in mob_landmarks)
 		director_landmark = DL
 		break
+	// Find the boss room safe on the factory z-level
+	for(var/obj/structure/prostheti_safe/S in world)
+		if(mission_level && S.z == mission_level.z_value)
+			boss_safe = S
+			break
 
 	// Teleport players to factory
 	TeleportParticipants()
@@ -112,22 +126,67 @@
 // =============================================
 
 /// Called by the boss_room_trigger when all participants have entered the boss room.
-/// Bolts the door shut and spawns the Factory Director.
+/// The safe unlock is handled by Penny's area check — this just marks the trap as triggered.
 /datum/prostheti_mission/factory_infiltration/proc/OnBossRoomTrapTriggered()
 	trap_triggered = TRUE
 
-	// Bolt the boss room door
-	if(boss_door_landmark)
-		boss_door_landmark.BoltDoor()
+/// Called by Penny's TriggerSafeUnlock(). Penny walks to the safe, opens it, boss drops.
+/datum/prostheti_mission/factory_infiltration/proc/OnSafeUnlocked()
+	if(!penny_companion || !boss_safe)
+		return
 
-	// Spawn the director
+	// Penny walks to the safe
+	var/turf/safe_turf = get_turf(boss_safe)
+	if(safe_turf)
+		penny_companion.Leader = null
+		walk_to(penny_companion, boss_safe, 1, penny_companion.move_to_delay)
+
+	sleep(20)	// Give Penny time to walk there
+	walk(penny_companion, 0)	// Stop walking
+
+	// Penny tries to unlock it
+	penny_companion.face_atom(boss_safe)
+	penny_companion.say("Let me see if I can crack this...")
+	sleep(20)	// 2 second do_after equivalent
+
+	// Safe opens — empty
+	boss_safe.OpenSafe()
+	penny_companion.say("It's... empty?")
+	sleep(10)
+
+	// 3x3 warning effect around director spawn point
+	var/turf/spawn_turf
+	if(director_landmark)
+		spawn_turf = get_turf(director_landmark)
+	if(!spawn_turf)
+		spawn_turf = safe_turf
+	for(var/turf/open/T in range(1, spawn_turf))
+		new /obj/effect/temp_visual/seismic_warning(T)
+	playsound(spawn_turf, 'sound/effects/meteorimpact.ogg', 80, FALSE)
+
+	sleep(15)	// Warning duration (1.5s)
+
+	// Boss drops down
 	if(director_landmark)
 		director_landmark.spawn_enabled = TRUE
 		director_landmark.SpawnMob()
 		director = director_landmark.spawned_mob
-		if(director)
-			director.penny_target = penny_companion
-			RegisterSignal(director, COMSIG_DIRECTOR_EXECUTION, PROC_REF(OnDirectorExecution))
+	if(director)
+		// Collect teleport spots for Borrowed Time
+		for(var/obj/effect/landmark/prostheti_npc_spawn/boss_teleport/TP in GLOB.prostheti_mob_landmarks)
+			if(mission_level && TP.z == mission_level.z_value)
+				director.teleport_spots += get_turf(TP)
+		director.penny_target = penny_companion
+		RegisterSignal(director, COMSIG_DIRECTOR_EXECUTION, PROC_REF(OnDirectorExecution))
+		playsound(director, 'sound/effects/meteorimpact.ogg', 100, FALSE)
+		for(var/mob/living/P in participants)
+			if(P.client)
+				shake_camera(P, 7, 3)
+		director.say("You brought children into my office to crack my safe? How flattering.")
+
+	// Close and bolt the door
+	if(boss_door_landmark)
+		boss_door_landmark.BoltDoor()
 
 // =============================================
 // Director Execution Signal Handler
@@ -170,7 +229,38 @@
 	for(var/mob/living/P in participants)
 		P.overlay_fullscreen("extraction", /atom/movable/screen/fullscreen/broken_fate_bg)
 
-	sleep(30)	// Hold black for 3 seconds
+	sleep(15)
+
+	// Show "A few hours later..." text on the black screen
+	var/style = "font-family: 'Baskerville'; text-align: center; color: #FFFFFF; font-size: 14pt; font-style: italic;"
+	var/list/text_overlays = list()
+	for(var/mob/living/P in participants)
+		if(!P?.client)
+			continue
+		var/obj/effect/overlay/T = new()
+		T.alpha = 0
+		T.maptext_height = 80
+		T.maptext_width = 424
+		T.layer = FLOAT_LAYER
+		T.plane = SPLASHSCREEN_PLANE
+		T.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
+		T.screen_loc = "Center-6,Center"
+		T.maptext = "<span style=\"[style]\">A few hours later...</span>"
+		P.client.screen += T
+		animate(T, alpha = 255, time = 10)
+		text_overlays += list(list("client" = P.client, "overlay" = T))
+
+	sleep(40)	// Hold text for 4 seconds
+
+	// Fade out text
+	for(var/list/entry in text_overlays)
+		var/client/C = entry["client"]
+		var/obj/effect/overlay/OL = entry["overlay"]
+		if(C && OL)
+			animate(OL, alpha = 0, time = 10)
+			addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(fade_blurb), C, OL, 0), 10)
+
+	sleep(15)
 
 	// Clean up factory z-level
 	if(penny_companion && !QDELETED(penny_companion))
@@ -248,6 +338,34 @@
 	for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/npc in campaign.current_npcs)
 		npc.SetSharedVar("clyde_confrontation_complete", TRUE)
 
+	// --- Post-Confrontation State ---
+	// Clyde walks back to his office from the medical wing
+	var/turf/clyde_office = GLOB.prostheti_npc_landmarks["clyde_spawn"]
+	for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/clyde_wells/ch2/clyde in campaign.current_npcs)
+		if(clyde_office)
+			walk_to(clyde, clyde_office, 0, clyde.move_to_delay)
+		break
+
+	// Penny stays at the medical wing, then starts wandering from there
+	if(penny_ui_npc)
+		var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/penny = penny_ui_npc
+		penny.StartPostConfrontationWandering()
+
+	// Hector is gone — move to nullspace
+	for(var/mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch2/hector in campaign.current_npcs)
+		hector.forceMove(null)
+		hector.in_cutscene = TRUE
+		break
+
+	// Deactivate the rally point (stays visible but non-interactive)
+	if(rally_point && !QDELETED(rally_point))
+		rally_point.mission_active = TRUE
+		rally_point.signup_open = FALSE
+
+	// Clear active mission reference
+	if(campaign)
+		campaign.active_mission = null
+
 	// Complete the chapter
 	campaign.CompleteChapter(2)
 	mission_state = PROSTHETI_MISSION_COMPLETE
@@ -277,17 +395,26 @@
 		qdel(penny_companion)
 		penny_companion = null
 
+	// Reset the safe
+	if(boss_safe)
+		boss_safe.ResetSafe()
+
 	// Respawn Penny companion
 	if(penny_spawn_turf)
 		penny_companion = new(penny_spawn_turf)
 		penny_companion.ApplyTrainingData()
+		penny_companion.mission = src
 		if(length(participants))
-			penny_companion.leader = participants[1]
+			penny_companion.Leader = participants[1]
 
-	// Move Penny's hub NPC back to Training Yard
+	// Move Penny's hub NPC back from nullspace to Training Yard
 	if(penny_ui_npc)
-		var/turf/penny_turf = GLOB.prostheti_npc_landmarks["penny_spawn"]
+		var/turf/penny_turf = GLOB.prostheti_npc_landmarks["penny_yard_destination"]
 		if(penny_turf)
 			penny_ui_npc.forceMove(penny_turf)
+
+	// Reset rally point for re-entry
+	if(rally_point && !QDELETED(rally_point))
+		rally_point.ResetForReentry()
 
 	extraction_started = FALSE

@@ -38,3 +38,21 @@
 /area/awaymission/prostheti/medical_wing
 	name = "Prostheti Innovations - Medical Wing"
 	icon_state = "awaycontent6"
+
+// =============================================
+// Competitor Factory Away Mission Areas
+// =============================================
+
+/// Base area for the competitor factory away mission (Ch2)
+/area/awaymission/competitor_factory
+	name = "Competitor Factory"
+	icon_state = "away"
+	requires_power = FALSE
+	has_gravity = STANDARD_GRAVITY
+	dynamic_lighting = DYNAMIC_LIGHTING_FORCED
+	sound_environment = SOUND_ENVIRONMENT_ROOM
+
+/// The director's office — boss room where the safe trap triggers
+/area/awaymission/competitor_factory/boss_room
+	name = "Director's Office"
+	icon_state = "awaycontent1"

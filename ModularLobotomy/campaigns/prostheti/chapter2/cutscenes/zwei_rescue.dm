@@ -19,7 +19,7 @@
 		return
 
 	var/mob/living/simple_animal/hostile/prostheti/factory_director/director = mission.director
-	var/mob/living/simple_animal/hostile/prostheti/penny_companion/penny = mission.penny_companion
+	var/mob/living/simple_animal/hostile/ui_npc/penny_companion/penny = mission.penny_companion
 
 	// --- Door Breach ---
 	var/turf/breach_turf

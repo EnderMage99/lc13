@@ -8,6 +8,14 @@
 // the upcoming factory infiltration.
 
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2
+	/// Whether post-confrontation wandering is active
+	var/wandering_active = FALSE
+	/// Waypoints for wandering (filtered copy of GLOB.penny_waypoints)
+	var/list/turf/wandering_waypoints = list()
+	/// Current target waypoint
+	var/turf/current_waypoint
+	/// Dwell timer for pausing at waypoints
+	var/dwell_timer_id
 
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/Initialize(mapload)
 	. = ..()
@@ -115,87 +123,187 @@
 			)
 		),
 
-		// --- Post-Confrontation Dialogue (after Clyde revelation) ---
+		// --- Post-Chapter Dialogue (wandering the factory after the confrontation) ---
 		"post_intro" = list(
-			"text" = "...He knew. The whole time, he knew.",
+			"text" = "I keep walking past his office. I don't go in. \
+				I just... walk past it. Like if I stop moving, I'll have to \
+				think about what happened.",
 			"actions" = list(
-				"ask_how" = list(
-					"text" = "Are you okay?",
-					"default_scene" = "post_okay"
+				"how_feeling" = list(
+					"text" = "How are you holding up?",
+					"default_scene" = "post_holding_up"
 				),
-				"about_letters" = list(
-					"text" = "He read your letters?",
-					"default_scene" = "post_letters"
+				"about_dad" = list(
+					"text" = "Have you talked to your dad since?",
+					"default_scene" = "post_dad_since"
+				),
+				"about_hector" = list(
+					"text" = "Have you heard from Hector?",
+					"default_scene" = "post_hector"
+				),
+				"what_next" = list(
+					"text" = "What are you going to do now?",
+					"default_scene" = "post_what_next"
 				),
 			)
 		),
 
-		"post_okay" = list(
-			"text" = "I don't know. I thought I had something that was mine. \
-				The training, the letters, Hector — all of it. Turns out Dad \
-				was watching the whole time. Copying every word. For a year.",
+		"post_holding_up" = list(
+			"text" = "I'm angry. Not the kind that burns out — the kind that \
+				settles in. He had a year of chances to just talk to me like a \
+				person. Instead he watched me like a... like an investment. \
+				Checking the returns.",
 			"actions" = list(
-				"comfort" = list(
-					"text" = "He was trying to protect you.",
-					"default_scene" = "post_protect"
+				"he_cares" = list(
+					"text" = "He does care about you. In his own way.",
+					"default_scene" = "post_his_way"
 				),
-				"angry" = list(
-					"text" = "That's a violation of your privacy.",
-					"default_scene" = "post_violation"
+				"back" = list(
+					"text" = "I'm sorry.",
+					"default_scene" = "post_menu"
 				),
 			)
 		),
 
-		"post_protect" = list(
-			"text" = "Is that what it is? Because it doesn't feel like protection. \
-				It feels like he let me think I was free, just so he could watch \
-				where I went. That's not protection. That's a cage with invisible bars.",
+		"post_his_way" = list(
+			"text" = "I know he does. That's the worst part. If he didn't care, \
+				I could just be angry and move on. But he cares so much he spent \
+				a fortune to save my life, and he cares so little he read my \
+				private letters for a year without saying a word. How do you \
+				hold both of those at the same time?",
 			"actions" = list(
 				"back" = list(
 					"text" = "...",
-					"default_scene" = "post_intro"
+					"default_scene" = "post_menu"
 				),
 			)
 		),
 
-		"post_violation" = list(
-			"text" = "Yeah. Yeah, it is. But try telling him that. He spent a fortune \
-				deploying the Zwei to save us. In his mind, that proves he was right \
-				to spy. Because he was there when it mattered. Never mind that he \
-				could have just... talked to me.",
+		"post_dad_since" = list(
+			"text" = "No. He's in his office. Door's open — it's always open. \
+				He's not hiding. He just doesn't think he did anything wrong. \
+				That's what makes it impossible. He's not sorry. He's not even \
+				pretending to be sorry. He thinks he was right.",
+			"actions" = list(
+				"was_he" = list(
+					"text" = "Was he right? About the danger?",
+					"default_scene" = "post_was_he_right"
+				),
+				"back" = list(
+					"text" = "...",
+					"default_scene" = "post_menu"
+				),
+			)
+		),
+
+		"post_was_he_right" = list(
+			"text" = "About the factory being dangerous? Yeah. Obviously. We \
+				almost died in there. But being right about the danger doesn't \
+				make him right about everything else. You can save someone's life \
+				and still betray their trust. He did both. On the same day.",
 			"actions" = list(
 				"back" = list(
 					"text" = "...",
-					"default_scene" = "post_intro"
+					"default_scene" = "post_menu"
 				),
 			)
 		),
 
-		"post_letters" = list(
-			"text" = "Every single one. He intercepted them, copied them, put them \
-				back before I noticed. He knew about Hector, the training, the combat \
-				drills — everything. And he said nothing. For a year. A whole year.",
+		"post_hector" = list(
+			"text" = "No. He hasn't written. Hasn't shown up. After everything — \
+				the training, the letters, the test — nothing. I thought maybe he \
+				was giving me space. But it's been long enough that I'm starting \
+				to wonder if the space was always the point.",
 			"actions" = list(
-				"why_silent" = list(
-					"text" = "Why didn't he say anything?",
-					"default_scene" = "post_why_silent"
+				"worried" = list(
+					"text" = "Are you worried about him?",
+					"default_scene" = "post_worried_hector"
 				),
 				"back" = list(
-					"text" = "I'm sorry, Penny.",
-					"default_scene" = "post_intro"
+					"text" = "...",
+					"default_scene" = "post_menu"
 				),
 			)
 		),
 
-		"post_why_silent" = list(
-			"text" = "He said combat skills are 'useful for a CEO.' That he \
-				hoped I'd come to my senses on my own. He wasn't watching me \
-				because he was worried. He was watching me to see if I'd give up. \
-				And when I didn't — he just... waited.",
+		"post_worried_hector" = list(
+			"text" = "...Yeah. A little. He set up that whole test, pushed us \
+				into it, and then just vanished. That's not like him. Or maybe \
+				it is, and I just don't know him as well as I thought. \
+				Seems to be a pattern with the men in my life.",
 			"actions" = list(
 				"back" = list(
 					"text" = "...",
-					"default_scene" = "post_intro"
+					"default_scene" = "post_menu"
+				),
+			)
+		),
+
+		"post_what_next" = list(
+			"text" = "I don't know. I still want to be a Fixer. That hasn't \
+				changed. If anything, what happened in that factory proved I'm \
+				not ready — and that's exactly why I need to keep going. But I \
+				can't train with Hector if he's gone. And I can't stay in this \
+				building pretending everything's normal.",
+			"actions" = list(
+				"fixer_still" = list(
+					"text" = "You still want to be a Fixer after all that?",
+					"default_scene" = "post_still_fixer"
+				),
+				"back" = list(
+					"text" = "Take your time.",
+					"default_scene" = "post_menu"
+				),
+			)
+		),
+
+		"post_still_fixer" = list(
+			"text" = "More than ever. Those Zwei who saved us — they were \
+				incredible. Professional, fast, efficient. That's what real \
+				Fixers look like. And I know I'm not there yet. I know. But \
+				I saw the gap, and now I know exactly how far I have to go. \
+				That's not discouraging. That's a map.",
+			"actions" = list(
+				"back" = list(
+					"text" = "You'll get there.",
+					"default_scene" = "post_menu"
+				),
+			)
+		),
+
+		"post_menu" = list(
+			"text" = "...Thanks for checking on me. Most people around here \
+				just look the other way.",
+			"actions" = list(
+				"how_feeling" = list(
+					"text" = "How are you feeling?",
+					"default_scene" = "post_holding_up"
+				),
+				"about_dad" = list(
+					"text" = "About your dad...",
+					"default_scene" = "post_dad_since"
+				),
+				"about_hector" = list(
+					"text" = "About Hector...",
+					"default_scene" = "post_hector"
+				),
+				"what_next" = list(
+					"text" = "What's next for you?",
+					"default_scene" = "post_what_next"
+				),
+				"leave" = list(
+					"text" = "Hang in there, Penny.",
+					"default_scene" = "post_goodbye"
+				),
+			)
+		),
+
+		"post_goodbye" = list(
+			"text" = "...Yeah. I will. I always do.",
+			"actions" = list(
+				"back" = list(
+					"text" = "...",
+					"default_scene" = "post_menu"
 				),
 			)
 		),
@@ -205,4 +313,61 @@
 /mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/ui_interact(mob/user, datum/tgui/ui)
 	if(GetSharedVar("clyde_confrontation_complete"))
 		scene_manager.navigate_to_scene(user, "post_intro")
+	// Pause wandering while in dialogue
+	if(wandering_active)
+		walk(src, 0)
+		stop_automated_movement = TRUE
+		if(dwell_timer_id)
+			deltimer(dwell_timer_id)
+			dwell_timer_id = null
 	return ..()
+
+/// Resume wandering when dialogue closes.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/ui_close(mob/user)
+	..()
+	if(wandering_active)
+		addtimer(CALLBACK(src, PROC_REF(PickNewWaypoint)), rand(5 SECONDS, 10 SECONDS))
+
+// =============================================
+// Post-Confrontation Wandering
+// =============================================
+// After the Clyde confrontation, Penny wanders the factory
+// but avoids waypoints near Clyde's office.
+
+/// Activates post-confrontation wandering, filtering out waypoints near Clyde.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/proc/StartPostConfrontationWandering()
+	wandering_active = TRUE
+	// Copy waypoints and filter out any within 5 tiles of Clyde's spawn
+	var/turf/clyde_turf = GLOB.prostheti_npc_landmarks["clyde_spawn"]
+	wandering_waypoints = GLOB.penny_waypoints.Copy()
+	if(clyde_turf)
+		for(var/turf/T in wandering_waypoints)
+			if(get_dist(T, clyde_turf) <= 5)
+				wandering_waypoints -= T
+	// Start wandering
+	addtimer(CALLBACK(src, PROC_REF(PickNewWaypoint)), rand(3 SECONDS, 8 SECONDS))
+
+/// Picks a random waypoint and walks toward it.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/proc/PickNewWaypoint()
+	if(!wandering_active || !length(wandering_waypoints))
+		return
+	var/list/available = wandering_waypoints.Copy()
+	if(current_waypoint)
+		available -= current_waypoint
+	if(!length(available))
+		available = wandering_waypoints.Copy()
+	current_waypoint = pick(available)
+	if(current_waypoint)
+		walk_to(src, current_waypoint, 1, move_to_delay)
+		addtimer(CALLBACK(src, PROC_REF(CheckArrival)), 2 SECONDS)
+
+/// Checks if Penny has arrived at her target waypoint.
+/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/proc/CheckArrival()
+	if(!wandering_active || !current_waypoint)
+		return
+	if(get_dist(get_turf(src), current_waypoint) <= 1)
+		walk(src, 0)
+		stop_automated_movement = TRUE
+		dwell_timer_id = addtimer(CALLBACK(src, PROC_REF(PickNewWaypoint)), rand(30 SECONDS, 60 SECONDS), TIMER_STOPPABLE)
+	else
+		addtimer(CALLBACK(src, PROC_REF(CheckArrival)), 2 SECONDS)

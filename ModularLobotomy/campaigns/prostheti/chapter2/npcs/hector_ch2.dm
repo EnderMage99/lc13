@@ -242,13 +242,15 @@
 /// After "We're ready" — spawn the rally point and trigger the mission start cutscene.
 /mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch2/ui_act(action, list/params, datum/tgui/ui)
 	. = ..()
-	// Check if we just entered the mission_start scene
-	if(GetSharedVar("mission_started") && !GLOB.prostheti_campaign?.active_mission)
-		INVOKE_ASYNC(src, PROC_REF(MissionStartCutscene))
+	// Check if we just entered the mission_start scene — only fire once
+	if(GetSharedVar("mission_started") && !GLOB.prostheti_campaign?.active_mission && !in_cutscene)
+		INVOKE_ASYNC(src, PROC_REF(MissionStartCutscene), ui)
 
 /// Brief cutscene when mission starts, then spawns the rally point.
-/mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch2/proc/MissionStartCutscene()
+/mob/living/simple_animal/hostile/ui_npc/prostheti/hector/ch2/proc/MissionStartCutscene(datum/tgui/ui)
 	in_cutscene = TRUE
+	// Close the player's dialogue UI so they can't click during the cutscene
+	close_all_tgui()
 
 	// Find Penny ch2 NPC
 	var/mob/living/simple_animal/hostile/ui_npc/prostheti/penny_wells/ch2/penny
@@ -273,9 +275,9 @@
 
 	in_cutscene = FALSE
 
-	// Spawn rally point
+	// Spawn rally point (only if one doesn't already exist)
 	var/turf/rally_turf = GLOB.prostheti_npc_landmarks["rally_point_spawn"]
-	if(rally_turf)
+	if(rally_turf && !locate(/obj/structure/mission_rally/factory_infiltration) in rally_turf)
 		new /obj/structure/mission_rally/factory_infiltration(rally_turf)
 
 /// Show post-mission dialogue when confrontation is complete.

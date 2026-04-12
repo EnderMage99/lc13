@@ -93,34 +93,29 @@
 // Broken Fate Screen
 // =============================================
 
-/// Shows the "BROKEN FATE" fullscreen overlay to all participants.
-/// Uses fullscreen overlay system with show_when_dead = TRUE so dead players see it.
-/proc/ShowBrokenFateScreen(list/mob/living/participants)
+/// Shows the "BROKEN FATE" text overlay on participants who already have the black fullscreen.
+/// The black background overlay is applied separately (in TriggerBrokenFate step 4).
+/proc/ShowBrokenFateText(list/mob/living/participants)
 	if(!length(participants))
 		return
 
 	var/style = "font-family: 'Baskerville'; text-align: center; color: #FFFFFF; font-size: 18pt; font-weight: bold; letter-spacing: 8px;"
 
 	for(var/mob/living/P in participants)
-		if(!P)
+		if(!P?.client)
 			continue
 
-		// Full black background via fullscreen overlay
-		P.overlay_fullscreen("broken_fate_bg", /atom/movable/screen/fullscreen/broken_fate_bg)
+		var/obj/effect/overlay/T = new()
+		T.alpha = 0
+		T.maptext_height = 80
+		T.maptext_width = 424
+		T.layer = SPLASHSCREEN_LAYER
+		T.plane = SPLASHSCREEN_PLANE
+		T.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
+		T.screen_loc = "Center-6,Center"
+		T.maptext = "<span style=\"[style]\">BROKEN FATE</span>"
+		P.client.screen += T
+		animate(T, alpha = 255, time = 5)
 
-		// Text overlay on top
-		if(P.client)
-			var/obj/effect/overlay/T = new()
-			T.alpha = 0
-			T.maptext_height = 80
-			T.maptext_width = 424
-			T.layer = FLOAT_LAYER
-			T.plane = SPLASHSCREEN_PLANE
-			T.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
-			T.screen_loc = "Center-6,Center"
-			T.maptext = "<span style=\"[style]\">BROKEN FATE</span>"
-			P.client.screen += T
-			animate(T, alpha = 255, time = 5)
-
-			// Fade text after 3.5 seconds
-			addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(fade_blurb), P.client, T, 5), 35)
+		// Fade text after 3.5 seconds
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(fade_blurb), P.client, T, 5), 35)

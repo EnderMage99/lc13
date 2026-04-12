@@ -22,6 +22,8 @@
 	var/signup_timer
 	/// Whether signup is still open
 	var/signup_open = TRUE
+	/// Whether a mission is currently active (blocks interaction)
+	var/mission_active = FALSE
 	/// Reference to the campaign controller
 	var/datum/campaign_controller/prostheti/campaign
 
@@ -41,6 +43,9 @@
 	if(.)
 		return
 	if(!user || !user.client || !isliving(user))
+		return
+	if(mission_active)
+		to_chat(user, span_warning("A mission is already in progress."))
 		return
 	if(!signup_open)
 		to_chat(user, span_warning("Signup has already closed."))
@@ -85,7 +90,6 @@
 		signup_timer = null
 
 	if(!length(signed_up))
-		qdel(src)
 		return
 
 	// Announce mission start
@@ -94,9 +98,15 @@
 			to_chat(H, span_boldnotice("The mission is starting with [length(signed_up)] participant\s."))
 
 	// Create and start the mission
+	mission_active = TRUE
 	if(campaign)
 		var/datum/prostheti_mission/factory_infiltration/mission = new()
+		mission.rally_point = src
 		campaign.active_mission = mission
 		mission.BeginMission(signed_up)
 
-	qdel(src)
+/// Resets the rally point for re-entry after Broken Fate.
+/obj/structure/mission_rally/factory_infiltration/proc/ResetForReentry()
+	signed_up.Cut()
+	signup_open = TRUE
+	mission_active = FALSE
