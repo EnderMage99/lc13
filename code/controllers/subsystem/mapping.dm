@@ -277,6 +277,11 @@ Used by the AI doomsday and the self-destruct nuke.
 
 	// load the station
 	station_start = world.maxz + 1
+	// Safety net: if a submap config never got narrowed to one variant (e.g. no
+	// vote happened), collapse it to a single default/random map instead of
+	// stacking every variant onto separate z-levels.
+	if(config.has_submaps && islist(config.map_file))
+		config.ResolveSubmap()
 	INIT_ANNOUNCE("Loading [config.map_name]...")
 	LoadGroup(FailedZs, "Station", config.map_path, config.map_file, config.traits, ZTRAITS_STATION)
 
@@ -396,6 +401,12 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 	SSvote.initiate_vote("map", "automatic map rotation")
 
 /datum/controller/subsystem/mapping/proc/changemap(datum/map_config/VM)
+	// Maps flagged for auto-random selection roll a weighted-random variant now,
+	// so MakeNextMap() writes a single file and no submap vote is scheduled.
+	// Admins can still override the pick afterward via adminchangesubmap.
+	if(VM.has_submaps && islist(VM.map_file) && VM.random_submap)
+		VM.ResolveSubmap()
+
 	if(!VM.MakeNextMap())
 		next_map_config = load_map_config(default_to_box = TRUE)
 		message_admins("Failed to set new map with next_map.json for [VM.map_name]! Using default as backup!")
@@ -405,7 +416,7 @@ GLOBAL_LIST_EMPTY(the_station_areas)
 
 	// If this map has submaps and no specific one was selected, initiate a submap vote
 	if(VM.has_submaps && VM.available_submaps.len > 1 && islist(VM.map_file))
-		addtimer(CALLBACK(SSvote, /datum/controller/subsystem/vote/proc/initiate_vote, "submap", "automatic submap selection"), 5 SECONDS)
+		addtimer(CALLBACK(SSvote, /datum/controller/subsystem/vote/proc/initiate_vote, "submap", "automatic submap selection", TRUE), 5 SECONDS)
 		to_chat(world, span_boldannounce("The selected map has multiple variants. A vote will start shortly to choose which one to play!"))
 
 	return TRUE

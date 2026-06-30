@@ -42,6 +42,12 @@
 	var/list/available_submaps = list()
 	/// Custom display names for submaps (optional)
 	var/list/submap_display_names = list()
+	/// Fallback submap used when no variant was chosen (e.g. a failed/empty vote)
+	var/default_submap
+	/// Optional assoc list of submap filename to weight, used for random picks
+	var/list/submap_weights = list()
+	/// If TRUE, auto-pick a weighted-random submap on rotation instead of voting
+	var/random_submap = FALSE
 
 /proc/load_map_config(filename = "data/next_map.json", default_to_box, delete_after, error_if_missing = TRUE)
 	var/datum/map_config/config = new
@@ -119,6 +125,19 @@
 		if(json["submap_names"] && islist(json["submap_names"]))
 			var/list/names = json["submap_names"]
 			submap_display_names = names.Copy()
+
+		// Fallback submap for when no variant gets selected (e.g. empty vote)
+		if(istext(json["default_submap"]))
+			default_submap = json["default_submap"]
+
+		// Per-variant weights for random selection (missing entries default to 1)
+		if(islist(json["submap_weights"]))
+			var/list/weights = json["submap_weights"]
+			submap_weights = weights.Copy()
+
+		// Opt in to automatic weighted-random selection instead of a vote
+		if(json["random_submap"])
+			random_submap = TRUE
 
 	if (islist(json["shuttles"]))
 		var/list/L = json["shuttles"]
@@ -221,3 +240,27 @@
 	map_file = selected_file
 	// Keep has_submaps and available_submaps intact so admins can change selection later
 	return TRUE
+
+/// Returns one entry from available_submaps, honoring submap_weights if present.
+/datum/map_config/proc/PickWeightedSubmap()
+	if(!has_submaps || !available_submaps.len)
+		return null
+	if(submap_weights.len)
+		var/list/weighted = list()
+		for(var/file in available_submaps)
+			weighted[file] = submap_weights[file] || 1
+		return pickweight(weighted)
+	return pick(available_submaps)
+
+/// Collapses an unresolved submap config (map_file still a list) to a single
+/// variant, preferring default_submap then a weighted-random pick. Safety net so
+/// a map with submaps never loads every variant when no selection happened.
+/datum/map_config/proc/ResolveSubmap()
+	if(!has_submaps || istext(map_file))
+		return istext(map_file)
+	var/chosen
+	if(default_submap && (default_submap in available_submaps))
+		chosen = default_submap
+	else
+		chosen = PickWeightedSubmap()
+	return SetSelectedSubmap(chosen)

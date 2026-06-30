@@ -237,7 +237,7 @@ SUBSYSTEM_DEF(vote)
 	choices[choices[vote]]++
 	return vote
 
-/datum/controller/subsystem/vote/proc/initiate_vote(vote_type, initiator_key)
+/datum/controller/subsystem/vote/proc/initiate_vote(vote_type, initiator_key, forced = FALSE)
 	//Server is still intializing.
 	if(!Master.current_runlevel)
 		to_chat(usr, span_warning("Cannot start vote, server is not done initializing."))
@@ -253,7 +253,7 @@ SUBSYSTEM_DEF(vote)
 			if(mode)
 				to_chat(usr, span_warning("There is already a vote in progress! please wait for it to finish."))
 				return FALSE
-			if(next_allowed_time > world.time && !lower_admin)
+			if(next_allowed_time > world.time && !lower_admin && !forced)
 				to_chat(usr, span_warning("A vote was initiated recently, you must wait [DisplayTimeText(next_allowed_time-world.time)] before a new vote can be started!"))
 				return FALSE
 

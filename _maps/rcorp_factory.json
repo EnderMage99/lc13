@@ -11,6 +11,11 @@
 		"rcorp_factory.dmm": "R-Corp Caves Expedition",
 		"rcorp_factory_mancha.dmm": "R-Corp La Manchaland Expedition"
 	},
+	"submap_weights": {
+		"rcorp_factory.dmm": 3,
+		"rcorp_factory_mancha.dmm": 1
+	},
+	"random_submap": 1,
 	"traits": [
 		{
 			"Baseturf": "/turf/open/floor/plating/asteroid"

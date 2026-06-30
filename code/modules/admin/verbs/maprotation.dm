@@ -178,8 +178,8 @@
 					// Let changemap handle the vote timing
 					// Just mark that admin wants a vote
 				if("Random")
-					// Pick a random submap now
-					var/selected = pick(VM.available_submaps)
+					// Pick a weighted-random submap now
+					var/selected = VM.PickWeightedSubmap()
 					VM.SetSelectedSubmap(selected)
 					message_admins("[key_name_admin(usr)] randomly selected '[selected]' variant for [VM.map_name]")
 		

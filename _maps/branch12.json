@@ -11,6 +11,7 @@
 		"Alpha12.dmm": "Alpha-12",
 		"Proto12.dmm": "Proto-12"
 	},
+	"default_submap": "Alpha12.dmm",
 	"traits": [
 		{
 			"Baseturf": "/turf/open/floor/plating/asteroid"
