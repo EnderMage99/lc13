@@ -13,6 +13,10 @@
 /datum/ego_datum/armor/lce/hornet
 	item_path = /obj/item/clothing/suit/armor/ego_gear/lce/hornet
 
+//Despair
+/datum/ego_datum/armor/lce/despair
+	item_path = /obj/item/clothing/suit/armor/ego_gear/lce/despair
+
 
 //Lowsec
 //Grinder MK4

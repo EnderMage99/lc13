@@ -72,6 +72,21 @@
 	damtype = RED_DAMAGE
 	attunement_family = "hornet"
 
+//Despair - the Knight of Despair's set. Reuses the base despair rapier art. Plain LCE melee.
+/obj/item/ego_weapon/lce/despair
+	name = "LCE EGO: Despair"
+	desc = "A rapier sharpened with tears, suited to swift thrusts."
+	icon = 'icons/obj/ego_weapons.dmi'
+	icon_state = "despair"
+	force = 30
+	attack_speed = 0.8
+	damtype = WHITE_DAMAGE
+	swingstyle = WEAPONSWING_THRUST
+	attack_verb_continuous = list("stabs", "slashes")
+	attack_verb_simple = list("stab", "slash")
+	hitsound = 'sound/weapons/ego/rapier1.ogg'
+	attunement_family = "despair"
+
 //Grinder is supposed to be like the chainswords in Darktide.
 /obj/item/ego_weapon/lce/grinder
 	name = "LCE EGO: Grinder MK 4"

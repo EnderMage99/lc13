@@ -259,8 +259,9 @@
 	icon = 'icons/obj/food/frozen_treats.dmi'
 	icon_state = "despaired_delight"
 	food_reagents = list(/datum/reagent/consumable/nutriment = 5, /datum/reagent/consumable/milk = 5, /datum/reagent/consumable/ice = 5)
-	tastes = list("ice" = 5, "milk" = 5, "berries" = 2,)
+	tastes = list("ice" = 5, "milk" = 5, "berries" = 2)
 	foodtypes = FRUIT
+	trash_type = /obj/item/reagent_containers/food/drinks/drinkingglass //Served in a glass; left behind once finished.
 
 /obj/item/food/snowcones/pineapple
 	name = "pineapple snowcone"

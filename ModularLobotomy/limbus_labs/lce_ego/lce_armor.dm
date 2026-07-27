@@ -290,6 +290,17 @@ GLOBAL_LIST_EMPTY(lce_attunement_affinity)
 	attunement_family = "hornet"
 	paired_weapon = /obj/item/ego_weapon/lce/hornet
 
+//Despair - the Knight of Despair's set. Reuses the base despair EGO art. Sums to 90.
+/obj/item/clothing/suit/armor/ego_gear/lce/despair
+	name = "LCE EGO: Despair"
+	desc = "A blue dress stitched from a knight's unspent devotion."
+	icon = 'icons/obj/clothing/ego_gear/abnormality/waw.dmi'
+	worn_icon = 'icons/mob/clothing/ego_gear/abnormality/waw.dmi'
+	icon_state = "despair"
+	armor = list(RED_DAMAGE = 20, WHITE_DAMAGE = 30, BLACK_DAMAGE = 10, PALE_DAMAGE = 30)
+	attunement_family = "despair"
+	paired_weapon = /obj/item/ego_weapon/lce/despair
+
 //Low-Sec armor adds to 60.
 /obj/item/clothing/suit/armor/ego_gear/lce/grinder
 	name = "LCE EGO: Grinder MK 4"
