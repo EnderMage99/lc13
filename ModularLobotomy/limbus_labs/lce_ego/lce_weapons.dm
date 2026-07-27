@@ -166,6 +166,55 @@
 	damtype = WHITE_DAMAGE
 	attunement_family = "trick"
 
+/obj/item/ego_weapon/lce/acupuncture
+	name = "LCE EGO: Acupuncture"
+	desc = "One man's medicine is another man's poison."
+	special = "Inject yourself (use in hand): take toxic damage but gain a JUSTICE damage buff and inflict 2 Mental Decay on hit for 5 seconds."
+	icon = 'ModularLobotomy/_Lobotomyicons/branch12/branch12_weapon.dmi'
+	icon_state = "acupuncture"
+	force = 20
+	damtype = BLACK_DAMAGE
+	swingstyle = WEAPONSWING_THRUST
+	attack_verb_continuous = list("jabs", "stabs")
+	attack_verb_simple = list("jab", "stab")
+	hitsound = 'sound/weapons/fixer/generic/nail1.ogg'
+	attunement_family = "acupuncture"
+	var/inject_cooldown = 0
+	var/inject_cooldown_time = 5.1 SECONDS
+	var/justice_buff = 30
+	var/normal_mental_decay_inflict = 2
+	var/mental_decay_inflict = 0
+
+/obj/item/ego_weapon/lce/acupuncture/attack(mob/living/target, mob/living/user)
+	. = ..() // LCE base scales the hit and handles the over-limit recoil.
+	if(isliving(target))
+		if(mental_decay_inflict > 0)
+			target.apply_lc_mental_decay(mental_decay_inflict)
+
+/obj/item/ego_weapon/lce/acupuncture/attack_self(mob/user)
+	if(!CanUseEgo(user))
+		return
+	if(!ishuman(user))
+		return
+	var/mob/living/carbon/human/drugie = user
+	if(inject_cooldown < world.time)
+		inject_cooldown = world.time + inject_cooldown_time
+		drugie.set_drugginess(15)
+		drugie.adjustToxLoss(3)
+		to_chat(drugie, span_nicegreen("Wow... I can taste the colors..."))
+		mental_decay_inflict = normal_mental_decay_inflict
+		if(prob(20))
+			drugie.emote(pick("twitch", "drool", "moan", "giggle"))
+		drugie.adjust_attribute_buff(JUSTICE_ATTRIBUTE, justice_buff)
+		addtimer(CALLBACK(src, PROC_REF(RemoveBuff), drugie), 5 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE)
+	else
+		to_chat(drugie, span_boldwarning("[src] has not refueled yet."))
+
+/obj/item/ego_weapon/lce/acupuncture/proc/RemoveBuff(mob/user)
+	var/mob/living/carbon/human/human = user
+	mental_decay_inflict = 0
+	human.adjust_attribute_buff(JUSTICE_ATTRIBUTE, -justice_buff)
+
 // ============================ RANGED BASE ============================
 // Scales its bullets' damage with the worn matching armor's attunement. Future LCE guns
 // subtype this and just set their projectile/ammo stats.

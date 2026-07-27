@@ -339,3 +339,14 @@ GLOBAL_LIST_EMPTY(lce_attunement_affinity)
 	attunement_family = "trick"
 	paired_weapon = /obj/item/ego_weapon/lce/trick
 
+/obj/item/clothing/suit/armor/ego_gear/lce/acupuncture
+	name = "LCE EGO: Acupuncture"
+	desc = "Realize that this is good for you."
+	icon = 'ModularLobotomy/_Lobotomyicons/branch12/branch12_gear.dmi'
+	worn_icon = 'ModularLobotomy/_Lobotomyicons/branch12/branch12_gearworn.dmi'
+	icon_state = "acupuncture"
+	armor = list(RED_DAMAGE = -20, WHITE_DAMAGE = 20, BLACK_DAMAGE = 30, PALE_DAMAGE = 10)
+	slowdown = -0.15
+	attunement_family = "acupuncture"
+	paired_weapon = /obj/item/ego_weapon/lce/acupuncture
+
