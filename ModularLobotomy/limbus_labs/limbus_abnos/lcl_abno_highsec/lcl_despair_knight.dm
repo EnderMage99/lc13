@@ -3,10 +3,6 @@
 //they are gravely hurt, and breaks into a hostile breached knight if her blessed one dies.
 //Based on the Knight of Despair abnormality, rebuilt on the LCL base.
 
-//Tag for what she perceives while keeping vigil over her blessed (kept distinct from the LCE
-//Commune feed's [COMMUNE]: tag, since she also has the base Commune action).
-#define VIGIL_TAG "<font color='#6fa8dc'>\[VIGIL\]:</font>"
-
 //Reduced-damage rapier for the LCL breach (base is 40 PALE; -20% for 120-HP agents).
 /obj/projectile/despair_rapier/lcl
 	damage = 32
@@ -465,12 +461,11 @@
 	for(var/mob/dead/observer/O in GLOB.dead_mob_list)
 		to_chat(O, rendered)
 
-//While observing, she perceives the room around her blessed - tagged [VIGIL] to set it apart
-//from the LCE [COMMUNE] feed. Only fires while manifested, so she is never spammed from her body.
+//While manifested she hears the room around her blessed directly, like any mob standing there.
 /mob/camera/despair_manifest/Hear(message, atom/movable/speaker, datum/language/message_language, raw_message, radio_freq, list/spans, list/message_mods = list())
 	if(client?.prefs?.chat_on_map && (client.prefs.see_chat_non_mob || ismob(speaker)))
 		create_chat_message(speaker, message_language, raw_message, spans)
-	to_chat(src, "[VIGIL_TAG] [compose_message(speaker, message_language, raw_message, radio_freq, spans, message_mods)]")
+	to_chat(src, compose_message(speaker, message_language, raw_message, radio_freq, spans, message_mods))
 
 /datum/action/innate/despair_return
 	name = "Return to Body"
@@ -656,4 +651,3 @@
 	K.HopelessRetort()
 	StartCooldown()
 
-#undef VIGIL_TAG
