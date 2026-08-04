@@ -143,7 +143,9 @@
 /datum/action/cooldown/limbus_abno_action/lunar_dispensary
 	name = "Dispensary"
 	desc = "Open your dispensary to brew chemicals into a container you are holding, and to rename or recolour what is inside."
-	icon_icon = 'ModularLobotomy/_Lobotomyicons/lce_actions.dmi'
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_lunar"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
 	button_icon_state = "dispensary"
 	transparent_when_unavailable = TRUE
 	cooldown_time = 1 SECONDS

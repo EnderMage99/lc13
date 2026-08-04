@@ -46,3 +46,7 @@
 //Acupuncture
 /datum/ego_datum/armor/lce/acupuncture
 	item_path = /obj/item/clothing/suit/armor/ego_gear/lce/acupuncture
+
+//In the Name of Love
+/datum/ego_datum/armor/lce/love
+	item_path = /obj/item/clothing/suit/armor/ego_gear/lce/love

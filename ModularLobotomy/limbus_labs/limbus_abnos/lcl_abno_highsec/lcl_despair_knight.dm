@@ -161,6 +161,8 @@
 	if(!blessed_human || manifest || crystallized || breached || !mind)
 		return
 	Crystallize(TRUE)
+	manifest = new /mob/camera/despair_manifest(get_turf(blessed_human), src, blessed_human)
+	mind.transfer_to(manifest)
 
 //Cannot commune through EGO while manifested (and vice versa - manifest is blocked above).
 /mob/living/simple_animal/hostile/limbus_abno/despair_knight/CommuneMenu()
@@ -168,8 +170,6 @@
 		to_chat(src, span_warning("You cannot commune while manifested."))
 		return
 	return ..()
-	manifest = new /mob/camera/despair_manifest(get_turf(blessed_human), src, blessed_human)
-	mind.transfer_to(manifest)
 
 /mob/living/simple_animal/hostile/limbus_abno/despair_knight/proc/ReturnToBody()
 	if(!manifest)
@@ -470,6 +470,8 @@
 /datum/action/innate/despair_return
 	name = "Return to Body"
 	desc = "Withdraw from your projection and return to your crystallised body."
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
 	icon_icon = 'ModularLobotomy/_Lobotomyicons/lce_actions.dmi'
 	button_icon_state = "end_communion"
 
@@ -489,7 +491,9 @@
 /datum/action/cooldown/limbus_abno_action/despair_bless
 	name = "Give Blessing"
 	desc = "Choose a nearby human to watch over. Whisper to them, raise their EGO attunement safe limit, and manifest at their side to see and hear all around them. Once given, the blessing cannot be revoked."
-	icon_icon = 'ModularLobotomy/_Lobotomyicons/lce_actions.dmi'
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
 	button_icon_state = "despair_bless"
 	cooldown_time = 5 SECONDS
 
@@ -504,6 +508,8 @@
 /datum/action/cooldown/limbus_abno_action/despair_whisper
 	name = "Whisper"
 	desc = "Whisper privately into the mind of the one you have blessed."
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
 	icon_icon = 'ModularLobotomy/_Lobotomyicons/lce_actions.dmi'
 	button_icon_state = "whisper"
 	transparent_when_unavailable = TRUE
@@ -529,7 +535,9 @@
 /datum/action/cooldown/limbus_abno_action/despair_manifest
 	name = "Manifest"
 	desc = "Appear beside your blessed as a ghostly projection only they can perceive. Your body hardens to crystal - nigh-invulnerable, but unable to move or fight - until you return."
-	icon_icon = 'ModularLobotomy/_Lobotomyicons/lce_actions.dmi'
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
 	button_icon_state = "despair_manifest"
 	transparent_when_unavailable = TRUE
 	cooldown_time = 3 SECONDS
@@ -554,7 +562,9 @@
 /datum/action/cooldown/limbus_abno_action/despair_defend_tp
 	name = "Rush to Defend"
 	desc = "Teleport to your gravely-wounded blessed one. Only usable in the brief window after they are hurt. The blessing remains."
-	icon_icon = 'ModularLobotomy/_Lobotomyicons/lce_actions.dmi'
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
 	button_icon_state = "despair_defend"
 	transparent_when_unavailable = TRUE
 	cooldown_time = 1 SECONDS
@@ -579,7 +589,11 @@
 /datum/action/cooldown/limbus_abno_action/despair_rapidfire
 	name = "Rapid Fire"
 	desc = "Loose a rapid flurry of tear-forged rapiers at the nearest foe."
-	icon_icon = 'icons/mob/actions/actions_ability.dmi'
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
+	//"sniper_zoom" lives in actions_items.dmi, not actions_ability.dmi - this button was
+	//rendering with no icon at all.
+	icon_icon = 'icons/mob/actions/actions_items.dmi'
 	button_icon_state = "sniper_zoom"
 	transparent_when_unavailable = TRUE
 	cooldown_time = 8 SECONDS
@@ -604,6 +618,8 @@
 /datum/action/cooldown/limbus_abno_action/despair_slash
 	name = "Despair Slash"
 	desc = "Cleave the ground before you. Only in your breached fury."
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
 	icon_icon = 'icons/mob/actions/actions_spells.dmi'
 	button_icon_state = "repulse"
 	transparent_when_unavailable = TRUE
@@ -629,8 +645,12 @@
 /datum/action/cooldown/limbus_abno_action/despair_retort
 	name = "Hopeless Retort"
 	desc = "Conjure a wall of rapiers that fly outward. Only in your breached fury."
+	button_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	background_icon_state = "bg_despair"
+	//There is no "genericcharge" state in any action sheet in the repo - this button was
+	//rendering with no icon. "charge" is the nearest real state.
 	icon_icon = 'icons/mob/actions/actions_spells.dmi'
-	button_icon_state = "genericcharge"
+	button_icon_state = "charge"
 	transparent_when_unavailable = TRUE
 	cooldown_time = 12 SECONDS
 

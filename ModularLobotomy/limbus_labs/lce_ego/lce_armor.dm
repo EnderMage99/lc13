@@ -290,16 +290,23 @@ GLOBAL_LIST_EMPTY(lce_attunement_affinity)
 	attunement_family = "hornet"
 	paired_weapon = /obj/item/ego_weapon/lce/hornet
 
-//Despair - the Knight of Despair's set. Reuses the base despair EGO art. Sums to 90.
+//Despair - the Knight of Despair's set. Sums to 90.
 /obj/item/clothing/suit/armor/ego_gear/lce/despair
 	name = "LCE EGO: Despair"
 	desc = "A blue dress stitched from a knight's unspent devotion."
-	icon = 'icons/obj/clothing/ego_gear/abnormality/waw.dmi'
-	worn_icon = 'icons/mob/clothing/ego_gear/abnormality/waw.dmi'
 	icon_state = "despair"
 	armor = list(RED_DAMAGE = 20, WHITE_DAMAGE = 30, BLACK_DAMAGE = 10, PALE_DAMAGE = 30)
 	attunement_family = "despair"
-	paired_weapon = /obj/item/ego_weapon/lce/despair
+	paired_weapon = /obj/item/ego_weapon/shield/vigil
+
+//Love - the Queen of Hatred's set. Keeps the WAW original's BLACK-heavy shape, rescaled to 90.
+/obj/item/clothing/suit/armor/ego_gear/lce/love
+	name = "LCE EGO: In the Name of Love"
+	desc = "A magical one-piece dress. Wearing it stirs something insistent and bright."
+	icon_state = "love"
+	armor = list(RED_DAMAGE = 20, WHITE_DAMAGE = 10, BLACK_DAMAGE = 40, PALE_DAMAGE = 20)
+	attunement_family = "love"
+	paired_weapon = /obj/item/ego_weapon/lce/love
 
 //Low-Sec armor adds to 60.
 /obj/item/clothing/suit/armor/ego_gear/lce/grinder
@@ -353,8 +360,6 @@ GLOBAL_LIST_EMPTY(lce_attunement_affinity)
 /obj/item/clothing/suit/armor/ego_gear/lce/acupuncture
 	name = "LCE EGO: Acupuncture"
 	desc = "Realize that this is good for you."
-	icon = 'ModularLobotomy/_Lobotomyicons/branch12/branch12_gear.dmi'
-	worn_icon = 'ModularLobotomy/_Lobotomyicons/branch12/branch12_gearworn.dmi'
 	icon_state = "acupuncture"
 	armor = list(RED_DAMAGE = -20, WHITE_DAMAGE = 20, BLACK_DAMAGE = 30, PALE_DAMAGE = 10)
 	slowdown = -0.15
