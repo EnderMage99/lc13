@@ -50,3 +50,7 @@
 //Acupuncture
 /datum/ego_datum/armor/lce/acupuncture
 	item_path = /obj/item/clothing/suit/armor/ego_gear/lce/acupuncture
+
+//Penitent (Door to Nowhere)
+/datum/ego_datum/armor/lce/liminal
+	item_path = /obj/item/clothing/suit/armor/ego_gear/lce/liminal

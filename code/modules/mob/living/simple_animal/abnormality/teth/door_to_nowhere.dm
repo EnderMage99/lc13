@@ -1,192 +1,4 @@
 
-// realm of sealed regrets SYSTEM
-// A standalone system for trapping players in an alternate dimension of regret and repentance
-// Can be used by any game mechanic without requiring specific abnormalities
-
-GLOBAL_LIST_EMPTY(repentance_trapped_players)         // List of all trapped players
-GLOBAL_LIST_EMPTY(repentance_return_locations)        // Original locations to return players to
-GLOBAL_LIST_EMPTY(repentance_status_effects)          // Status effects applied to trapped players
-GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations in the dimension
-
-/// Initializes repentance dimension spawn locations from landmarks
-/proc/InitializeRepentanceLocations()
-	GLOB.repentance_spawn_points = list()
-	for(var/obj/effect/landmark/repentance_spawn/L in GLOB.landmarks_list)
-		GLOB.repentance_spawn_points += get_turf(L)
-
-	// Fallback if no landmarks exist - use z-level 1,1,1
-	if(!LAZYLEN(GLOB.repentance_spawn_points))
-		var/turf/T = locate(1, 1, 1)
-		if(T)
-			GLOB.repentance_spawn_points += T
-
-/// Sends a player to the realm of sealed regrets
-/// H - The human to send
-/// send_message - Optional custom message to display (null = use default)
-/// spin_effect - Whether to apply violent spinning effect
-/// Returns TRUE if successful
-/proc/SendToRepentanceDimension(mob/living/carbon/human/H, send_message = null, spin_effect = TRUE)
-	if(!H || QDELETED(H))
-		return FALSE
-
-	// Already trapped check
-	if(H in GLOB.repentance_trapped_players)
-		return FALSE
-
-	// Initialize spawn points if needed
-	if(!LAZYLEN(GLOB.repentance_spawn_points))
-		InitializeRepentanceLocations()
-
-	// Add to global tracking
-	GLOB.repentance_trapped_players += H
-	GLOB.repentance_return_locations[H] = get_turf(H)
-
-	// Display message
-	if(send_message)
-		to_chat(H, span_userdanger(send_message))
-	else
-		to_chat(H, span_userdanger("You are pulled into a strange dimension!"))
-
-	// Apply spinning effect if requested
-	if(spin_effect)
-		playsound(get_turf(H), 'sound/abnormalities/dinner_chair/ragdoll_effect.ogg', 75, TRUE)
-		INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(RepentanceViolentSpin), H)
-		// Wait for spinning to finish before teleporting
-		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(RepentanceFinishTeleport), H), 12 SECONDS)
-	else
-		RepentanceFinishTeleport(H)
-
-	return TRUE
-
-/// Violent spinning effect for dimension transport
-/proc/RepentanceViolentSpin(mob/living/M)
-	if(!M || QDELETED(M))
-		return
-
-	var/matrix/initial_matrix = matrix(M.transform)
-	for(var/i in 1 to 120) // 12 seconds at 0.1 second intervals
-		if(!M || QDELETED(M))
-			return
-
-		// Violent rotation
-		initial_matrix = matrix(M.transform)
-		initial_matrix.Turn(rand(45, 180))
-
-		// Extreme position changes
-		var/x_shift = rand(-10, 10)
-		var/y_shift = rand(-10, 10)
-		initial_matrix.Translate(x_shift, y_shift)
-
-		animate(M, transform = initial_matrix, time = 1, loop = 0, easing = pick(LINEAR_EASING, SINE_EASING, CIRCULAR_EASING))
-
-		// Rapid direction changes
-		M.setDir(pick(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST))
-
-		sleep(1)
-
-	// Reset transformation
-	animate(M, transform = null, time = 5, loop = 0)
-
-/// Completes the teleportation to realm of sealed regrets
-/proc/RepentanceFinishTeleport(mob/living/carbon/human/H)
-	if(!H || QDELETED(H) || !(H in GLOB.repentance_trapped_players))
-		return
-
-	to_chat(H, span_warning("You find yourself in the realm of sealed regrets."))
-	to_chat(H, span_warning("The air is heavy with regret and the weight of unspoken apologies."))
-
-	playsound(get_turf(H), 'sound/effects/podwoosh.ogg', 50, TRUE)
-
-	// Pick a random repentance dimension location
-	var/turf/destination
-	if(LAZYLEN(GLOB.repentance_spawn_points))
-		destination = pick(GLOB.repentance_spawn_points)
-	else
-		destination = locate(1, 1, 1) // Emergency fallback
-
-	if(destination)
-		H.forceMove(destination)
-
-	H.Stun(30)
-	H.adjustSanityLoss(20)
-
-	// Spawn an empty tape recorder for them to record their regrets
-	var/obj/item/taperecorder/empty/recorder = new /obj/item/taperecorder/empty(destination)
-	to_chat(H, span_notice("A tape recorder materializes before you, as if the dimension itself wants to hear your confession..."))
-
-	// Try to put it in their hand if possible
-	if(!H.put_in_hands(recorder))
-		// If hands are full, place it next to them
-		recorder.forceMove(get_step(destination, pick(NORTH, SOUTH, EAST, WEST)))
-
-	// Apply repentance dimension status effect
-	var/datum/status_effect/repentance_ambience/B = H.apply_status_effect(/datum/status_effect/repentance_ambience)
-	if(B)
-		GLOB.repentance_status_effects[H] = B
-
-/// Rescues a player from the realm of sealed regrets
-/// H - The human to rescue
-/// return_turf - Optional specific return location (null = use saved location)
-/// rescue_message - Optional custom message (null = use default)
-/// Returns TRUE if successful
-/proc/RescueFromRepentanceDimension(mob/living/carbon/human/H, turf/return_turf = null, rescue_message = null)
-	if(!H || QDELETED(H))
-		return FALSE
-
-	// Not trapped check
-	if(!(H in GLOB.repentance_trapped_players))
-		return FALSE
-
-	// Remove from global tracking
-	GLOB.repentance_trapped_players -= H
-
-	// Determine return location
-	if(!return_turf)
-		return_turf = GLOB.repentance_return_locations[H]
-	if(!return_turf)
-		// Find a safe station turf as fallback
-		for(var/turf/T in GLOB.station_turfs)
-			if(!T.density)
-				return_turf = T
-				break
-	if(!return_turf)
-		return_turf = locate(1, 1, 1) // Ultimate fallback
-
-	GLOB.repentance_return_locations -= H
-
-	// Remove status effect
-	if(GLOB.repentance_status_effects[H])
-		H.remove_status_effect(/datum/status_effect/repentance_ambience)
-		GLOB.repentance_status_effects -= H
-
-	// Display message
-	if(rescue_message)
-		to_chat(H, span_nicegreen(rescue_message))
-	else
-		to_chat(H, span_nicegreen("You feel a pull back to reality!"))
-
-	playsound(get_turf(H), 'sound/magic/teleport_app.ogg', 50, TRUE)
-
-	// Teleport back
-	H.forceMove(return_turf)
-
-	return TRUE
-
-/// Checks if a player is trapped in the realm of sealed regrets
-/proc/IsTrappedInRepentance(mob/living/carbon/human/H)
-	if(!H)
-		return FALSE
-	return (H in GLOB.repentance_trapped_players)
-
-/// Returns a list of all trapped players
-/proc/GetRepentanceTrappedList()
-	return GLOB.repentance_trapped_players.Copy()
-
-/// Rescues all trapped players (for emergency use)
-/proc/RescueAllFromRepentance(rescue_message = "The dimension collapses, ejecting everyone!")
-	for(var/mob/living/carbon/human/H in GLOB.repentance_trapped_players.Copy())
-		RescueFromRepentanceDimension(H, null, rescue_message)
-
 /mob/living/simple_animal/hostile/abnormality/door_to_nowhere
 	name = "Door to Nowhere"
 	desc = "A door wrapped in chains, floating ominously in the air. Behind it lies memories best left forgotten, regrets that should remain sealed."
@@ -344,12 +156,9 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 	// 5% chance to drop a tape from the Mirror Worlds
 	if(prob(5))
 		var/turf/drop_location = get_turf(user)
-		var/obj/item/tape/mirror_tape = new /obj/item/tape(drop_location)
-
-		// Configure the tape
-		mirror_tape.name = "mirror shattered tape"
-		mirror_tape.desc = "A tape that seems to have fallen through the cracks of reality. It flickers with otherworldly static."
-		mirror_tape.filters += filter(type = "blur", size = 1.5)
+		// Its own type, not a renamed /obj/item/tape - istype could not otherwise tell it from
+		// any tape on the station, which the LCL specimen's diet depends on.
+		var/obj/item/tape/mirror_tape = new /obj/item/tape/mirror_shattered(drop_location)
 
 		// If available, copy content from persistence archive
 		if(LAZYLEN(SSpersistence.door_to_nowhere_tapes))
@@ -480,6 +289,19 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 	animate(src, alpha = 0, time = 5 SECONDS)
 	QDEL_IN(src, 5 SECONDS)
 	..()
+
+// A confession from a previous shift, dropped by Insight work. Its own type so anything that
+// cares - the LCL specimen's diet, most of all - can tell it from a station tape.
+// Note the knock-on: /obj/machinery/tape_archive/attackby() tests `I.type != /obj/item/tape`
+// exactly, so mirror tapes can no longer be re-archived. That is intended - they came out of
+// the archive, and re-submitting them would be a persistence loop.
+/obj/item/tape/mirror_shattered
+	name = "mirror shattered tape"
+	desc = "A tape that seems to have fallen through the cracks of reality. It flickers with otherworldly static."
+
+/obj/item/tape/mirror_shattered/Initialize()
+	. = ..()
+	filters += filter(type = "blur", size = 1.5)
 
 // Repentance dimension landmark for mapping
 /obj/effect/landmark/repentance_spawn
@@ -917,8 +739,8 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 /datum/action/innate/targeted_whisper
 	name = "Focused Whisper"
 	desc = "Send a chilling whisper directly into someone's mind."
-	icon_icon = 'icons/mob/actions/actions_spells.dmi'
-	button_icon_state = "telepathy"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	button_icon_state = "dtn_whisper"
 	check_flags = AB_CHECK_CONSCIOUS
 	var/cooldown_time = 50  // 5 second cooldown
 	var/next_use = 0
@@ -983,8 +805,8 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 /datum/action/innate/door_possession
 	name = "Project Regret Spirit"
 	desc = "Project your consciousness into a spirit of regret for 30 seconds."
-	icon_icon = 'icons/mob/actions/actions_spells.dmi'
-	button_icon_state = "teleport"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	button_icon_state = "dtn_project"
 	check_flags = AB_CHECK_CONSCIOUS
 	var/cooldown_time = 1200  // 2 minute cooldown
 	var/next_use = 0
@@ -1007,15 +829,18 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 /datum/action/innate/return_to_door
 	name = "Return to Form"
 	desc = "Return your consciousness to your true form."
-	icon_icon = 'icons/mob/actions/actions_spells.dmi'
-	button_icon_state = "exit_possession"
+	icon_icon = 'ModularLobotomy/_Lobotomyicons/lcl_abno_actions.dmi'
+	button_icon_state = "dtn_return"
 
 /datum/action/innate/return_to_door/Activate()
 	var/mob/living/simple_animal/hostile/regret_spirit/projection/P = owner
 	if(!istype(P) || !P.source_door)
 		return FALSE
 
-	P.source_door.recall_spirit(P, P.source_door)
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/D = P.source_door
+	if(!istype(D)) //An LCL spirit brings its own Return action; this one is the WAW abno's.
+		return FALSE
+	D.recall_spirit(P, D)
 	return TRUE
 
 // PROJECTILE DEFINITIONS
@@ -1068,16 +893,31 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 	alert_type = /atom/movable/screen/alert/status_effect/regret
 	var/stacks = 1
 	var/max_stacks = 10
-	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/source_door
+	/// Stacks needed to be pulled into the Realm. Named rather than repeated as a literal so
+	/// the alert badge can show the number it is actually counting toward.
+	var/teleport_threshold = 5
+	//Typed to /mob/living rather than to the abnormality: the LCL specimen fires the same
+	//hands and sits on a different branch entirely.
+	var/mob/living/source_door
 
-/datum/status_effect/regret_stacks/on_creation(mob/living/new_owner, mob/living/simple_animal/hostile/abnormality/door_to_nowhere/door)
+/datum/status_effect/regret_stacks/on_creation(mob/living/new_owner, mob/living/door)
 	. = ..()
 	source_door = door
 
 /datum/status_effect/regret_stacks/on_apply()
 	RegisterSignal(owner, COMSIG_LIVING_DEATH, PROC_REF(on_death))
 	to_chat(owner, span_userdanger("You feel the weight of regret settling upon your soul..."))
+	UpdateRegretAlert()
 	return TRUE
+
+/// The badge carries the count as maptext, the way the qliphoth counter alert does - its
+/// interior is drawn as a flat well for exactly this.
+/datum/status_effect/regret_stacks/proc/UpdateRegretAlert()
+	var/atom/movable/screen/alert/status_effect/regret/R = linked_alert
+	if(!istype(R))
+		return
+	R.desc = "You carry [stacks] burden\s of regret. At [teleport_threshold] stacks, you will be pulled into the realm of sealed memories."
+	R.UpdateStacks(stacks, teleport_threshold)
 
 /datum/status_effect/regret_stacks/on_remove()
 	UnregisterSignal(owner, COMSIG_LIVING_DEATH)
@@ -1091,11 +931,10 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 	stacks = min(stacks + 1, max_stacks)
 
 	// Update alert
-	if(linked_alert)
-		linked_alert.desc = "You carry [stacks] burden\s of regret. At 5 stacks, you will be pulled into the realm of sealed memories."
+	UpdateRegretAlert()
 
 	// Check for teleportation
-	if(stacks >= 5 && source_door && !QDELETED(source_door))
+	if(stacks >= teleport_threshold && source_door && !QDELETED(source_door))
 		var/message = "The weight of accumulated regret pulls you into the realm of sealed regrets!"
 		SendToRepentanceDimension(owner, message, TRUE)
 		qdel(src)
@@ -1115,8 +954,7 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 	if(stacks <= 0)
 		qdel(src)
 		return
-	if(linked_alert)
-		linked_alert.desc = "You carry [stacks] burden\s of regret."
+	UpdateRegretAlert()
 
 /datum/status_effect/regret_stacks/proc/on_death()
 	SIGNAL_HANDLER
@@ -1126,7 +964,22 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 /atom/movable/screen/alert/status_effect/regret
 	name = "Burden of Regret"
 	desc = "You carry burdens of regret. At 5 stacks, you will be pulled into the realm of sealed memories."
-	icon_state = "wounded_soldier"
+	// Was "wounded_soldier" out of screen_alert.dmi - a borrowed icon of a different thing
+	// entirely. This one is the chained doorway drawn for this abnormality.
+	icon = 'ModularLobotomy/_Lobotomyicons/abno_hud.dmi'
+	icon_state = "regret"
+	maptext_x = 6
+	maptext_y = 10
+
+/atom/movable/screen/alert/status_effect/regret/proc/UpdateStacks(current, threshold)
+	var/col = "#6fb932" // Comfortable.
+	if(current >= threshold)
+		col = "#e21717"
+	else if(current >= threshold - 1)
+		col = "#eb4d42"
+	else if(current >= threshold - 2)
+		col = "#d3d023"
+	maptext = MAPTEXT("<span style='color: [col]'><b>[current]/[threshold]</b></span>")
 
 // SPIRIT PROJECTION MOB
 
@@ -1135,12 +988,16 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 	desc = "A temporary manifestation of regret and sorrow."
 	health = 250  // Fragile
 	maxHealth = 250
-	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/source_door
+	//Loosened for the same reason as the status effect's: the LCL specimen projects the same
+	//spirit and is not an /abnormality. Every call to recall_spirit() below is type-guarded
+	//because /mob/living has no such proc.
+	var/mob/living/source_door
 	del_on_death = TRUE
 
 /mob/living/simple_animal/hostile/regret_spirit/projection/death(gibbed)
-	if(source_door && !QDELETED(source_door))
-		source_door.recall_spirit(src, source_door)
+	var/mob/living/simple_animal/hostile/abnormality/door_to_nowhere/D = source_door
+	if(istype(D) && !QDELETED(D))
+		D.recall_spirit(src, D)
 	return ..()
 
 /mob/living/simple_animal/hostile/regret_spirit/projection/Life()
@@ -1526,8 +1383,6 @@ GLOBAL_LIST_EMPTY(repentance_spawn_points)            // Valid spawn locations i
 /obj/item/regret_key/proc/reset_key()
 	used = FALSE
 
-// Add to globals
-GLOBAL_LIST_EMPTY(regret_shrines)
 
 // Door Dimension Void - A chasm that teleports instead of kills
 /turf/open/chasm/door_dimension
@@ -1572,7 +1427,13 @@ GLOBAL_LIST_EMPTY(regret_shrines)
 		/obj/effect/dummy/phased_mob,
 		/obj/effect/mapping_helpers,
 		/obj/effect/wisp,
-		/mob/living/simple_animal/hostile/abnormality/door_to_nowhere // Don't let the abnormality fall into its own void
+		/mob/living/simple_animal/hostile/abnormality/door_to_nowhere, // Don't let the abnormality fall into its own void
+		// No player-controlled specimen should be silently flung across the map by a chasm it
+		// wandered onto - and an LCL door's spirit lives inside the Realm permanently, so
+		// without this it lands on a random station turf its own confinement then refuses to
+		// let it move off. The whole branch, so future Realm-capable specimens inherit it.
+		/mob/living/simple_animal/hostile/limbus_abno,
+		/mob/living/simple_animal/hostile/regret_spirit
 	))
 
 /datum/component/door_dimension_void/Initialize()
@@ -1691,6 +1552,10 @@ GLOBAL_LIST_EMPTY(regret_shrines)
 	AM.color = oldcolor
 	AM.pixel_y = oldpixel_y
 
+	if(get_turf(AM) != get_turf(parent))
+		falling_atoms -= AM
+		return
+
 	// Teleport out instead of killing
 	if(isliving(AM))
 		var/mob/living/L = AM
@@ -1699,6 +1564,13 @@ GLOBAL_LIST_EMPTY(regret_shrines)
 		// Use global repentance dimension rescue system
 		if(ishuman(L))
 			var/mob/living/carbon/human/H = L
+			// Someone an LCL door is holding does not get a free ride home. The void is one
+			// more way out of the Realm, and every way out of a seal is the same way out:
+			// beside the door, dead on arrival, immunity stamped.
+			if(IsSealedByDoor(H))
+				EjectSealedCaptive(H)
+				falling_atoms -= AM
+				return
 			if(IsTrappedInRepentance(H))
 				RescueFromRepentanceDimension(H, null, "The void expels you back to reality!")
 				// Return early - rescue is complete

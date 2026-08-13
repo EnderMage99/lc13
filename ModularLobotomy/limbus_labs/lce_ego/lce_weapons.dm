@@ -532,6 +532,54 @@
 		armor.HandleOverLimit(user)
 	return ..()
 
+// Unsent - the Door to Nowhere's flail. A padlock on a length of rusted chain, riding the
+// engine's existing charge system: the lore's chains tighten as it collects more, so every
+// hit winds a link and spending the links lets it off the leash.
+/obj/item/ego_weapon/lce/unsent
+	name = "LCE EGO: Unsent"
+	desc = "A brass padlock swung on a length of rusted chain. It tightens rhythmically in your grip, like a heartbeat of regret."
+	special = "Every hit winds the chain one link. Spend the links to let it off the leash - a wide swing that strikes everything adjacent."
+	icon_state = "unsent"
+	force = 26
+	attack_speed = 1.2
+	damtype = WHITE_DAMAGE
+	attack_verb_continuous = list("lashes", "batters", "swings at")
+	attack_verb_simple = list("lash", "batter", "swing at")
+	hitsound = 'sound/weapons/ego/hammer.ogg'
+	attunement_family = "liminal"
+	charge = TRUE
+	charge_cost = 8
+	charge_cap = 20
+	allow_ability_cancel = TRUE
+	charge_effect = "let the chain out to its full length, striking everything next to you."
+	successfull_activation = "You draw the chain taut. Let it go wherever you like."
+	cancel_activation = "You let the chain slacken again."
+	failed_activation = "There are not enough links wound to let it go."
+
+/obj/item/ego_weapon/lce/unsent/attack_self(mob/living/user)
+	. = ..()
+	UpdateChainIcon()
+
+// Three states, driven by where the chain is: slack, drawn taut, and flung to full reach.
+/obj/item/ego_weapon/lce/unsent/proc/UpdateChainIcon()
+	icon_state = currently_charging ? "unsent_wound" : "unsent"
+	update_icon()
+
+/obj/item/ego_weapon/lce/unsent/ChargeAttack(mob/living/target, mob/living/user)
+	. = ..()
+	icon_state = "unsent_loose"
+	update_icon()
+	addtimer(CALLBACK(src, PROC_REF(UpdateChainIcon)), 0.6 SECONDS)
+	// The sweep scales with attunement too, so a set worn hot hits hard all the way round.
+	var/hit_force = AttunedForce(user)
+	playsound(src, 'sound/weapons/ego/hammer.ogg', 75, TRUE)
+	for(var/turf/T in range(1, user))
+		new /obj/effect/temp_visual/smash_effect(T)
+	for(var/mob/living/L in range(1, user))
+		if(L == user || L == target) // The struck target already took the swing itself.
+			continue
+		L.deal_damage(hit_force, WHITE_DAMAGE, user, attack_type = (ATTACK_TYPE_MELEE))
+
 // ============================ RANGED WEAPONS ============================
 // Beak - a two-handed shotgun paired with the Beak armor.
 /obj/item/ego_weapon/ranged/lce/beak
