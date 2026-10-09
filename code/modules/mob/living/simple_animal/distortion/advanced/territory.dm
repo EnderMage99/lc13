@@ -26,6 +26,10 @@
 	var/claims_space = FALSE
 	/// Typecache of area types it may claim. Null means anywhere.
 	var/list/area_typecache
+	/// Set by the owner to hold growth without stopping the loop.
+	var/paused = FALSE
+	/// Turfs per tick divided by the square root of the size, when the owner sets one. Null keeps the 15% rule.
+	var/growth_rate
 	/// Timer id for the growth loop, so Revert() can stop it.
 	var/growth_timer
 	/// Base interval between transient oddities. Divided by (stage + 1).
@@ -44,6 +48,7 @@
 	cap = owner.territory_cap
 	if(length(owner.territory_stages))
 		stage_thresholds = owner.territory_stages.Copy()
+	growth_rate = owner.territory_growth_rate
 	if(length(owner.territory_areas))
 		area_typecache = typecacheof(owner.territory_areas)
 	frontier[origin] = 0
@@ -121,13 +126,17 @@
 	ScheduleOddity()
 
 /datum/distortion_territory/proc/Grow()
-	if(!owner || owner.stat == DEAD)
+	if(!owner || owner.stat == DEAD || paused)
 		return
 	Claim(GrowthAmount())
 	owner.OnTerritoryGrown()
 
-/// Budget per growth tick. 15% of the current size with a floor of 10, so it is slow at first and fast once large.
+/// Budget per growth tick. By default 15% of the current size with a floor of 10, slow at first and fast once
+/// large. With growth_rate set it is growth_rate / sqrt(size) instead: a burst at the start that keeps slowing.
+/// From 25 turfs the cap is reached in about 1.5 * (cap ** 1.5 - 125) / growth_rate ticks.
 /datum/distortion_territory/proc/GrowthAmount()
+	if(growth_rate)
+		return max(5, round(growth_rate / sqrt(max(1, claimed.len))))
 	return max(10, round(claimed.len * 0.15))
 
 /datum/distortion_territory/proc/StageFor(size)
@@ -178,6 +187,25 @@
 /// The n claimed turfs nearest the origin by walking cost: the first n claimed, since claiming is cheapest-first.
 /datum/distortion_territory/proc/CenterTurfs(n)
 	return claimed.Copy(1, min(n, claimed.len) + 1)
+
+/// The n claimed turfs nearest the origin by plain steps, a door costing the same as a floor, so the room next
+/// door comes before the far end of the street. Breadth-first over claimed turfs only, so it never crosses a wall.
+/datum/distortion_territory/proc/NearestTurfs(n)
+	var/list/result = list(origin)
+	var/list/seen = list()
+	seen[origin] = TRUE
+	var/i = 1
+	while(i <= result.len && result.len < n)
+		var/turf/T = result[i++]
+		for(var/dir in GLOB.cardinals)
+			var/turf/next = get_step(T, dir)
+			if(!next || seen[next] || !(next in claimed))
+				continue
+			seen[next] = TRUE
+			result += next
+			if(result.len >= n)
+				break
+	return result
 
 /// Walking cost from the origin to a claimed turf, or null if it is not claimed.
 /datum/distortion_territory/proc/Cost(turf/T)
@@ -247,7 +275,7 @@
 		if(!PlayerNear(T))
 			continue
 		var/path = pick(owner.oddities)
-		new path(T)
+		new path(T, owner)
 		return
 
 /datum/distortion_territory/proc/PlayerNear(turf/T)
