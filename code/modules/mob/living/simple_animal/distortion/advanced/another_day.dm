@@ -302,7 +302,8 @@
 
 /// The colour leaves his ties for drain_duration and whatever it stood for stops with it.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/DrainColour(colour, mob/living/carbon/human/speaker)
-	speaker.Shake(3, 3, 1.5 SECONDS)
+	// Shake() takes loops of 0.2 ticks, not a time: 75 loops is 1.5 seconds
+	speaker.Shake(2, 2, 75)
 	to_chat(speaker, span_nicegreen("Something in this place flinches at that name."))
 	if(colour in drained)
 		deltimer(drained[colour])
@@ -559,25 +560,28 @@
 	icon_state = "paper"
 	alpha = 220
 	duration = 4.5 SECONDS
+	/// Whether the last step fades it out. The clue variant lands instead.
+	var/fades = TRUE
+	/// Which side it came in from: the page ends at from * 12 pixels off centre.
+	var/from
 
 /obj/effect/temp_visual/distortion_oddity/paper_drift/Initialize(mapload)
 	. = ..()
-	var/from = pick(-1, 1)
+	from = pick(-1, 1)
 	pixel_x = from * 56
 	pixel_y = 28
 	var/sway = -from * 8
 	animate(src, pixel_x = from * 12, pixel_y = 34, time = duration * 0.3, easing = SINE_EASING | EASE_OUT)
 	animate(pixel_x = from * 12 + sway, pixel_y = 22, time = duration * 0.25, easing = SINE_EASING)
 	animate(pixel_x = from * 12 - sway, pixel_y = 10, time = duration * 0.25, easing = SINE_EASING)
-	animate(pixel_x = from * 12, pixel_y = 0, alpha = 0, time = duration * 0.2)
+	animate(pixel_x = from * 12, pixel_y = 0, alpha = fades ? 0 : alpha, time = duration * 0.2, easing = SINE_EASING | EASE_IN)
 
 /// The same drift, but the page is real: it does not fade at the floor, it becomes the clue where it lands.
 /obj/effect/temp_visual/distortion_oddity/paper_drift/clue
 	icon_state = "paper_words"
+	fades = FALSE
 	var/mob/living/simple_animal/hostile/distortion/advanced/another_day/owner
 	var/role
-	/// Which side it came in from, so the page is put down exactly where the effect ends.
-	var/from
 
 /obj/effect/temp_visual/distortion_oddity/paper_drift/clue/Initialize(mapload, mob/living/simple_animal/hostile/distortion/advanced/another_day/new_owner)
 	. = ..()
@@ -586,22 +590,15 @@
 		new /obj/effect/temp_visual/distortion_oddity/paper_drift(loc)
 		return INITIALIZE_HINT_QDEL
 	owner = new_owner
-	from = pixel_x > 0 ? 1 : -1
-	var/sway = -from * 8
-	animate(src, pixel_x = from * 12, pixel_y = 34, time = duration * 0.3, easing = SINE_EASING | EASE_OUT)
-	animate(pixel_x = from * 12 + sway, pixel_y = 22, time = duration * 0.25, easing = SINE_EASING)
-	animate(pixel_x = from * 12 - sway, pixel_y = 10, time = duration * 0.25, easing = SINE_EASING)
-	animate(pixel_x = from * 12, pixel_y = 0, time = duration * 0.2, easing = SINE_EASING | EASE_IN)
 	addtimer(CALLBACK(src, PROC_REF(Settle)), duration - 1)
 
 /// Swaps the effect for the page in the same spot, so nothing jumps.
 /obj/effect/temp_visual/distortion_oddity/paper_drift/clue/proc/Settle()
 	if(QDELETED(src) || QDELETED(owner) || !isturf(loc))
 		return
-	var/obj/item/paper/distortion/clue/page = new(loc, owner, role)
+	var/obj/item/paper/distortion/clue/page = new(loc, owner, role, alpha)
 	page.pixel_x = from * 12
 	page.pixel_y = 0
-	page.alpha = alpha
 	qdel(src)
 
 /obj/effect/temp_visual/distortion_oddity/paper_drift/clue/Destroy()
@@ -758,8 +755,9 @@
 	var/lifetime = 3 MINUTES
 	var/recheck = 30 SECONDS
 
-/obj/item/paper/distortion/clue/Initialize(mapload, mob/living/simple_animal/hostile/distortion/advanced/another_day/owner, role)
+/obj/item/paper/distortion/clue/Initialize(mapload, mob/living/simple_animal/hostile/distortion/advanced/another_day/owner, role, start_alpha = 255)
 	. = ..()
+	alpha = start_alpha
 	if(!istype(owner) || !role)
 		return
 	var/list/options = owner.ClueTemplates()[role]
