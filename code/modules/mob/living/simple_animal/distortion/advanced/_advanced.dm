@@ -22,6 +22,9 @@
 	var/territory_growth_interval = 60 SECONDS
 	/// Most turfs it may ever hold, roughly a fifth of the city map's open turfs.
 	var/territory_cap = 2000
+	/// Growth per tick as this divided by the square root of the size: fast at first, always slowing. Null grows
+	/// by 15% of the size instead. See the territory's GrowthAmount() for how long a value takes to reach the cap.
+	var/territory_growth_rate
 	/// Claimed sizes at which stages 1 to 3 begin; stage 4 is the cap. Null uses the territory's own.
 	var/list/territory_stages
 	/// Stage at which ApplyCenterEffects() first runs. It runs again on every stage after, on a larger set.
