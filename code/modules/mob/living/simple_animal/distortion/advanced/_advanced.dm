@@ -1,6 +1,4 @@
 // The shared base for territory distortions. New distortions subtype this.
-// Design, build order and the reasons behind each piece:
-// workspace/docs/lc13/distortions/DISTORTION_FEATURES.md
 /mob/living/simple_animal/hostile/distortion/advanced
 	name = "advanced distortion"
 	desc = "The shape of someone's heart, settling into the place around it."
@@ -12,6 +10,8 @@
 	melee_damage_upper = 15
 	melee_damage_type = RED_DAMAGE
 	obj_damage = 50
+	/// Off: the stock patrol paths without the card. Wander() does the roaming instead.
+	can_patrol = FALSE
 	/// The ground it has claimed. Made in Initialize(), reverted in Teardown().
 	var/datum/distortion_territory/territory
 	/// Territory datum to create; a subtype swaps in its own.
@@ -31,7 +31,7 @@
 	var/gimmick_stage = 2
 	/// Area types the territory may claim, with subtypes. Empty means anywhere.
 	var/list/territory_areas
-	/// Temporary visuals the territory plays on random claimed turfs near players. See oddities.dm.
+	/// Temporary visuals the territory plays on random claimed turfs near players. The shared ones are at the end of this file.
 	var/list/oddities = list(
 		/obj/effect/temp_visual/distortion_oddity/shade,
 		/obj/effect/temp_visual/distortion_oddity/skitter,
@@ -64,7 +64,7 @@
 	var/return_interrupted = FALSE
 	var/next_return_attempt = 0
 	var/list/noticed = list()
-	/// Everything spawned that must go when the distortion does.
+	/// Everything spawned that must go when the distortion does. Add to it with Own().
 	var/list/owned = list()
 	/// Set once Teardown() has run so a death followed by a Destroy() does not run it twice.
 	var/torn_down = FALSE
@@ -74,11 +74,10 @@
 	// access_card is the simple_animal var the bots use; with every access the pathfinder plans through any door
 	access_card = new(src)
 	access_card.access = get_all_accesses()
-	can_patrol = wanders
 	patrol_cooldown_time = wander_pause
 	var/turf/origin = NearestOpenTurf(get_turf(src))
 	if(!origin)
-		return
+		return INITIALIZE_HINT_QDEL
 	territory = new territory_type(src, origin)
 	territory.debug = territory_debug
 	territory.Claim(territory_start_size)
@@ -105,21 +104,31 @@
 	return ..()
 
 /// Removes everything the distortion made. Safe to call more than once.
-/// Anything a subtype spawns goes in owned so this is the only cleanup it needs.
+/// Anything a subtype spawns goes through Own() so this is the only cleanup it needs.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/Teardown()
 	if(torn_down)
 		return
 	torn_down = TRUE
 	ConsumeStoredHuman()
-	if(territory)
-		territory.Revert()
-		QDEL_NULL(territory)
+	QDEL_NULL(territory)
 	for(var/atom/thing in owned)
 		qdel(thing)
 	owned.Cut()
 	noticed.Cut()
 	provoked_by.Cut()
 	QDEL_NULL(access_card)
+
+/// Adds a spawned thing to owned so Teardown() removes it. It leaves the list by itself if deleted sooner.
+/mob/living/simple_animal/hostile/distortion/advanced/proc/Own(atom/movable/thing)
+	// a cleanable can merge into one already on the turf and be gone on arrival
+	if(QDELETED(thing))
+		return
+	owned += thing
+	RegisterSignal(thing, COMSIG_PARENT_QDELETING, PROC_REF(OnOwnedDeleted))
+
+/mob/living/simple_animal/hostile/distortion/advanced/proc/OnOwnedDeleted(datum/source)
+	SIGNAL_HANDLER
+	owned -= source
 
 /// A human stored inside by BecomeDistortion() does not survive the distortion's death
 /mob/living/simple_animal/hostile/distortion/advanced/proc/ConsumeStoredHuman()
@@ -145,7 +154,7 @@
 /// Called by the territory after OnStageChange(). From gimmick_stage on, hands the centre to ApplyCenterEffects():
 /// the first start_size turfs at gimmick_stage, four times as many at each stage after.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/UpdateCenter(new_stage)
-	if(new_stage < gimmick_stage || !territory)
+	if(new_stage < gimmick_stage)
 		return
 	var/count = territory_start_size * (4 ** (new_stage - gimmick_stage))
 	ApplyCenterEffects(territory.CenterTurfs(count))
@@ -191,40 +200,31 @@
 		return FALSE
 	return TRUE
 
-/// The parent's patrol_to() without an id; this passes the card so paths may run through doors.
-/mob/living/simple_animal/hostile/distortion/advanced/patrol_to(turf/target_location)
-	if(isnull(target_location))
-		return FALSE
+/// The stock patrol_to() with the card passed, so the path may run through doors. Walks with the stock patrol_move().
+/mob/living/simple_animal/hostile/distortion/advanced/proc/WalkTo(turf/destination)
 	patrol_reset()
-	patrol_path = get_path_to(src, target_location, TYPE_PROC_REF(/turf, Distance_cardinal), 0, 200, adjacent = TYPE_PROC_REF(/turf, DistortionReachable), id = access_card)
+	patrol_path = get_path_to(src, destination, TYPE_PROC_REF(/turf, Distance_cardinal), 0, 200, adjacent = TYPE_PROC_REF(/turf, DistortionReachable), id = access_card)
 	if(!length(patrol_path))
 		return FALSE
 	patrol_move(patrol_path[patrol_path.len])
 	return TRUE
 
-/// The parent's PatrolSelect() with the card passed.
-/mob/living/simple_animal/hostile/distortion/advanced/PatrolSelect()
+// Wander. Walks to a random claimed turf once idle, wander_pause after the last walk ended.
+/mob/living/simple_animal/hostile/distortion/advanced/proc/Wander()
+	if(!wanders || returning || length(patrol_path) || !CanStartPatrol())
+		return
+	// the distortion parent's CanStartPatrol() leaves out the stock cooldown test, which is what makes wander_pause apply
+	if(patrol_cooldown > world.time)
+		return
 	if(SSmaptype.maptype in SSmaptype.autopossess)
-		return FALSE
-	var/turf/target_center = SelectPatrolLocation()
-	if(!target_center)
-		return FALSE
-	SEND_SIGNAL(src, COMSIG_PATROL_START, src, target_center)
-	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_PATROL_START, src, target_center)
-	patrol_path = get_path_to(src, target_center, TYPE_PROC_REF(/turf, Distance_cardinal), 0, 200, adjacent = TYPE_PROC_REF(/turf, DistortionReachable), id = access_card)
-	return patrol_path
-
-// Wander. The stock patrol does the walking; the only change is where it walks to.
-/mob/living/simple_animal/hostile/distortion/advanced/SelectPatrolLocation()
-	if(!territory)
-		return null
-	return territory.RandomTurf()
+		return
+	WalkTo(territory.RandomTurf())
 
 // Leash. It may chase and roam a little past the edge, then it stops, turns round and walks back
 // to the turf it left by. Being hit on the way pulls it into a fight unless hard_return is set.
 /mob/living/simple_animal/hostile/distortion/advanced/Life()
 	. = ..()
-	if(stat == DEAD || client || !territory)
+	if(stat == DEAD || client)
 		return
 	if(territory.Contains(loc))
 		leash_exit = loc
@@ -232,17 +232,14 @@
 			EndReturn()
 		return_interrupted = FALSE
 		NoticeNearby()
-		return
-	if(!leashed || !leash_exit)
-		return
-	if(returning)
+	else if(returning)
 		if(!length(patrol_path) && world.time > next_return_attempt)
 			WalkHome()
 		return
-	if(return_interrupted && target)
-		return
-	if(get_dist(src, leash_exit) > leash_slack)
+	else if(leashed && leash_exit && !(return_interrupted && target) && get_dist(src, leash_exit) > leash_slack)
 		StartReturn()
+		return
+	Wander()
 
 /mob/living/simple_animal/hostile/distortion/advanced/proc/StartReturn()
 	returning = TRUE
@@ -254,9 +251,9 @@
 /// Paths to the exit turf, or to any claimed turf if that fails, and tries again shortly if neither works.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/WalkHome()
 	next_return_attempt = world.time + 5 SECONDS
-	if(patrol_to(leash_exit))
+	if(WalkTo(leash_exit))
 		return
-	patrol_to(territory.RandomTurf())
+	WalkTo(territory.RandomTurf())
 
 /mob/living/simple_animal/hostile/distortion/advanced/proc/EndReturn()
 	returning = FALSE
@@ -327,8 +324,14 @@
 			continue
 		if(noticed[H] > world.time)
 			continue
+		if(isnull(noticed[H]))
+			RegisterSignal(H, COMSIG_PARENT_QDELETING, PROC_REF(OnNoticedDeleted))
 		noticed[H] = world.time + notice_cooldown
 		Notice(H)
+
+/mob/living/simple_animal/hostile/distortion/advanced/proc/OnNoticedDeleted(datum/source)
+	SIGNAL_HANDLER
+	noticed -= source
 
 /// A human is nearby and this distortion is not hostile to them. Watching, following, speaking go here.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/Notice(mob/living/carbon/human/H)

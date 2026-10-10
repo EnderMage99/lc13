@@ -10,9 +10,9 @@
 
 /mob/living/simple_animal/hostile/distortion/advanced/alley/ApplyCenterEffects(list/turfs)
 	for(var/turf/T in turfs)
-		if((T in dirtied) || !isopenturf(T))
+		if(dirtied[T] || !isopenturf(T))
 			continue
-		dirtied += T
+		dirtied[T] = TRUE
 		var/obj/effect/decal/cleanable/dirt/grime = new(T)
 		grime.color = "#4a4238"
-		owned += grime
+		Own(grime)
