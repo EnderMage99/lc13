@@ -1,7 +1,6 @@
 // Another Day at Work on the advanced base. He stays where he spawned and never attacks anyone; the room does
 // it for him. Hitting him is the taboo (Workload), the names on the clue papers are the way through it, and
-// his own name, said with all three colours drained, undistorts him. Design and numbers:
-// workspace/docs/lc13/distortions/ANOTHER_DAY_DESIGN.md
+// his own name, said with all three colours drained, undistorts him.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day
 	name = "Another Day at Work"
 	desc = "A man covered in... ties?"
@@ -16,9 +15,6 @@
 	melee_damage_lower = 0
 	melee_damage_upper = 0
 	obj_damage = 0
-	melee_damage_type = BLACK_DAMAGE
-	attack_verb_continuous = "brushes against"
-	attack_verb_simple = "brush against"
 	ranged = FALSE
 	ego_list = list(
 		/obj/item/ego_weapon/waging,
@@ -34,6 +30,8 @@
 	// 467 / sqrt(size) a minute: 93 turfs the first tick, 15 at the cap, which arrives after 45 minutes
 	territory_growth_rate = 467
 	gimmick_stage = 3
+	/// Stage at which the passive effects speed up and everything said in the territory comes out as a whisper.
+	var/fast_stage = 4
 	// picked evenly, so a type listed more than once comes up more often: clues are the rare one
 	oddities = list(
 		/obj/effect/temp_visual/distortion_oddity/paper_drift,
@@ -46,9 +44,11 @@
 	)
 	var/floor_type = /turf/open/floor/distortion/another_day
 	var/wall_type = /turf/closed/indestructible/city/another_day
+	/// Open turf types the quilt covers, with subtypes. The city's tiled rooms are indestructible floors, not floor.
+	var/list/quilt_turf_types = list(/turf/open/floor, /turf/open/indestructible)
 	/// Turfs the centre has converted, with the type each one was, so Teardown() can put them back.
 	var/list/converted = list()
-	/// Share of the territory the quilt covers when it first appears, innermost first. It shrinks as the territory grows: see QuiltSize().
+	/// The quilt's size as a share of territory_start_size, before it is scaled up by the territory's growth. See QuiltSize().
 	var/quilt_fraction = 0.35
 	/// How the quilt keeps up with the territory. 1 would hold the share; 0.5 lets the territory outrun it.
 	var/quilt_growth_power = 0.5
@@ -71,6 +71,16 @@
 	var/taboo_cooldown = 2 SECONDS
 	var/sulk_damage = 15
 	var/sulk_sanity = 2
+	/// How a line of his arrives in someone's head. One is picked and the line follows in quotes.
+	var/list/mind_prefixes = list(
+		"A voice moves through your mind.",
+		"Something tired speaks from behind your eyes.",
+		"A thought that is not yours surfaces.",
+		"Someone sighs, very close, inside your head.",
+	)
+	/// He also whispers a line aloud where he stands, at most this often.
+	var/whisper_cooldown = 20 SECONDS
+	var/next_whisper = 0
 	var/list/sulk_lines = list(
 		"I just want to go home.",
 		"Nobody asked me.",
@@ -80,8 +90,6 @@
 	)
 	/// Humans with the say signal hooked, so names said in the territory are heard.
 	var/list/listening = list()
-	/// Speakers whose say is being turned into a whisper right now, so the whisper itself is not turned again.
-	var/list/whispering = list()
 	/// Clue papers alive, role to list. Capped per role by clues_per_person.
 	var/list/clues = list()
 	var/clues_per_person = 3
@@ -92,17 +100,27 @@
 	var/list/locked_doors = list()
 	var/door_lock_time = 10 SECONDS
 	var/door_lock_cooldown = 60 SECONDS
+	/// Sanity everyone inside loses each drain_interval from gimmick_stage on.
+	var/drain_sanity = 1
+	var/drain_interval = 10 SECONDS
+	var/drain_interval_fast = 3 SECONDS
+	var/door_lock_interval = 30 SECONDS
+	var/door_lock_interval_fast = 10 SECONDS
+	/// Chance per person, each drain tick, that the drain comes with one of the idle_messages.
+	var/idle_message_chance = 25
 	var/next_drain = 0
 	var/next_door_lock = 0
-	var/next_message = 0
 	var/list/idle_messages = list(
-		"You check the time. It is later than you thought.",
-		"Somewhere a keyboard is still going.",
-		"You cannot remember what day it is.",
-		"The lights hum. They have been humming for a while.",
+		"It is later than you think.",
+		"Is it still Monday?",
+		"The lights have been humming all week.",
+		"Just one more thing before I go.",
 	)
 	var/undistort_timer
 	var/undistort_time = 30 SECONDS
+	/// The hanging. Every panicked human in the territory gets a tie dropped on them, as many at once as there are.
+	/// Ties hanging someone right now, so Teardown() can cut them.
+	var/list/ties = list()
 
 /// It does not move at all; it is the place as much as the person.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/Move()
@@ -110,18 +128,30 @@
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/Initialize(mapload)
 	. = ..()
-	for(var/role in list("boss", "coworker", "friend"))
-		people[role] = random_unique_name(pick(MALE, FEMALE))
+	if(. == INITIALIZE_HINT_QDEL)
+		return
+	for(var/colour in colour_roles)
+		people[colour_roles[colour]] = random_unique_name(pick(MALE, FEMALE))
 	people["self"] = pick(egoist_names)
 	egoist_names = list(people["self"])
 	SpawnNameTie()
 
-/// The named tie at the centre. It fades after its lifetime, and the next territory tick puts a new one down.
+/// He never fights. A hit is answered by the taboo, not by him.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/CanAttack(atom/the_target)
+	return FALSE
+
+/// Puts the named tie on a random claimed turf. It fades after its lifetime, and the next territory tick puts a new one down.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/SpawnNameTie()
-	if(!territory || torn_down)
-		return
 	name_tie = new(territory.RandomTurf(), people["self"])
-	owned += name_tie
+	Own(name_tie)
+
+/// Also lets go of the name tie and of clue pages, so neither list holds a deleted item.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/OnOwnedDeleted(datum/source)
+	. = ..()
+	if(source == name_tie)
+		name_tie = null
+	for(var/role in clues)
+		LAZYREMOVE(clues[role], source)
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/examine(mob/user)
 	. = ..()
@@ -149,6 +179,8 @@
 	for(var/colour in drained)
 		deltimer(drained[colour])
 	drained.Cut()
+	for(var/obj/structure/another_day_tie/tie in ties)
+		qdel(tie)
 	return ..()
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/PostUnmanifest(mob/living/carbon/human/egoist)
@@ -156,71 +188,62 @@
 
 // The quilt. The innermost QuiltSize() turfs by walking cost become tie floor, and the walls touching them tie wall.
 
-/// The base hands the centre over by count at stage changes; this one sizes the quilt itself.
+/// Skips the base's count-based centre. Stages only change inside a growth tick, and OnTerritoryGrown() sizes the
+/// quilt right after every one.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/UpdateCenter(new_stage)
-	UpdateQuilt()
+	return
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/OnTerritoryGrown()
 	UpdateQuilt()
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/OnStageChange(old_stage, new_stage)
-	if(new_stage >= 3)
+	if(new_stage >= gimmick_stage)
 		oddities |= /obj/effect/temp_visual/distortion_oddity/shade
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/OnTurfClaimed(turf/T)
 	for(var/obj/machinery/door/airlock/D in T)
 		doors += D
+		RegisterSignal(D, COMSIG_PARENT_QDELETING, PROC_REF(OnDoorDeleted))
+
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/OnDoorDeleted(datum/source)
+	SIGNAL_HANDLER
+	doors -= source
+	locked_doors -= source
 
 /// Runs after every growth tick from gimmick_stage on, so the quilt fills a room before the door
 /// and never crosses a wall the territory did not.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/UpdateQuilt()
-	if(!territory || territory.stage < gimmick_stage)
+	if(territory.stage < gimmick_stage)
 		return
 	ApplyCenterEffects(territory.NearestTurfs(QuiltSize()))
 
-/// Turfs the quilt covers: quilt_fraction of the start size, scaled by the territory's growth to the power
-/// quilt_growth_power, so it is a third of the territory when it appears and a smaller share the bigger it gets.
+/// Turfs the quilt covers: quilt_fraction of the start size, times the territory's growth to the power quilt_growth_power.
+/// With the defaults that is about 40 turfs when it appears at stage 3 (500 turfs) and 55 at the cap (1000).
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/QuiltSize()
 	var/growth = territory.Size() / max(1, territory_start_size)
 	return max(1, round(quilt_fraction * territory_start_size * (growth ** quilt_growth_power)))
 
 /// Floors in the centre become quilt, and any wall touching a quilt floor becomes quilt wall.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/ApplyCenterEffects(list/turfs)
-	for(var/turf/open/floor/T in turfs)
-		if(!(T in converted) && !istype(T, floor_type))
+	for(var/turf/open/T in turfs)
+		if(!is_type_in_list(T, quilt_turf_types))
+			continue
+		if(!converted[T] && !istype(T, floor_type))
 			converted[T] = T.type
 			T.ChangeTurf(floor_type)
 		for(var/dir in GLOB.cardinals)
 			var/turf/next = get_step(T, dir)
-			if(!next || (next in converted) || !isclosedturf(next) || istype(next, wall_type))
+			if(!next || converted[next] || !isclosedturf(next) || istype(next, wall_type))
 				continue
 			converted[next] = next.type
 			next.ChangeTurf(wall_type)
 
-// The taboo. Every way of hitting him lands, then costs the attacker a Workload stack and a sulk.
+// The taboo. Every hit that deals him damage costs the attacker a Workload stack and a sulk.
 
-/mob/living/simple_animal/hostile/distortion/advanced/another_day/attacked_by(obj/item/I, mob/living/user)
+/// Every source of damage ends in deal_damage(), so this one hook covers melee, punches, shots, throws and area attacks.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/PostDamageReaction(damage_amount, damage_type, source, attack_type)
 	. = ..()
-	Taboo(user)
-
-/mob/living/simple_animal/hostile/distortion/advanced/another_day/bullet_act(obj/projectile/P)
-	. = ..()
-	if(isliving(P.firer))
-		Taboo(P.firer)
-
-/mob/living/simple_animal/hostile/distortion/advanced/another_day/hitby(atom/movable/AM, skipcatch, hitpush = TRUE, blocked = FALSE, datum/thrownthing/throwingdatum)
-	. = ..()
-	if(throwingdatum && isliving(throwingdatum.thrower))
-		Taboo(throwingdatum.thrower)
-
-/mob/living/simple_animal/hostile/distortion/advanced/another_day/attack_hand(mob/living/carbon/human/M)
-	. = ..()
-	if(M.a_intent == INTENT_HARM)
-		Taboo(M)
-
-/mob/living/simple_animal/hostile/distortion/advanced/another_day/attack_animal(mob/living/simple_animal/M, damage)
-	. = ..()
-	Taboo(M)
+	Taboo(source)
 
 /// One gate for everything a hit costs: once per attacker per taboo_cooldown, however fast they swing.
 /// Any hit also stops an undistortion in progress.
@@ -241,22 +264,34 @@
 		W.add_stacks(1)
 		return
 	W = L.apply_status_effect(/datum/status_effect/stacking/distortion_workload, 1)
-	if(W)
-		W.distortion = src
+	W?.SetDistortion(src)
 
-/// Everyone in the territory hears a line of his. The attacker takes WHITE for it; the rest lose a little sanity, quietly.
+/// Everyone in the territory hears a line of his. The attacker loses sanity for it, cut by their WHITE armor like a
+/// WHITE hit would be but with no hit flash; the rest lose a little sanity, quietly.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/Sulk(mob/living/attacker)
 	var/line = pick(sulk_lines)
 	for(var/mob/living/carbon/human/H in HumansInside())
-		to_chat(H, span_notice("<i>\"[line]\"</i>"))
+		MindSpeak(H, line)
 		if(H != attacker)
 			H.adjustSanityLoss(sulk_sanity)
-	attacker.deal_damage(sulk_damage, WHITE_DAMAGE, src, null, ATTACK_TYPE_SPECIAL)
+	Mutter(line)
+	if(ishuman(attacker))
+		var/mob/living/carbon/human/victim = attacker
+		victim.adjustSanityLoss(sulk_damage * (1 - victim.getarmor(null, WHITE_DAMAGE) / 100))
+
+/// Puts a line of his straight into H's head, behind one of the mind_prefixes.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/MindSpeak(mob/living/carbon/human/H, line)
+	to_chat(H, span_notice("[pick(mind_prefixes)] <i>\"[line]\"</i>"))
+
+/// Whispers the line aloud where he stands, if whisper_cooldown has passed since the last one.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/Mutter(line)
+	if(world.time < next_whisper)
+		return
+	next_whisper = world.time + whisper_cooldown
+	whisper(line)
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/HumansInside()
 	var/list/inside = list()
-	if(!territory)
-		return inside
 	for(var/mob/living/carbon/human/H as anything in GLOB.human_list)
 		if(H.z == z && H.stat != DEAD && territory.Contains(get_turf(H)))
 			inside += H
@@ -266,8 +301,6 @@
 
 /// Hooks the say signal on humans standing in the territory and lets it go when they leave, then runs the stage effects.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/TerritoryTick()
-	if(!territory)
-		return
 	var/list/inside = HumansInside()
 	for(var/mob/living/carbon/human/H in inside)
 		if(H in listening)
@@ -278,41 +311,57 @@
 		if(QDELETED(H) || !(H in inside))
 			UnregisterSignal(H, COMSIG_MOB_SAY)
 			listening -= H
+	// expired gates go each tick, so an attacker deleted after a hit is not held
+	for(var/attacker in next_taboo)
+		if(next_taboo[attacker] <= world.time)
+			next_taboo -= attacker
 	PassiveEffects(inside)
-	if(QDELETED(name_tie))
+	TryHang(inside)
+	if(!name_tie)
 		SpawnNameTie()
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/OnSpeech(mob/living/carbon/human/speaker, list/speech_args)
 	SIGNAL_HANDLER
 	var/message = speech_args[SPEECH_MESSAGE]
-	if(!message || (speaker in whispering))
+	if(!message)
 		return
 	for(var/colour in colour_roles)
 		if(findtext(message, people[colour_roles[colour]]))
 			DrainColour(colour, speaker)
 	if(findtext(message, people["self"]))
 		HearOwnName(speaker)
-	if(territory.stage < 4 || !PresenceActive())
+	if(territory.stage < fast_stage || !PresenceActive())
 		return
-	// stage 4: the say is dropped and sent again as a whisper; the guard lets the whisper's own say signal through
 	speech_args[SPEECH_MESSAGE] = ""
-	whispering += speaker
-	INVOKE_ASYNC(speaker, TYPE_PROC_REF(/mob/living, whisper), message, null, speech_args[SPEECH_SPANS], TRUE, speech_args[SPEECH_LANGUAGE])
-	whispering -= speaker
+	ForceWhisper(speaker, message, speech_args[SPEECH_SPANS], speech_args[SPEECH_LANGUAGE])
+
+/// Sends an already processed say out at whisper range. Going straight to send_speech() skips a second treat_message()
+/// and fires no second say signal. The spans say() would add after its signal are added here.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/ForceWhisper(mob/living/carbon/human/speaker, message, list/spans, language)
+	// say() marks every whisper italic; runechat reads this span to italicise and dim the text
+	spans |= SPAN_ITALICS
+	if(speaker.speech_span)
+		spans |= speaker.speech_span
+	var/datum/language/spoken = GLOB.language_datum_instances[language]
+	if(spoken)
+		spans |= spoken.spans
+	INVOKE_ASYNC(speaker, TYPE_PROC_REF(/atom/movable, send_speech), message, 1, speaker, speaker.bubble_icon, spans, language, list(WHISPER_MODE = MODE_WHISPER))
 
 /// The colour leaves his ties for drain_duration and whatever it stood for stops with it.
+/// A name said while its colour is already gone only restarts the clock; the speaker is told so instead of jittered.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/DrainColour(colour, mob/living/carbon/human/speaker)
-	// Shake() takes loops of 0.2 ticks, not a time: 75 loops is 1.5 seconds
-	speaker.Shake(2, 2, 75)
-	to_chat(speaker, span_nicegreen("Something in this place flinches at that name."))
 	if(colour in drained)
 		deltimer(drained[colour])
-	else
-		var/mutable_appearance/MA = mutable_appearance(tie_overlay_icon, colour)
-		drain_overlays[colour] = MA
-		add_overlay(MA)
-		ApplyColour(colour, FALSE)
+		drained[colour] = addtimer(CALLBACK(src, PROC_REF(RestoreColour), colour), drain_duration, TIMER_STOPPABLE)
+		to_chat(speaker, span_warning("It is already hurting from that name."))
+		return
+	speaker.Shake(3, 3, 2.5 SECONDS)
+	to_chat(speaker, span_nicegreen("Something in this place flinches at that name."))
 	drained[colour] = addtimer(CALLBACK(src, PROC_REF(RestoreColour), colour), drain_duration, TIMER_STOPPABLE)
+	var/mutable_appearance/MA = mutable_appearance(tie_overlay_icon, colour)
+	drain_overlays[colour] = MA
+	add_overlay(MA)
+	ApplyColour(colour, FALSE)
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/RestoreColour(colour)
 	if(!(colour in drained))
@@ -326,8 +375,7 @@
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/ApplyColour(colour, present)
 	switch(colour)
 		if("blue")
-			if(territory)
-				territory.paused = !present || undistort_timer
+			UpdatePaused()
 		if("yellow")
 			var/list/resist = list()
 			for(var/type in base_resistances)
@@ -337,6 +385,10 @@
 /// Whether the territory's own effects are running: off while the co-worker's name holds or he is undistorting.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/PresenceActive()
 	return !("blue" in drained) && !undistort_timer
+
+/// Growth holds whenever the presence does. Call after drained or undistort_timer changes.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/UpdatePaused()
+	territory.paused = !PresenceActive()
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/HearOwnName(mob/living/carbon/human/speaker)
 	if(undistort_timer)
@@ -349,19 +401,17 @@
 		return
 	StartUndistorting(speaker)
 
-/// The colours stay gone for the whole undistort_time; a hit before it ends cancels it and brings them all back.
 /// The colours all come back at once, and light breaks out of him: rays that grow and turn for undistort_time.
 /// A hit before it ends cancels it and the rays go out.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/StartUndistorting(mob/living/carbon/human/speaker)
 	for(var/colour in drained.Copy())
 		RestoreColour(colour)
-	if(territory)
-		territory.paused = TRUE
+	undistort_timer = addtimer(CALLBACK(src, PROC_REF(Undistort)), undistort_time, TIMER_STOPPABLE)
+	UpdatePaused()
 	visible_message(span_notice("The ties go slack, one after another, and something behind them starts to shine."))
 	to_chat(speaker, span_nicegreen("He looks up."))
 	add_filter("undistort", 1, rays_filter(size = 4, color = "#FFF1B8", offset = 0, density = 10, threshold = 0.15))
 	transition_filter("undistort", undistort_time, list(size = 120, offset = 90), SINE_EASING | EASE_IN)
-	undistort_timer = addtimer(CALLBACK(src, PROC_REF(Undistort)), undistort_time, TIMER_STOPPABLE)
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/CancelUndistort()
 	if(!undistort_timer)
@@ -369,8 +419,7 @@
 	deltimer(undistort_timer)
 	undistort_timer = null
 	remove_filter("undistort")
-	if(territory)
-		territory.paused = FALSE
+	UpdatePaused()
 	visible_message(span_warning("The light goes out. The ties pull tight again."))
 
 /// The base Unmanifest() releases the stored human alive with the EGO, so the usual death cleanup never sees them.
@@ -380,32 +429,33 @@
 		return
 	Unmanifest()
 
-// The passive territory. From stage 3 the rooms drain sanity, lock their doors and say things; stage 4 does it faster.
+// The passive territory. From gimmick_stage the rooms drain sanity, lock their doors and say things; fast_stage does it faster.
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/PassiveEffects(list/inside)
-	if(territory.stage < 3 || !PresenceActive())
+	if(territory.stage < gimmick_stage || !PresenceActive())
 		return
-	var/fast = territory.stage >= 4
+	var/fast = territory.stage >= fast_stage
 	if(world.time >= next_drain)
-		next_drain = world.time + (fast ? 3 SECONDS : 10 SECONDS)
+		next_drain = world.time + (fast ? drain_interval_fast : drain_interval)
+		var/line = pick(idle_messages)
+		var/heard = FALSE
 		for(var/mob/living/carbon/human/H in inside)
-			H.adjustSanityLoss(1)
+			H.adjustSanityLoss(drain_sanity)
+			if(!prob(idle_message_chance))
+				continue
+			MindSpeak(H, line)
+			heard = TRUE
+		if(heard)
+			Mutter(line)
 	if(world.time >= next_door_lock)
-		next_door_lock = world.time + (fast ? 10 SECONDS : 30 SECONDS)
+		next_door_lock = world.time + (fast ? door_lock_interval_fast : door_lock_interval)
 		LockRandomDoor()
-	if(inside.len && world.time >= next_message)
-		next_message = world.time + (fast ? 20 SECONDS : 60 SECONDS)
-		var/mob/living/carbon/human/H = pick(inside)
-		to_chat(H, span_notice(pick(idle_messages)))
 
 /// Bolts one airlock in the territory for door_lock_time. A door he bolted waits door_lock_cooldown before it can be
 /// picked again, and a door someone else bolted is left alone.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/LockRandomDoor()
 	var/list/candidates = list()
-	for(var/obj/machinery/door/airlock/D in doors.Copy())
-		if(QDELETED(D))
-			doors -= D
-			continue
+	for(var/obj/machinery/door/airlock/D in doors)
 		if(D.locked || locked_doors[D] > world.time)
 			continue
 		candidates += D
@@ -416,18 +466,35 @@
 	locked_doors[D] = world.time + door_lock_cooldown
 	addtimer(CALLBACK(D, TYPE_PROC_REF(/obj/machinery/door/airlock, unbolt)), door_lock_time)
 
+// The hanging. The only thing he does to someone on purpose, and only to someone who has already lost their mind.
+
+/// Every panicked human in the territory not already buckled gets a tie, each in a colour he still has.
+/mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/TryHang(list/inside)
+	if(territory.stage < gimmick_stage || !PresenceActive())
+		return
+	var/list/colours = list()
+	for(var/colour in colour_roles)
+		if(!(colour in drained))
+			colours += colour
+	if(!colours.len)
+		return
+	for(var/mob/living/carbon/human/H in inside)
+		if(!H.sanity_lost || H.buckled)
+			continue
+		var/obj/structure/another_day_tie/tie = new(get_turf(H), src, pick(colours))
+		ties += tie
+		tie.Drop(H)
+
 // Clues. The oddities carry them: a plane sometimes folds around one, and one kind of drifting page settles as one.
 
 /// A role that still has room for another clue lying in the territory, or null.
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/ClueRole()
 	var/list/open = list()
-	for(var/role in list("boss", "coworker", "friend"))
+	for(var/colour in colour_roles)
+		var/role = colour_roles[colour]
 		var/count = 0
 		for(var/obj/item/paper/distortion/clue/C in clues[role])
-			if(QDELETED(C))
-				LAZYREMOVE(clues[role], C)
-				continue
-			if(isturf(C.loc) && territory?.Contains(C.loc))
+			if(isturf(C.loc) && territory.Contains(C.loc))
 				count++
 		if(count < clues_per_person)
 			open += role
@@ -437,7 +504,7 @@
 
 /mob/living/simple_animal/hostile/distortion/advanced/another_day/proc/RegisterClue(obj/item/paper/distortion/clue/C, role)
 	LAZYADD(clues[role], C)
-	owned += C
+	Own(C)
 
 // Workload. The stacking status effect the taboo hands out. Stacks only decay outside the territory.
 
@@ -458,11 +525,6 @@
 	var/asleep_until = 0
 	/// Blur creeps up one point a tick toward this many points per stack past the first.
 	var/blur_per_stack = 2
-	/// The wearer's silhouette per direction, made on first use and thrown away every mask_refresh so a dropped
-	/// item or a change of clothes shows up without flattening the sprite on every turn.
-	var/list/masks = list()
-	var/mask_refresh = 5 SECONDS
-	var/next_mask_refresh = 0
 
 /atom/movable/screen/alert/status_effect/distortion_workload
 	name = "Workload"
@@ -475,11 +537,9 @@
 	if(!.)
 		return
 	next_decay = world.time + decay_interval
-	RegisterSignal(owner, COMSIG_ATOM_DIR_CHANGE, PROC_REF(OnDirChange))
-	RebuildOverlay()
+	InsetOverlay()
 
 /datum/status_effect/stacking/distortion_workload/on_remove()
-	UnregisterSignal(owner, COMSIG_ATOM_DIR_CHANGE)
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/distortion_workload)
 	return ..()
 
@@ -500,7 +560,6 @@
 			if(3)
 				to_chat(owner, span_warning("The weight of it settles on your shoulders."))
 	owner.add_or_update_variable_movespeed_modifier(/datum/movespeed_modifier/distortion_workload, multiplicative_slowdown = max(0, stacks - 2) * 0.5)
-	RebuildOverlay()
 
 /// Blur holds while the stacks do; a stack falls off every decay_interval, but only outside the territory.
 /datum/status_effect/stacking/distortion_workload/tick()
@@ -509,16 +568,21 @@
 		return
 	if(stacks >= 2 && world.time >= asleep_until && owner.eye_blurry < (stacks - 1) * blur_per_stack)
 		owner.adjust_blurriness(1)
-	if(world.time >= next_mask_refresh)
-		next_mask_refresh = world.time + mask_refresh
-		masks.Cut()
-		RebuildOverlay()
 	if(world.time < next_decay)
 		return
 	next_decay = world.time + decay_interval
-	if(distortion?.territory?.Contains(get_turf(owner)))
+	if(distortion && distortion.territory.Contains(get_turf(owner)))
 		return
 	add_stacks(-1)
+
+/// Links the stacks to his territory. The link drops if he is deleted, and the stacks then decay anywhere.
+/datum/status_effect/stacking/distortion_workload/proc/SetDistortion(mob/living/simple_animal/hostile/distortion/advanced/another_day/new_distortion)
+	distortion = new_distortion
+	RegisterSignal(distortion, COMSIG_PARENT_QDELETING, PROC_REF(OnDistortionDeleted))
+
+/datum/status_effect/stacking/distortion_workload/proc/OnDistortionDeleted(datum/source)
+	SIGNAL_HANDLER
+	distortion = null
 
 /// Six stacks: asleep for sleep_time, no stacks gained meanwhile, then back down to three.
 /datum/status_effect/stacking/distortion_workload/threshold_cross_effect()
@@ -532,19 +596,13 @@
 		return
 	add_stacks(3 - stacks)
 
-/datum/status_effect/stacking/distortion_workload/proc/OnDirChange(atom/movable/source, olddir, newdir)
-	SIGNAL_HANDLER
-	RebuildOverlay(newdir)
-
-/// The ties only on the body: the wearer's flattened sprite for the direction is the alpha mask over the stack's
-/// state. Flattening is the slow part, so each direction's mask is kept once it has been made.
-/datum/status_effect/stacking/distortion_workload/proc/RebuildOverlay(dir = owner.dir)
+/// Swaps the base's overlay for one that only draws on the wearer. Humans render as one KEEP_TOGETHER group, and an
+/// inset overlay only lands on pixels already drawn, so turning and clothing changes follow with no icon work.
+/// The base add_stacks() then only changes this overlay's icon_state.
+/datum/status_effect/stacking/distortion_workload/proc/InsetOverlay()
 	owner.cut_overlay(status_overlay)
-	if(!masks["[dir]"])
-		masks["[dir]"] = getFlatIcon(owner, dir, no_anim = TRUE)
-	var/icon/ties = icon(overlay_file, "[overlay_state][stacks]")
-	ties.AddAlphaMask(masks["[dir]"])
-	status_overlay = mutable_appearance(ties)
+	status_overlay = mutable_appearance(overlay_file, "[overlay_state][stacks]")
+	status_overlay.blend_mode = BLEND_INSET_OVERLAY
 	status_overlay.pixel_x = -owner.pixel_x
 	owner.add_overlay(status_overlay)
 
@@ -567,14 +625,23 @@
 
 /obj/effect/temp_visual/distortion_oddity/paper_drift/Initialize(mapload)
 	. = ..()
-	from = pick(-1, 1)
-	pixel_x = from * 56
-	pixel_y = 28
+	from = AnotherDayDrift(src, duration, fade_out = fades)
+
+/// Brings thing in from one side and sways it down to the floor over duration, the way his pages fall. Returns the
+/// side it came from, -1 or 1. fade_in starts it invisible, fade_out ends it so, centred lands it at pixel_x 0.
+/proc/AnotherDayDrift(atom/movable/thing, duration, fade_in = FALSE, fade_out = FALSE, centred = FALSE)
+	var/from = pick(-1, 1)
 	var/sway = -from * 8
-	animate(src, pixel_x = from * 12, pixel_y = 34, time = duration * 0.3, easing = SINE_EASING | EASE_OUT)
+	var/shown_alpha = fade_in ? 255 : thing.alpha
+	if(fade_in)
+		thing.alpha = 0
+	thing.pixel_x = from * 56
+	thing.pixel_y = 28
+	animate(thing, alpha = shown_alpha, pixel_x = from * 12, pixel_y = 34, time = duration * 0.3, easing = SINE_EASING | EASE_OUT)
 	animate(pixel_x = from * 12 + sway, pixel_y = 22, time = duration * 0.25, easing = SINE_EASING)
 	animate(pixel_x = from * 12 - sway, pixel_y = 10, time = duration * 0.25, easing = SINE_EASING)
-	animate(pixel_x = from * 12, pixel_y = 0, alpha = fades ? 0 : alpha, time = duration * 0.2, easing = SINE_EASING | EASE_IN)
+	animate(pixel_x = centred ? 0 : from * 12, pixel_y = 0, alpha = fade_out ? 0 : shown_alpha, time = duration * 0.2, easing = SINE_EASING | EASE_IN)
+	return from
 
 /// The same drift, but the page is real: it does not fade at the floor, it becomes the clue where it lands.
 /obj/effect/temp_visual/distortion_oddity/paper_drift/clue
@@ -714,28 +781,22 @@
 
 // The clue documents. The tie with his name on it, the page that carries a clue, and the texts the names are written into.
 
-/// The tie left on the chair at the centre: the one thing the quilt never covers, and the only place his name is written.
+/// The tie with his name on the label, dropped somewhere in the territory: the only place his name is written.
 /obj/item/clothing/neck/tie/horrible/another_day
 	desc = "A neosilk clip-on tie. This one is disgusting. There is a name on the label."
 	/// How long it lasts before fading. While someone has it, it checks again every recheck until it is put down.
 	var/lifetime = 3 MINUTES
 	var/recheck = 30 SECONDS
 	var/fade_time = 10 SECONDS
+	/// How long its fall to the floor takes on arrival.
+	var/drift_time = 4.5 SECONDS
 
 /// Arrives the way the pages do: in from one side, swaying down to the floor.
 /obj/item/clothing/neck/tie/horrible/another_day/Initialize(mapload, who)
 	. = ..()
 	desc = "A neosilk clip-on tie. This one is disgusting. The label reads: [who]."
 	addtimer(CALLBACK(src, PROC_REF(Expire)), lifetime)
-	var/from = pick(-1, 1)
-	var/sway = -from * 8
-	alpha = 0
-	pixel_x = from * 56
-	pixel_y = 28
-	animate(src, alpha = 255, pixel_x = from * 12, pixel_y = 34, time = 1.35 SECONDS, easing = SINE_EASING | EASE_OUT)
-	animate(pixel_x = from * 12 + sway, pixel_y = 22, time = 1.1 SECONDS, easing = SINE_EASING)
-	animate(pixel_x = from * 12 - sway, pixel_y = 10, time = 1.1 SECONDS, easing = SINE_EASING)
-	animate(pixel_x = 0, pixel_y = 0, time = 0.9 SECONDS, easing = SINE_EASING | EASE_IN)
+	AnotherDayDrift(src, drift_time, fade_in = TRUE, centred = TRUE)
 
 /// Fades once it is lying on a turf; while someone has it, it checks again every recheck.
 /obj/item/clothing/neck/tie/horrible/another_day/proc/Expire()
@@ -848,3 +909,199 @@
 		),
 	)
 
+
+// The hanging tie and its shadow.
+
+/// The tie he hangs the broken with. It falls from above, knots at the throat, lifts them off the floor and chokes
+/// them. Nobody can loosen it; only a weapon with reach, a thrown object or a shot cuts it, and the body drops.
+/// Two sprites, the rope and the band around the neck. Both hang behind the victim while the rope falls; once it
+/// ties the band alone comes in front, across the throat. The rope stays behind and shows above the head.
+/obj/structure/another_day_tie
+	name = "long tie"
+	desc = "A tie that reaches up past where the ceiling should be. It is pulled very tight."
+	icon = 'ModularLobotomy/_Lobotomyicons/another_day_hang.dmi'
+	icon_state = "rope_red"
+	pixel_x = -8
+	base_pixel_x = -8
+	pixel_y = 96
+	alpha = 0
+	layer = BELOW_MOB_LAYER
+	max_integrity = 40
+	density = FALSE
+	anchored = TRUE
+	can_buckle = TRUE
+	buckle_lying = 0
+	buckle_prevents_pull = TRUE
+	var/colour = "red"
+	/// The band around the neck, an overlay with a layer of its own so it can change sides of the victim.
+	var/mutable_appearance/tie_part
+	var/mob/living/simple_animal/hostile/distortion/advanced/another_day/owner
+	var/mob/living/carbon/human/victim
+	var/obj/effect/another_day_shadow/shadow
+	var/fall_time = 1 SECONDS
+	var/lift_time = 1 SECONDS
+	var/lift_height = 48
+	var/oxy_per_tick = 30
+	var/choke_interval = 1 SECONDS
+	var/choke_timer
+	/// Trait source for the hold on the victim.
+	var/hold_source = "another_day_tie"
+
+/obj/structure/another_day_tie/Initialize(mapload, mob/living/simple_animal/hostile/distortion/advanced/another_day/new_owner, new_colour)
+	. = ..()
+	owner = new_owner
+	colour = new_colour
+	icon_state = "rope_[colour]"
+	SetTieLayer(BELOW_MOB_LAYER)
+
+/obj/structure/another_day_tie/Destroy()
+	Release()
+	if(owner)
+		owner.ties -= src
+		owner = null
+	QDEL_NULL(shadow)
+	return ..()
+
+/// Freezes H where they stand and starts the fall. The buckle goes on at once: it ends any pull on them and refuses
+/// new ones. The stun covers the sequence; the traits and the AI switch stay until Release() so a stalled animation
+/// never leaves a free panicked human under the knot. They lose density so others can walk under them.
+/obj/structure/another_day_tie/proc/Drop(mob/living/carbon/human/H)
+	victim = H
+	H.Stun(fall_time + lift_time + 2 SECONDS, TRUE)
+	ADD_TRAIT(H, TRAIT_IMMOBILIZED, hold_source)
+	ADD_TRAIT(H, TRAIT_HANDS_BLOCKED, hold_source)
+	buckle_mob(H, TRUE, FALSE)
+	H.density = FALSE
+	H.ai_controller?.set_ai_status(AI_STATUS_OFF)
+	H.setDir(SOUTH)
+	H.visible_message(span_warning("Something long and dark drops out of the air above [H]."), span_userdanger("Something drops out of the air above you."))
+	animate(src, pixel_y = 0, alpha = 255, time = fall_time, easing = QUAD_EASING | EASE_IN)
+	addtimer(CALLBACK(src, PROC_REF(Tighten)), fall_time)
+
+/// The tie closes: a short squeeze, the band comes in front of the victim, then the lift.
+/obj/structure/another_day_tie/proc/Tighten()
+	if(QDELETED(victim) || victim.buckled != src)
+		qdel(src)
+		return
+	playsound(src, 'sound/abnormalities/judgementbird/hang.ogg', 60, TRUE)
+	animate(src, transform = matrix().Scale(1.4, 1), time = 1.5)
+	animate(transform = matrix(), time = 1.5)
+	victim.setDir(SOUTH)
+	SetTieLayer(ABOVE_MOB_LAYER)
+	victim.visible_message(span_danger("The tie winds around [victim]'s neck and pulls tight."), span_userdanger("The tie winds around your neck and pulls tight."))
+	RegisterSignal(victim, COMSIG_LIVING_DEATH, PROC_REF(OnDeath))
+	addtimer(CALLBACK(src, PROC_REF(Lift)), 3)
+
+/// Puts the neck band on the given layer: behind the victim before it ties, in front of them after. The rope stays
+/// behind, so it shows above the head and never over it.
+/obj/structure/another_day_tie/proc/SetTieLayer(new_layer)
+	if(tie_part)
+		cut_overlay(tie_part)
+	tie_part = mutable_appearance(icon, "tie_[colour]", new_layer)
+	add_overlay(tie_part)
+
+/// Lifts the victim half the tie's height. The tie rises with them so the knot stays at the throat, and the shadow
+/// appears on the floor where they stood. The choking starts once they are up.
+/obj/structure/another_day_tie/proc/Lift()
+	if(QDELETED(victim))
+		qdel(src)
+		return
+	animate(victim, pixel_z = lift_height, time = lift_time, easing = SINE_EASING | EASE_OUT)
+	animate(src, pixel_y = lift_height, time = lift_time, easing = SINE_EASING | EASE_OUT)
+	shadow = new(loc)
+	animate(shadow, alpha = 255, time = lift_time)
+	victim.visible_message(span_danger("[victim] is hauled up off the floor."), span_userdanger("Your feet leave the floor."))
+	choke_timer = addtimer(CALLBACK(src, PROC_REF(Choke)), choke_interval, TIMER_STOPPABLE | TIMER_LOOP)
+
+/obj/structure/another_day_tie/proc/Choke()
+	if(QDELETED(victim) || victim.buckled != src)
+		qdel(src)
+		return
+	if(victim.stat == DEAD)
+		return
+	victim.deal_damage(oxy_per_tick, OXY, owner, null, ATTACK_TYPE_SPECIAL)
+
+/// The body stays up. Tie, body and shadow sway together for as long as it hangs.
+/obj/structure/another_day_tie/proc/OnDeath(datum/source, gibbed)
+	SIGNAL_HANDLER
+	if(choke_timer)
+		deltimer(choke_timer)
+		choke_timer = null
+	if(gibbed)
+		qdel(src)
+		return
+	victim.visible_message(span_danger("[victim] goes still."))
+	Sway()
+
+/// The tie's centre is 48 px below its top and the lifted body's centre 80 px below it, so turning about the top is
+/// a shift down, the turn, and the shift back. The shadow only slides sideways by what the body's centre moves.
+/obj/structure/another_day_tie/proc/Sway(angle = 6, period = 2 SECONDS)
+	var/shift = round(80 * sin(angle))
+	animate(src, transform = PivotTurn(48, -angle), time = period, loop = -1, easing = SINE_EASING)
+	animate(transform = PivotTurn(48, angle), time = period, easing = SINE_EASING)
+	animate(victim, transform = PivotTurn(80, -angle), time = period, loop = -1, easing = SINE_EASING)
+	animate(transform = PivotTurn(80, angle), time = period, easing = SINE_EASING)
+	animate(shadow, pixel_x = shadow.base_pixel_x + shift, time = period, loop = -1, easing = SINE_EASING)
+	animate(pixel_x = shadow.base_pixel_x - shift, time = period, easing = SINE_EASING)
+
+/// A turn by angle about a point pivot px above the sprite's centre.
+/obj/structure/another_day_tie/proc/PivotTurn(pivot, angle)
+	var/matrix/M = matrix()
+	M.Translate(0, -pivot)
+	M.Turn(angle)
+	M.Translate(0, pivot)
+	return M
+
+/// Lets the victim go, alive or dead, and puts their sprite back where it was. Safe to call with nobody held.
+/obj/structure/another_day_tie/proc/Release()
+	if(!victim)
+		return
+	var/mob/living/carbon/human/H = victim
+	victim = null
+	if(choke_timer)
+		deltimer(choke_timer)
+		choke_timer = null
+	if(QDELETED(H))
+		return
+	UnregisterSignal(H, COMSIG_LIVING_DEATH)
+	H.density = TRUE
+	if(H.buckled == src)
+		unbuckle_mob(H, TRUE)
+	REMOVE_TRAIT(H, TRAIT_IMMOBILIZED, hold_source)
+	REMOVE_TRAIT(H, TRAIT_HANDS_BLOCKED, hold_source)
+	animate(H)
+	H.pixel_z = 0
+	H.update_transform()
+	if(H.stat != DEAD)
+		H.Knockdown(2 SECONDS)
+		if(H.sanity_lost)
+			H.ai_controller?.set_ai_status(AI_STATUS_ON)
+	H.visible_message(span_danger("[H] falls free of the tie!"))
+
+/obj/structure/another_day_tie/user_unbuckle_mob(mob/living/buckled_mob, mob/user)
+	to_chat(user, span_warning("The knot is too tight to loosen."))
+	return FALSE
+
+/obj/structure/another_day_tie/unbuckle_mob(mob/living/buckled_mob, force = FALSE)
+	if(!force)
+		return
+	return ..()
+
+/obj/structure/another_day_tie/attacked_by(obj/item/I, mob/living/user)
+	if(I.reach < 2)
+		to_chat(user, span_warning("You cannot reach the knot with [I]."))
+		return
+	return ..()
+
+/// The shadow of a hanged body, on the floor under it. Owned by the tie and deleted with it.
+/obj/effect/another_day_shadow
+	name = "shadow"
+	desc = "The shadow of someone who is not standing there."
+	icon = 'ModularLobotomy/_Lobotomyicons/another_day_hang.dmi'
+	icon_state = "shadow"
+	pixel_x = -8
+	base_pixel_x = -8
+	alpha = 0
+	layer = BELOW_MOB_LAYER
+	anchored = TRUE
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT

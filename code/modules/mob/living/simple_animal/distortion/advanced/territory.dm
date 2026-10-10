@@ -66,8 +66,6 @@
 		var/turf/T = CheapestFrontierTurf()
 		var/distance = frontier[T]
 		frontier -= T
-		if(T in claimed)
-			continue
 		amount -= TurfCost(T)
 		ClaimTurf(T, distance)
 	UpdateStage()
@@ -95,7 +93,7 @@
 	reach = max(reach, distance)
 	for(var/dir in GLOB.cardinals)
 		var/turf/next = get_step(T, dir)
-		if(!next || (next in claimed) || !Eligible(next))
+		if(!next || Contains(next) || !Eligible(next))
 			continue
 		var/next_cost = distance + TurfCost(next)
 		if(isnull(frontier[next]) || frontier[next] > next_cost)
@@ -159,8 +157,9 @@
 	owner.OnStageChange(old_stage, new_stage)
 	owner.UpdateCenter(new_stage)
 
+/// Indexes claimed rather than using `in`, which searches the whole list. The origin's cost is 0, hence isnull.
 /datum/distortion_territory/proc/Contains(turf/T)
-	return (T in claimed)
+	return !isnull(claimed[T])
 
 /datum/distortion_territory/proc/Size()
 	return claimed.len
@@ -178,7 +177,7 @@
 /datum/distortion_territory/proc/RandomTurfNear(turf/T, range)
 	var/list/near = list()
 	for(var/turf/candidate in RANGE_TURFS(range, T))
-		if(candidate in claimed)
+		if(Contains(candidate))
 			near += candidate
 	if(near.len)
 		return pick(near)
@@ -199,7 +198,7 @@
 		var/turf/T = result[i++]
 		for(var/dir in GLOB.cardinals)
 			var/turf/next = get_step(T, dir)
-			if(!next || seen[next] || !(next in claimed))
+			if(!next || seen[next] || !Contains(next))
 				continue
 			seen[next] = TRUE
 			result += next
