@@ -181,6 +181,12 @@
 	var/next_pet = 0
 	var/last_pet_line
 	var/den_chance = 2
+	/// On top of the chance, he goes back every den_interval and stays den_stay, longer by den_stay_per_stage each stage.
+	var/den_interval = 5 MINUTES
+	var/next_den_visit = 0
+	var/den_stay = 1.5 MINUTES
+	var/den_stay_per_stage = 30 SECONDS
+	var/den_until = 0
 	var/mutter_chance = 10
 	/// A mutter stops him this long.
 	var/mutter_pause = 2 SECONDS
@@ -282,6 +288,7 @@
 	evidence_kind = pick(evidence_types)
 	attacker_name = random_unique_name(pick(MALE, FEMALE))
 	RollKilled()
+	next_den_visit = world.time + den_interval
 	GrowDen(0)
 	FillRabbits()
 	SeedNotices()
@@ -1501,7 +1508,7 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 		if(pet_target)
 			BeginErrand("petting")
 			return
-	if(prob(den_chance))
+	if(world.time >= next_den_visit || prob(den_chance))
 		clear_target = HookToClear()
 		if(clear_target)
 			BeginErrand("clearing")
@@ -1509,6 +1516,7 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 		var/list/den = DenTurfs()
 		if(den.len)
 			den_turf = pick(den)
+			den_until = 0
 			BeginErrand("den")
 
 /mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/BeginErrand(what)
@@ -1583,12 +1591,25 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 			if(!GoTo(den_turf))
 				EndErrand()
 		if("den")
-			if(loc == den_turf)
-				Mutter()
-				EndErrand()
-				return
-			if(!GoTo(den_turf))
-				EndErrand()
+			DenTick()
+
+/// The den visit. Arriving starts the stay; through it he drifts from den tile to den tile, stopping to say a piece of
+/// the look whenever the mutter cooldown allows. When the stay is up, the next visit is den_interval away.
+/mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/DenTick()
+	if(den_until && world.time >= den_until)
+		next_den_visit = world.time + den_interval
+		EndErrand()
+		return
+	if(loc != den_turf)
+		if(!GoTo(den_turf))
+			next_den_visit = world.time + den_interval
+			EndErrand()
+		return
+	if(!den_until)
+		den_until = world.time + den_stay + den_stay_per_stage * territory.stage
+	Mutter()
+	if(world.time >= rooted_until && prob(30))
+		den_turf = pick(DenTurfs())
 
 /// A step of walking on an errand: a new path when the old one has run out. FALSE when there is no way there.
 /mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/GoTo(turf/T)
@@ -1796,7 +1817,7 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 		if(R.stat == DEAD || R.mimic_target)
 			continue
 		for(var/mob/living/carbon/human/H in view(7, R))
-			if(H.stat == CONSCIOUS)
+			if(H.stat == CONSCIOUS && H.client && H != hunt_target)
 				R.Mimic(H)
 				next_mimic = world.time + mimic_interval
 				return
@@ -2154,6 +2175,11 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 	/// Who it is running at while it wears his shape. Null when it is only a rabbit.
 	var/mob/living/carbon/human/mimic_target
 	var/mimic_speed = 3
+	/// His shape, shown to the target alone, over the rabbit everyone else still sees.
+	var/image/mimic_image
+	/// The mimic gives up after this long if it has not reached them.
+	var/mimic_time = 30 SECONDS
+	var/mimic_until = 0
 
 /mob/living/simple_animal/hostile/bunnyman_rabbit/Initialize(mapload, new_distortion)
 	. = ..()
@@ -2165,6 +2191,8 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 	RegisterSignal(src, COMSIG_MOB_APPLY_DAMGE, PROC_REF(OnHurt))
 
 /mob/living/simple_animal/hostile/bunnyman_rabbit/Destroy()
+	if(mimic_target)
+		Unmimic()
 	distortion = null
 	if(evidence)
 		QDEL_NULL(evidence)
@@ -2194,6 +2222,9 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 	SIGNAL_HANDLER
 	if(damage_amount > 0)
 		startled_until = world.time + startle_time
+		// hurt, a mimic is a rabbit at once, so its heartbeat never runs under the real hunt that follows the hit
+		if(mimic_target)
+			Unmimic()
 
 /// It never touches anyone, so the stock nuzzle of a mob with no melee damage never prints.
 /mob/living/simple_animal/hostile/bunnyman_rabbit/AttackingTarget(atom/attacked_target)
@@ -2216,32 +2247,42 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 		if(Move(get_step(src, dir), dir))
 			return
 
-/// His shape, and a run straight at H. The moment it reaches them, or loses them, it is a rabbit again.
+/// His shape to H alone, a scream only they hear, their heart going as if hunted, and a run straight at them. The
+/// moment it reaches them, loses them, or mimic_time runs out, it is a rabbit again and their heart is let be.
 /mob/living/simple_animal/hostile/bunnyman_rabbit/proc/Mimic(mob/living/carbon/human/H)
 	mimic_target = H
 	LoseTarget()
-	icon = 'ModularLobotomy/_Lobotomyicons/48x48.dmi'
-	icon_state = "bunnyman_enraged"
-	pixel_x = -16
-	visible_message(span_userdanger("[src] is suddenly a great deal bigger, and coming!"))
+	mimic_until = world.time + mimic_time
+	mimic_image = image('ModularLobotomy/_Lobotomyicons/48x48.dmi', src, "bunnyman_enraged")
+	mimic_image.override = TRUE
+	mimic_image.pixel_x = -16
+	if(H.client)
+		H.client.images += mimic_image
+	H.playsound_local(get_turf(src), 'sound/distortions/bunnyman/scream.ogg', 60, FALSE)
+	to_chat(H, span_userdanger("He is here. He is coming straight at you."))
+	BunnymanHeartbeat(H)
 	walk_to(src, H, 0, mimic_speed)
 
 /mob/living/simple_animal/hostile/bunnyman_rabbit/proc/MimicStep()
-	if(QDELETED(mimic_target) || mimic_target.z != z || get_dist(src, mimic_target) > 10 || stat == DEAD)
+	if(QDELETED(mimic_target) || mimic_target.z != z || get_dist(src, mimic_target) > 10 || stat == DEAD || world.time >= mimic_until)
 		Unmimic()
 		return
 	if(Adjacent(mimic_target))
-		visible_message(span_notice("[src] stops at [mimic_target]'s feet, a rabbit, and sits."))
+		to_chat(mimic_target, span_notice("[src] stops at your feet. It is a rabbit. It was always a rabbit."))
 		Unmimic()
 		return
 	walk_to(src, mimic_target, 0, mimic_speed)
 
 /mob/living/simple_animal/hostile/bunnyman_rabbit/proc/Unmimic()
 	walk(src, 0)
+	if(mimic_target)
+		if(mimic_target.client)
+			mimic_target.client.images -= mimic_image
+		// a real hunt on them keeps its own heartbeat
+		if(!distortion || distortion.hunt_target != mimic_target)
+			BunnymanHeartbeatStop(mimic_target)
+	mimic_image = null
 	mimic_target = null
-	icon = initial(icon)
-	icon_state = icon_living
-	pixel_x = 0
 
 /// It never leaves his ground. A step onto unclaimed turf does not happen, so at the edge it is cornered.
 /mob/living/simple_animal/hostile/bunnyman_rabbit/Move(atom/newloc, direct)
