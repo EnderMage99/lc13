@@ -568,10 +568,13 @@
 		return
 	if(stacks >= 2 && world.time >= asleep_until && owner.eye_blurry < (stacks - 1) * blur_per_stack)
 		owner.adjust_blurriness(1)
+	var/inside = distortion && distortion.territory.Contains(get_turf(owner))
+	if(linked_alert)
+		linked_alert.icon_state = inside ? "alert_inside" : "alert"
 	if(world.time < next_decay)
 		return
 	next_decay = world.time + decay_interval
-	if(distortion && distortion.territory.Contains(get_turf(owner)))
+	if(inside)
 		return
 	add_stacks(-1)
 
