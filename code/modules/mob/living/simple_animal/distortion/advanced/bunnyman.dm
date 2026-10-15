@@ -460,11 +460,14 @@
 		return H
 
 /// The hunt is over once the target is gone, or has got further than hunt_leash from his ground and out of his
-/// sight. Neither crit nor death ends it: both are where the drag starts. He hooks the dead too. While he can see them it goes on, however far they are.
+/// sight. Neither crit nor death ends it: both are where the drag starts. While he can see them it goes on.
+/// Cheapest test first: standing on his ground, then in his view, then the walk over every claimed turf.
 /mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/HuntOver()
 	if(QDELETED(hunt_target))
 		return TRUE
-	return !NearGround(hunt_target) && !(hunt_target in view(src))
+	if(territory.Contains(get_turf(hunt_target)) || (hunt_target in view(src)))
+		return FALSE
+	return !NearGround(hunt_target)
 
 /mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/NearGround(mob/living/H)
 	if(H.z != z)
@@ -735,7 +738,8 @@
 /mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/MaulHit()
 	if(hunt_state != "mauling")
 		return
-	if(HuntOver())
+	// pinned beside him they are never off his ground or out of sight, so only deletion can end the hunt here
+	if(QDELETED(hunt_target))
 		EndHunt()
 		return
 	if(hunt_target.stat >= HARD_CRIT)
@@ -830,17 +834,15 @@
 /// He looks. The one time. The hunt ends, every mark goes, his judgement is off for judgement_off_time, and he stands
 /// where he is until something hurts him. Hurt, he fights whoever did it, fairly: no rush, no leap, no limbs.
 /mob/living/simple_animal/hostile/distortion/advanced/bunnyman/proc/Look(mob/living/user)
+	// judgement off first, so EndHunt() leaves him seen instead of hiding him
+	judging = FALSE
 	EndHunt()
 	EndReturn()
 	visible_message(span_userdanger("[src] stops. He looks at [user], and at what was in [user.p_their()] hands, and he keeps looking."))
-	judging = FALSE
 	hunt_state = "stunned"
 	ClearMarks()
-	Reveal()
 	ShowStagger()
-	LoseTarget()
 	walk(src, 0)
-	patrol_reset()
 	ChangeResistances(fair_resistances)
 	judgement_timer = addtimer(CALLBACK(src, PROC_REF(JudgementBack)), judgement_off_time, TIMER_STOPPABLE)
 
@@ -1584,8 +1586,9 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 				EndErrand()
 				return
 			if(loc == den_turf)
+				var/mob/living/carbon/human/body = carried
 				SetDown()
-				visible_message(span_notice("[carried ? carried : "The body"] is set down on the pile."))
+				visible_message(span_notice("[body] is set down on the pile."))
 				EndErrand()
 				return
 			if(!GoTo(den_turf))
@@ -2025,13 +2028,13 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 	if(!K || !(speaker in view(src)))
 		return
 	if(judging)
-		say(K == killed[1] ? pick(right_name_warnings) : pick(wrong_name_warnings))
-		Warn(speaker, FALSE)
+		INVOKE_ASYNC(src, TYPE_PROC_REF(/atom/movable, say), K == killed[1] ? pick(right_name_warnings) : pick(wrong_name_warnings))
+		INVOKE_ASYNC(src, PROC_REF(Warn), speaker, FALSE)
 		return
 	if(K == killed[1])
 		INVOKE_ASYNC(src, PROC_REF(StartUndistorting), speaker)
 		return
-	say("That one bit.")
+	INVOKE_ASYNC(src, TYPE_PROC_REF(/atom/movable, say), "That one bit.")
 	INVOKE_ASYNC(src, PROC_REF(WakeOn), speaker)
 
 /// Out of the stun and onto whoever did it, the fair fight's way. Used by a hit and by a wrong name.
@@ -2302,16 +2305,14 @@ p { margin: 0 0 10px 0; line-height: 1.4; }
 		to_chat(M, span_notice("You hold out your hand. The rabbit looks at it, then at you. It has nothing to give."))
 		return TRUE
 	M.visible_message(span_notice("[M] holds a hand out to [src]."), span_notice("You hold out your hand. The rabbit considers you."))
-	if(distortion)
-		distortion.OnEvidenceTaking(src, M)
+	distortion.OnEvidenceTaking(src, M)
 	if(!do_after(M, hand_out_time, src, extra_checks = CALLBACK(src, PROC_REF(StillCalm), M)))
 		if(M.m_intent == MOVE_INTENT_RUN)
 			Startle(M)
 		return TRUE
 	var/obj/item/bunnyman_evidence/given = evidence
 	DropEvidence(get_turf(M))
-	if(distortion)
-		distortion.OnEvidenceTaken(src, M)
+	distortion.OnEvidenceTaken(src, M)
 	M.visible_message(span_notice("[src] lets go of [given] and sits back."), span_notice("The rabbit lets go of [given] and sits back, empty-handed."))
 	addtimer(CALLBACK(src, PROC_REF(Rearm)), distortion.rabbit_respawn)
 	return TRUE
