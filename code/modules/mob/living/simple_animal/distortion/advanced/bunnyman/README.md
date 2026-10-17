@@ -47,7 +47,7 @@ priority:
    and says something kind.
 5. **The den.** Every 5 minutes he goes home for a minute and a half, 30
    seconds longer per stage. He drifts from tile to tile and mutters one part
-   of how someone looked (see Step 3).
+   of how someone looked (see Step 3, Catharsis).
 
 What a player passing through notices:
 
@@ -168,7 +168,7 @@ hanging loses their head to him.
   each differs from the innocent in at least two parts of the look.
 
 All of it only exists in this round's clues, so knowing the distortion does
-not skip step 1.
+not skip step 1, Investigation.
 
 ### Where the clues are
 
@@ -192,7 +192,7 @@ not skip step 1.
 - Evidence left lying on the floor for 5 minutes fades back into an empty
   rabbit's hands.
 
-### Step 2: weakening him (the easy route)
+### Step 2, Exposure: weakening him (the easy route)
 
 Strike him with a piece of evidence while he is rushing, preparing the dash or
 dashing. It never counts as a hit, so it draws no blood. Either way the piece
@@ -211,7 +211,7 @@ him in the window is a Perpetrator, and the hunts begin again, oldest first.
 The window is the fair fight; a team that wants him dead has 2.5 minutes to
 do it.
 
-### Step 3: undistorting him (the hard route)
+### Step 3, Catharsis: undistorting him (the hard route)
 
 Work out which of the four on the missing posters is the innocent: match the
 parts of the look he mutters in his den against the posters. Then, with his
@@ -239,7 +239,7 @@ him.
 - **The right counter** is the evidence. Carry the ringed tool, wait for the
   scream, and strike him as he comes.
 - **After the look**, he is a 2000-health mob at RED 0.7 that hits back. Make
-  the minute count, or use it for step 3.
+  the minute count, or use it for step 3, Catharsis.
 
 ## Death and cleanup
 
@@ -289,8 +289,8 @@ him.
   piece, and `killed[1]` is the innocent (its `name` var).
 - To skip ahead, call `territory.Claim(1000)` on him for stage 3, or
   `territory.Claim(2000)` for the cap.
-- To test step 2 without a rabbit, spawn the `evidence_kind` path and strike
-  him with it after the scream.
+- To test step 2 (Exposure) without a rabbit, spawn the `evidence_kind` path
+  and strike him with it after the scream.
 - Pieces spawned alone are safe: a rabbit with no Bunnyman goes anywhere and
   gives nothing, a hook or a head with no Bunnyman can be hit and broken
   freely, and a notice with no Bunnyman shows no text.
