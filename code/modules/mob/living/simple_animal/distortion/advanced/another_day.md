@@ -74,7 +74,7 @@ every 10. Everything said inside comes out as a whisper, so a team spread
 across his rooms has to stand close to talk.
 
 The territory never shrinks. Draining the co-worker's colour pauses its growth
-and every effect above (see Step 2).
+and every effect above (see Step 2, Exposure).
 
 ## The taboo
 
@@ -108,7 +108,7 @@ and every effect above (see Step 2).
   co-worker, yellow the friend. The papers never say this.
 
 The names only exist in this round's clues, so knowing the distortion does
-not skip step 1.
+not skip step 1, Investigation.
 
 ### Where the clues are
 
@@ -124,7 +124,7 @@ not skip step 1.
 - A page pales over 3 minutes and vanishes once it is lying on the floor.
   Held or pocketed, it waits. The name tie works the same way.
 
-### Step 2: weakening him (the easy route)
+### Step 2, Exposure: weakening him (the easy route)
 
 Say a name anywhere in his territory. No need to see him. That person's colour
 drains from his ties for 60 seconds, the speaker shakes, and what the colour
@@ -140,7 +140,7 @@ Saying a name again restarts its 60 seconds. With red and yellow down, a team
 can kill him in a fair fight that costs sanity but nothing else. Players learn
 which name is which colour by watching which one greys out.
 
-### Step 3: undistorting him (the hard route)
+### Step 3, Catharsis: undistorting him (the hard route)
 
 Find the name tie and read his name off the label. With all three colours
 drained, say his name where he is in sight. Then:
