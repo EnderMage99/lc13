@@ -1,0 +1,12 @@
+{
+	"version": 1,
+	"map_name": "Grand Magasin Sisyphe - 1F",
+	"map_path": "map_files/gms",
+	"map_file": [
+		"gms_1f.dmm"
+	],
+	"space_ruin_levels": 0,
+	"space_empty_levels": 0,
+	"minetype": "none",
+	"maptype": "gms"
+}
