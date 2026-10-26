@@ -1,0 +1,124 @@
+//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"d" = (
+/obj/effect/mapping_helpers/gms_door_slot,
+/turf/closed/indestructible/reinforced/gms,
+/area/gms)
+"f" = (
+/turf/open/indestructible/gms,
+/area/gms)
+"w" = (
+/turf/closed/indestructible/reinforced/gms,
+/area/gms)
+
+(1,1,1) = {"
+w
+w
+w
+d
+w
+w
+w
+w
+w
+w
+d
+w
+w
+w
+"}
+(2,1,1) = {"
+w
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+w
+"}
+(3,1,1) = {"
+w
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+w
+"}
+(4,1,1) = {"
+d
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+d
+"}
+(5,1,1) = {"
+w
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+w
+"}
+(6,1,1) = {"
+w
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+f
+w
+"}
+(7,1,1) = {"
+w
+w
+w
+d
+w
+w
+w
+w
+w
+w
+d
+w
+w
+w
+"}
