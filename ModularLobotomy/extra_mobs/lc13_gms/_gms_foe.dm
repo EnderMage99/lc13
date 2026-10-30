@@ -1,4 +1,5 @@
 // Base for the foes that live in the Grand Magasin Sisyphe. They share a side and leave their husk behind.
+// A foe with a kill sequence plays it out over a human it kills, riding inside the body until it is over.
 /mob/living/simple_animal/hostile/gms_foe
 	name = "shop foe"
 	desc = "Something from the shelves of the Grand Magasin that should not be moving."
@@ -13,19 +14,24 @@
 		'ModularLobotomy/_Lobotomysounds/gms/gms_foe_death_2.ogg',
 		'ModularLobotomy/_Lobotomysounds/gms/gms_foe_death_3.ogg',
 		)
-
-/mob/living/simple_animal/hostile/gms_foe/death(gibbed)
-	if(length(death_sounds))
-		playsound(src, pick(death_sounds), 50, TRUE)
-	return ..()
-
-// Kill sequences: a foe with one plays it out over a human it kills, riding inside the body until it is over.
-/mob/living/simple_animal/hostile/gms_foe
 	/// Whether a human it kills gets its kill sequence. Only foes with a kill_sequence_type have one.
 	var/plays_kill_sequence = FALSE
 	var/kill_sequence_type
 	/// TRUE while it plays out a kill from inside the body.
 	var/killing = FALSE
+	/// The warning tiles it has lit up for an attack it is winding up.
+	var/list/warnings = list()
+	/// TRUE during a charge or dash, when foes of the same faction let it through instead of stopping it.
+	var/rushing = FALSE
+
+/mob/living/simple_animal/hostile/gms_foe/Destroy()
+	ClearWarnings()
+	return ..()
+
+/mob/living/simple_animal/hostile/gms_foe/death(gibbed)
+	if(length(death_sounds))
+		playsound(src, pick(death_sounds), 50, TRUE)
+	return ..()
 
 // Inside a body, it holds still and leaves everyone alone until the kill is over.
 /mob/living/simple_animal/hostile/gms_foe/Move()
@@ -43,6 +49,12 @@
 		return
 	return ..()
 
+/mob/living/simple_animal/hostile/gms_foe/CanAllowThrough(atom/movable/mover, turf/target)
+	. = ..()
+	if(!. && istype(mover, /mob/living/simple_animal/hostile/gms_foe))
+		var/mob/living/simple_animal/hostile/gms_foe/foe = mover
+		return foe.rushing && faction_check_mob(foe)
+
 /// Starts its kill sequence over the victim, if it has one and it is turned on. Returns TRUE if it did.
 /mob/living/simple_animal/hostile/gms_foe/proc/StartKill(mob/living/victim)
 	if(!plays_kill_sequence || !kill_sequence_type || !ishuman(victim) || victim.stat != DEAD)
@@ -55,15 +67,6 @@
 /mob/living/simple_animal/hostile/gms_foe/proc/EndKill()
 	killing = FALSE
 	LoseTarget()
-
-// Warning tiles: a foe winding up an attack lights up the tiles it is about to hit, brightening to full red.
-/mob/living/simple_animal/hostile/gms_foe
-	/// The warning tiles it has lit up.
-	var/list/warnings = list()
-
-/mob/living/simple_animal/hostile/gms_foe/Destroy()
-	ClearWarnings()
-	return ..()
 
 /// Lights up each of the turfs, going from faint to full red over glow_time.
 /mob/living/simple_animal/hostile/gms_foe/proc/ShowWarnings(list/turfs, glow_time)

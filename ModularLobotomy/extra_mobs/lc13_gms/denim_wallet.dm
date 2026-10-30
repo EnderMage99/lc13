@@ -15,6 +15,8 @@
 	var/scan_range = 10
 	var/rumble_time = 0.75 SECONDS
 	var/charge_damage = 90
+	/// Object damage dealt to each solid structure it crashes into.
+	var/structure_damage = 300
 	/// Time between each tile of the charge.
 	var/charge_step_delay = 0.5
 	/// The charge ends after this many tiles even if nothing stops it.
@@ -23,6 +25,8 @@
 	var/recover_time = 1.5 SECONDS
 	/// The blue flash comes this long after the charge ends, so it does not land on top of the crash dust.
 	var/flash_delay = 0.3 SECONDS
+	/// The flash it gives off, blue for denim.
+	var/flash_type = /obj/effect/temp_visual/gms_wallet_flash
 	/// When the flash goes off, everyone this close gets a light screen shake, or a heavier one if it rammed someone.
 	var/shake_range = 2
 	var/shake_duration = 2
@@ -52,11 +56,14 @@
 	animate(src, pixel_x = base_pixel_x)
 	return ..()
 
-// It only ever moves by charging.
-/mob/living/simple_animal/hostile/gms_foe/denim_wallet/Move()
-	if(!charging)
+/mob/living/simple_animal/hostile/gms_foe/denim_wallet/Move(atom/newloc, direct)
+	if(!charging && !CanWalk(direct))
 		return FALSE
 	return ..()
+
+/// Whether it may take a step outside a charge. The denim wallet only ever moves by charging.
+/mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/CanWalk(direct)
+	return FALSE
 
 /// Marks up to scan_range tiles in each straight line, stopping at walls. Charges at once if someone already stands on one.
 /mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/BuildLanes()
@@ -96,6 +103,7 @@
 	ClearWarnings()
 	animate(src, pixel_x = base_pixel_x)
 	charging = TRUE
+	rushing = TRUE
 	playsound(src, 'ModularLobotomy/_Lobotomysounds/gms/denim_wallet_charge.ogg', 60, TRUE)
 	// Set when a wall, a blocker or a body stops the charge, rather than running out of distance.
 	var/crashed = FALSE
@@ -110,6 +118,7 @@
 			// A kill hands the wallet over to its kill sequence, which lets it go again when it is done.
 			if(Ram(victim))
 				charging = FALSE
+				rushing = FALSE
 				return
 			crashed = TRUE
 			hit_someone = TRUE
@@ -117,10 +126,12 @@
 		var/turf/left_behind = get_turf(src)
 		if(!Move(next, charge_dir))
 			crashed = TRUE
+			SmashStructures(next)
 			break
 		new /obj/effect/temp_visual/gms_wallet_dust(left_behind)
 		SLEEP_CHECK_DEATH(charge_step_delay)
 	charging = FALSE
+	rushing = FALSE
 	if(crashed)
 		new /obj/effect/temp_visual/gms_wallet_impact(get_turf(src), turn(charge_dir, 180))
 	addtimer(CALLBACK(src, PROC_REF(Flash), get_turf(src), hit_someone), flash_delay)
@@ -140,7 +151,7 @@
 
 /// The blue flash where the charge ended, shaking the screens of everyone nearby.
 /mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/Flash(turf/T, hit_someone)
-	new /obj/effect/temp_visual/gms_wallet_flash(T)
+	new flash_type(T)
 	for(var/mob/M in range(shake_range, T))
 		shake_camera(M, hit_someone ? shake_duration_hit : shake_duration, hit_someone ? shake_strength_hit : shake_strength)
 
@@ -149,6 +160,12 @@
 		if(L.stat != DEAD && !faction_check_mob(L))
 			return L
 	return null
+
+/// Crashing into solid structures, like tables or shelves, hits each one the way its melee attack would, only harder.
+/mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/SmashStructures(turf/T)
+	for(var/obj/structure/S in T)
+		if(S.density)
+			S.attack_generic(src, structure_damage, RED_DAMAGE)
 
 /// Returns TRUE if the hit killed them and started the kill sequence.
 /mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/Ram(mob/living/victim)

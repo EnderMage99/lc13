@@ -69,10 +69,12 @@
 	var/turf/goal = target ? get_turf(target) : null
 	if(goal && goal.z == z)
 		dashing = TRUE
+		rushing = TRUE
 		for(var/list/leg as anything in PlanLegs(goal))
 			if(!Dash(leg[1], leg[2]))
 				break
 		dashing = FALSE
+		rushing = FALSE
 	dash_cooldown = world.time + dash_cooldown_time
 	// A kill keeps it busy until the sequence lets it go.
 	if(!killing)
