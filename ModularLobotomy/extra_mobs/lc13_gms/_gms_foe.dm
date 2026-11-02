@@ -7,6 +7,9 @@
 	gender = NEUTER
 	stat_attack = HARD_CRIT
 	robust_searching = TRUE
+	// As with abnormalities, so nobody can swap places with them on help intent, or shove or drag them.
+	a_intent = INTENT_HARM
+	move_resist = MOVE_FORCE_STRONG
 	damage_coeff = list(RED_DAMAGE = 1, WHITE_DAMAGE = 1, BLACK_DAMAGE = 1, PALE_DAMAGE = 1)
 	/// One of these plays when it dies.
 	var/list/death_sounds = list(

@@ -4535,6 +4535,8 @@
 #include "ModularLobotomy\extra_mobs\lc13_gms\needlekin_kill.dm"
 #include "ModularLobotomy\extra_mobs\lc13_gms\taste_tester.dm"
 #include "ModularLobotomy\extra_mobs\lc13_gms\taste_tester_kill.dm"
+#include "ModularLobotomy\extra_mobs\lc13_gms\third_floor_manager.dm"
+#include "ModularLobotomy\extra_mobs\lc13_gms\third_floor_manager_effects.dm"
 #include "ModularLobotomy\extra_mobs\lc13_humanoids.dm"
 #include "ModularLobotomy\extra_mobs\lc13_mermaids.dm"
 #include "ModularLobotomy\extra_mobs\lc13_motus_puzzles.dm"
