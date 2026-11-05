@@ -17,6 +17,8 @@
 	offsets_pixel_y = list("south" = -32, "north" = -32, "west" = -32, "east" = -32)
 	maxHealth = 3000
 	health = 3000
+	// He shrugs off most of every blow, save from those with Gratitude for Listening.
+	damage_coeff = list(RED_DAMAGE = 0.2, WHITE_DAMAGE = 0.2, BLACK_DAMAGE = 0.2, PALE_DAMAGE = 0.2)
 	move_to_delay = 4
 	death_message = "sways, and topples over."
 	/// TRUE while he is using a skill; he does not walk meanwhile.
@@ -106,8 +108,39 @@
 	/// The birdcages shut this song, and the symbols that fly from the bird's beak while it sings.
 	var/list/birdcages = list()
 	var/mutable_appearance/song_overlay
+	/// Where the bird is in his sing pose for each direction, in pixels from the middle of his tile (from the art tool's
+	/// build of the sprite). From behind the cage is hidden, so north mirrors the front.
+	var/list/bird_offsets = list(
+		"south" = list(-14, 4),
+		"north" = list(14, 4),
+		"east" = list(81, 4),
+		"west" = list(-82, 4),
+		)
 	/// How far he sways each way while Staggered.
 	var/stagger_sway = 2
+	/// Guarded Caution: anyone who hurts him gains a stack, and each of their stacks makes his attacks on them
+	/// caution_bonus stronger. At full stacks his bird sings them the Horribly Infinite Replay.
+	var/caution_bonus = 0.05
+	/// Listen: he lights a listen_width wide, listen_depth deep patch past the front of his footprint blue for
+	/// listen_windup. It does no harm: whoever stands in it as it lands loses their Guarded Caution and gains
+	/// listen_gratitude stacks of Gratitude for Listening, whose hits on him are multiplied by /datum/dc_change/gms_gratitude.
+	var/listen_width = 2
+	var/listen_depth = 4
+	var/listen_windup = 2 SECONDS
+	var/listen_hold = 0.6 SECONDS
+	var/listen_gratitude = 5
+	var/listen_cooldown_time = 20 SECONDS
+	var/listen_cooldown = 0
+	/// TRUE while a Gratitude holder's hit is landing, with the gms_gratitude modifier on.
+	var/gratitude_hit = FALSE
+	/// The Replay: his bird sings for replay_sing_time at one of those with full Guarded Caution, and nothing stops it.
+	/// It strikes their sanity replay_hits times over the song, for replay_hit_share of their max sanity each.
+	var/replay_sing_time = 2.5 SECONDS
+	var/replay_hits = 10
+	var/replay_hit_share = 0.1
+	/// At or under hurried_share of his health, his skills come back hurried_cut sooner.
+	var/hurried_share = 0.5
+	var/hurried_cut = 5 SECONDS
 	/// The dash overlay he wears while charging, 256x256 round his 192x192 sprite.
 	var/mutable_appearance/dash_overlay
 	var/dash_shift = -32
@@ -223,31 +256,78 @@
 	StopSong()
 	UsePose(null)
 
-// A hit from someone free while the bird sings Staggers him.
+// A hit from someone with Gratitude for Listening lands harder; the modifier is on for that one hit only.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/PreDamageReaction(damage_amount, damage_type, source, attack_type)
+	. = ..()
+	// A hit stopped after this point never reaches PostDamageReaction, so its modifier is taken off here.
+	EndGratitudeHit()
+	if(. && isliving(source))
+		var/mob/living/L = source
+		if(L.has_status_effect(/datum/status_effect/stacking/gms_gratitude))
+			AddModifier(/datum/dc_change/gms_gratitude)
+			gratitude_hit = TRUE
+
+// Whoever hurts him gains Guarded Caution, unless they have Gratitude, whose melee hits spend it instead. A hit from
+// someone free while the bird sings Staggers him.
 /mob/living/simple_animal/hostile/gms_foe/third_floor_manager/PostDamageReaction(damage_amount, damage_type, source, attack_type)
 	. = ..()
+	EndGratitudeHit()
+	if(isliving(source) && source != src && !faction_check_mob(source))
+		var/mob/living/L = source
+		var/datum/status_effect/stacking/gms_gratitude/G = L.has_status_effect(/datum/status_effect/stacking/gms_gratitude)
+		if(!G)
+			GmsAddCaution(L)
+		else if(attack_type & ATTACK_TYPE_MELEE)
+			G.Spend()
 	if(singing && ismob(source) && !IsCaged(source) && !faction_check_mob(source))
 		Stagger()
 
-/// The skills he could start on his target now.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/EndGratitudeHit()
+	if(!gratitude_hit)
+		return
+	gratitude_hit = FALSE
+	RemoveModifier(/datum/dc_change/gms_gratitude)
+
+// Each stack of Guarded Caution on someone makes his blow on them caution_bonus stronger. The parent only gathers who
+// is hit, and hurts mechs in full; the damage to the living is dealt here.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/HurtInTurf(turf/target, list/hit_list = list(), damage = 0, damage_type = RED_DAMAGE, def_zone = null, check_faction = FALSE, exact_faction_match = FALSE, hurt_mechs = FALSE, mech_damage = 0, hurt_hidden = FALSE, hurt_structure = FALSE, break_not_destroy = FALSE, attack_direction = null, flags = null, attack_type = null)
+	. = ..(target, hit_list, 0, damage_type, def_zone, check_faction, exact_faction_match, hurt_mechs, mech_damage || damage, hurt_hidden, hurt_structure, break_not_destroy, attack_direction, flags, attack_type)
+	if(!damage)
+		return
+	for(var/mob/living/L in . - hit_list)
+		L.deal_damage(damage * (1 + caution_bonus * GmsCautionStacks(L)), damage_type, source = src, flags = flags, attack_type = attack_type)
+
+/// The skills he could start on his target now. The Replay comes before all else.
 /mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/ReadySkills()
+	if(length(ReplayTargets()))
+		return list(PROC_REF(Replay))
 	. = list()
 	if(!(target in view(skill_range, src)))
 		return
+	if(Ready(listen_cooldown))
+		. += PROC_REF(Listen)
 	var/dist = get_dist(src, target)
-	if(strike_cooldown <= world.time && get_dist_euclidian(src, target) <= strike_range)
+	if(Ready(strike_cooldown) && get_dist_euclidian(src, target) <= strike_range)
 		. += PROC_REF(Strike)
-	if(slam_cooldown <= world.time && dist <= slam_range)
+	if(Ready(slam_cooldown) && dist <= slam_range)
 		. += PROC_REF(Slam)
-	if(dash_cooldown <= world.time && dist >= dash_min_distance && Across(target) <= min(dash_left, dash_right))
+	if(Ready(dash_cooldown) && dist >= dash_min_distance && Across(target) <= min(dash_left, dash_right))
 		. += PROC_REF(Charge)
-	if(birdcage_cooldown <= world.time && length(CageTargets()))
+	if(Ready(birdcage_cooldown) && length(CageTargets()))
 		. += PROC_REF(Birdcage)
+
+/// Whether a skill whose cooldown ends at `cooldown` is ready, hurried_cut sooner once he is badly hurt.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/Ready(cooldown)
+	if(health <= maxHealth * hurried_share)
+		cooldown -= hurried_cut
+	return cooldown <= world.time
 
 /mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/StartSkill(skill)
 	busy = TRUE
 	walk(src, 0)
-	Shove()
+	// Listen wants people close, so it is the one skill that does not shove them off.
+	if(skill != PROC_REF(Listen))
+		Shove()
 	INVOKE_ASYNC(src, skill)
 
 /// Throws every foe within shove_range of his middle away from him, so nobody can hide right against him.
@@ -340,6 +420,90 @@
 	var/fx = (facing & EAST) ? 1 : ((facing & WEST) ? -1 : 0)
 	var/fy = (facing & NORTH) ? 1 : ((facing & SOUTH) ? -1 : 0)
 	return locate(centre.x + fx * along + fy * across, centre.y + fy * along - fx * across, centre.z)
+
+/// How many tiles his footprint for `facing` reaches past his middle that way.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/Edge(facing)
+	var/fx = (facing & EAST) ? 1 : ((facing & WEST) ? -1 : 0)
+	var/fy = (facing & NORTH) ? 1 : ((facing & SOUTH) ? -1 : 0)
+	. = 0
+	for(var/list/offset as anything in footprints[dir2text(facing)])
+		. = max(., offset[1] * fx + offset[2] * fy)
+
+/// The Listen tiles, just past the front of his footprint, each lane stopping at the first wall.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/ListenTurfs()
+	. = list()
+	var/half = round(listen_width / 2)
+	var/edge = Edge(dir)
+	for(var/across in -half to (listen_width - half - 1))
+		for(var/along in (edge + 1) to (edge + listen_depth))
+			var/turf/T = Offset(get_turf(src), dir, along, across)
+			if(!T || T.density)
+				break
+			. += T
+
+/// Listen: he lights the floor before him blue, lifts his cage and the bird sings. Whoever stands there when the song
+/// ends forgets their Guarded Caution, and is grateful for listening.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/Listen()
+	listen_cooldown = world.time + listen_cooldown_time
+	FaceStraight(target)
+	var/list/turfs = ListenTurfs()
+	ShowWarnings(turfs, listen_windup, /obj/effect/gms_warning/blue)
+	// He lifts his cage and the bird sings, as for the Birdcage.
+	icon_state = "third_floor_manager_cage_raise"
+	playsound(src, cage_sound, 60, FALSE)
+	SLEEP_CHECK_DEATH(cage_raise_time)
+	icon_state = "third_floor_manager_sing"
+	add_overlay(song_overlay)
+	SLEEP_CHECK_DEATH(listen_windup - cage_raise_time)
+	ClearWarnings()
+	cut_overlay(song_overlay)
+	icon_state = icon_living
+	for(var/turf/T as anything in turfs)
+		for(var/mob/living/L in T)
+			if(L == src || L.stat == DEAD || istype(L, /mob/living/simple_animal/projectile_blocker_dummy) || faction_check_mob(L))
+				continue
+			L.remove_status_effect(/datum/status_effect/stacking/gms_guarded_caution)
+			GmsAddGratitude(L, listen_gratitude)
+	SLEEP_CHECK_DEATH(listen_hold)
+	EndSkill()
+
+/// The humans he can see within song_range whose Guarded Caution is full.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/ReplayTargets()
+	. = list()
+	for(var/mob/living/carbon/human/H in view(song_range, src))
+		if(H.stat == DEAD)
+			continue
+		var/datum/status_effect/stacking/gms_guarded_caution/C = H.has_status_effect(/datum/status_effect/stacking/gms_guarded_caution)
+		if(C && C.stacks >= C.max_stacks)
+			. += H
+
+/// The Replay: he lifts his cage and his bird sings for one of those with full Guarded Caution, picked at random. Each
+/// beat of the song strikes their sanity, until it is over or they panic, and their mind is lost to it. It cannot be
+/// dodged.
+/mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/Replay()
+	var/list/marked = ReplayTargets()
+	// They may have died between choosing the skill and starting it.
+	if(!length(marked))
+		EndSkill()
+		return
+	var/mob/living/carbon/human/H = pick(marked)
+	icon_state = "third_floor_manager_cage_raise"
+	playsound(src, cage_sound, 75, FALSE)
+	SLEEP_CHECK_DEATH(cage_raise_time)
+	icon_state = "third_floor_manager_sing"
+	add_overlay(song_overlay)
+	for(var/i in 1 to replay_hits)
+		SLEEP_CHECK_DEATH(replay_sing_time / replay_hits)
+		if(QDELETED(H) || H.stat == DEAD || H.sanity_lost)
+			break
+		H.adjustSanityLoss(H.maxSanity * replay_hit_share)
+	cut_overlay(song_overlay)
+	icon_state = icon_living
+	if(!QDELETED(H) && H.stat != DEAD)
+		H.remove_status_effect(/datum/status_effect/stacking/gms_guarded_caution)
+		if(GmsHorriblyInfiniteReplay(H, src))
+			to_chat(H, span_userdanger("The bird's song fills your head, over and over and over..."))
+	EndSkill()
 
 /// The Strike tiles: every open tile he can see within strike_range of his middle that is level with it or in front.
 /mob/living/simple_animal/hostile/gms_foe/third_floor_manager/proc/StrikeTurfs()
@@ -555,7 +719,11 @@
 			return
 	StopSong()
 	icon_state = icon_living
-	new /obj/effect/temp_visual/gms_manager_burst(get_turf(src))
+	// The burst comes out of the bird, wherever his pose holds it.
+	var/obj/effect/temp_visual/gms_manager_burst/burst = new(get_turf(src))
+	var/list/bird = bird_offsets[dir2text(dir)]
+	burst.pixel_x += bird[1]
+	burst.pixel_y += bird[2]
 	playsound(src, hit_sound, 100, TRUE)
 	var/list/hit_list = list()
 	var/list/smashed = list()

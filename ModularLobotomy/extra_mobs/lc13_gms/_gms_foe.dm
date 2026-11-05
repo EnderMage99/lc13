@@ -71,10 +71,10 @@
 	killing = FALSE
 	LoseTarget()
 
-/// Lights up each of the turfs, going from faint to full red over glow_time.
-/mob/living/simple_animal/hostile/gms_foe/proc/ShowWarnings(list/turfs, glow_time)
+/// Lights up each of the turfs, going from faint to full over glow_time, with red warning tiles unless told otherwise.
+/mob/living/simple_animal/hostile/gms_foe/proc/ShowWarnings(list/turfs, glow_time, warning_type = /obj/effect/gms_warning)
 	for(var/turf/T as anything in turfs)
-		warnings += new /obj/effect/gms_warning(T, glow_time)
+		warnings += new warning_type(T, glow_time)
 
 /mob/living/simple_animal/hostile/gms_foe/proc/ClearWarnings()
 	QDEL_LIST(warnings)
@@ -93,3 +93,12 @@
 /obj/effect/gms_warning/Initialize(mapload, glow_time)
 	. = ..()
 	animate(src, alpha = 255, time = glow_time)
+
+/// A blue tile, for an attack that helps whoever stands in it.
+/obj/effect/gms_warning/blue
+	name = "blue glow"
+
+// The red tile with its red and blue swapped.
+/obj/effect/gms_warning/blue/Initialize(mapload, glow_time)
+	. = ..()
+	color = list(0, 0, 1, 0, 1, 0, 1, 0, 0)
