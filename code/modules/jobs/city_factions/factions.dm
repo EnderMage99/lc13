@@ -73,3 +73,9 @@
 	category = CITY_FACTION_MINOR
 	leader_job = /datum/job/devyatdir
 	requires_leader = TRUE
+
+/datum/city_faction/wedge
+	name = "the Wedge Office"
+	category = CITY_FACTION_MINOR
+	leader_job = /datum/job/wedge
+	requires_leader = TRUE
