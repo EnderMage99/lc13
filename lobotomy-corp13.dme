@@ -4625,6 +4625,7 @@
 #include "ModularLobotomy\gadgets\manager_bullets.dm"
 #include "ModularLobotomy\gadgets\powered.dm"
 #include "ModularLobotomy\gadgets\unpowered.dm"
+#include "ModularLobotomy\gms_map\gms_escalator.dm"
 #include "ModularLobotomy\gms_map\gms_generator.dm"
 #include "ModularLobotomy\gms_map\gms_rooms.dm"
 #include "ModularLobotomy\gms_map\gms_turfs.dm"

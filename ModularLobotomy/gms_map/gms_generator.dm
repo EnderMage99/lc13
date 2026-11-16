@@ -1,7 +1,9 @@
 // Builds a floor of the Grand Magasin each round: plans rooms around the base, loads them, then cuts the doors.
 // The step by step is in workspace/docs/lc13/grand_magasin_sisyphe/MAP_GENERATION.md.
-GLOBAL_DATUM(gms_generator, /obj/effect/landmark/gms_generator)
+// One generator per floor, each building the z-level it stands on.
+GLOBAL_LIST_EMPTY(gms_generators)
 GLOBAL_LIST_EMPTY(gms_exits)
+GLOBAL_LIST_EMPTY(gms_floor_starts)
 
 // Cells each room shape covers, counted from its bottom left cell.
 GLOBAL_LIST_INIT(gms_room_shapes, list(
@@ -39,6 +41,18 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 
 /obj/effect/landmark/gms_exit/Destroy()
 	GLOB.gms_exits -= src
+	return ..()
+
+/// Base floor a generator floods from to find cut off rooms. Needed on floors without latejoin spawns.
+/obj/effect/landmark/gms_floor_start
+	name = "floor start"
+
+/obj/effect/landmark/gms_floor_start/Initialize()
+	. = ..()
+	GLOB.gms_floor_starts += src
+
+/obj/effect/landmark/gms_floor_start/Destroy()
+	GLOB.gms_floor_starts -= src
 	return ..()
 
 /// Sits on the bottom left turf of the cell grid and builds the floor once the map has loaded.
@@ -92,18 +106,39 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 
 /obj/effect/landmark/gms_generator/Initialize()
 	. = ..()
-	GLOB.gms_generator = src
+	GLOB.gms_generators += src
 	origin = get_turf(src)
 	return INITIALIZE_HINT_LATELOAD
 
 // Rooms loaded while atoms are still initializing would not initialize, so build once the timer runs.
+// The first generator builds every floor in turn, so two floors never load rooms at once.
 /obj/effect/landmark/gms_generator/LateInitialize()
-	addtimer(CALLBACK(src, PROC_REF(Generate)), 1 SECONDS)
+	if(GLOB.gms_generators[1] == src)
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(GmsGenerateAll)), 1 SECONDS)
 
 /obj/effect/landmark/gms_generator/Destroy()
-	if(GLOB.gms_generator == src)
-		GLOB.gms_generator = null
+	GLOB.gms_generators -= src
 	return ..()
+
+/proc/GmsGenerateAll()
+	for(var/obj/effect/landmark/gms_generator/generator as anything in GLOB.gms_generators.Copy())
+		if(!QDELETED(generator))
+			generator.Generate()
+
+/// The generator building the z-level of a turf, or null.
+/proc/GmsGeneratorOn(turf/T)
+	for(var/obj/effect/landmark/gms_generator/generator as anything in GLOB.gms_generators)
+		if(generator.origin?.z == T?.z)
+			return generator
+
+/// Base floor on this generator's z-level: a floor start landmark, else a latejoin spawn.
+/obj/effect/landmark/gms_generator/proc/StartTurf()
+	for(var/obj/effect/landmark/gms_floor_start/start as anything in GLOB.gms_floor_starts)
+		if(start.z == origin.z)
+			return get_turf(start)
+	for(var/atom/tracker as anything in SSjob.latejoin_trackers)
+		if(tracker.z == origin.z)
+			return get_turf(tracker)
 
 /// Tears down the last floor and builds a new one. Returns FALSE if it could not build.
 /obj/effect/landmark/gms_generator/proc/Generate()
@@ -322,9 +357,10 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 /// Step 9b: the base can have parts cut off from the spawn, and so can the rooms planned out of them.
 /// Floods from a spawn and joins one cut off room to a reachable neighbour at a time, until nothing more can be joined.
 /obj/effect/landmark/gms_generator/proc/ConnectStrays()
-	if(!length(SSjob.latejoin_trackers))
+	var/turf/start = StartTurf()
+	if(!start)
+		log_world("GMS floor generator on z[origin.z]: no floor start or latejoin spawn, cut off rooms not joined.")
 		return 0
-	var/turf/start = SSjob.latejoin_trackers[1]
 	var/joined = 0
 	for(var/attempt in 1 to length(rooms))
 		var/list/reached = FloodFloor(start)
@@ -408,7 +444,7 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 /// Tears down the last floor: empties and voids every room cell, and puts the base's corridor turfs back.
 /obj/effect/landmark/gms_generator/proc/Clear()
 	var/area/unbuilt = GLOB.areas_by_type[/area/gms/unbuilt]
-	var/turf/safe_spot = length(SSjob.latejoin_trackers) ? pick(SSjob.latejoin_trackers) : null
+	var/turf/safe_spot = StartTurf()
 	for(var/datum/gms_room/room as anything in rooms)
 		if(!room.template)
 			continue
@@ -448,7 +484,7 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 		farthest = max(farthest, room.distance)
 		if(!room.children)
 			dead_ends++
-	var/message = "GMS floor built: [loaded] rooms covering [room_cell_count] cells (target [fill_target]), [dead_ends] dead ends, farthest [farthest] rooms out, [joined] extra doorways to reach cut off rooms, plan [plans_made] of [plan_attempts]."
+	var/message = "GMS floor on z[origin.z] built: [loaded] rooms covering [room_cell_count] cells (target [fill_target]), [dead_ends] dead ends, farthest [farthest] rooms out, [joined] extra doorways to reach cut off rooms, plan [plans_made] of [plan_attempts]."
 	message_admins(message)
 	log_world(message)
 
@@ -497,7 +533,7 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 /// Testing tool: tears the floor down and builds a new one.
 /obj/structure/gms_floor_lever
 	name = "floor plan lever"
-	desc = "Pulling it tears down every room past the base and builds a new floor. Admins only."
+	desc = "Pulling it tears down every room past the base on this floor and builds them again. Admins only."
 	icon = 'icons/obj/recycling.dmi'
 	icon_state = "switch-off"
 	anchored = TRUE
@@ -510,12 +546,13 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 	if(!check_rights_for(user.client, R_DEBUG))
 		to_chat(user, span_warning("The lever will not budge."))
 		return
-	if(!GLOB.gms_generator)
-		to_chat(user, span_warning("There is no floor generator on this map."))
+	var/obj/effect/landmark/gms_generator/generator = GmsGeneratorOn(get_turf(src))
+	if(!generator)
+		to_chat(user, span_warning("There is no floor generator on this floor."))
 		return
-	if(GLOB.gms_generator.generating)
+	if(generator.generating)
 		to_chat(user, span_warning("The floor is still being built."))
 		return
 	to_chat(user, span_notice("You pull the lever. The floor tears down and builds itself again."))
-	INVOKE_ASYNC(GLOB.gms_generator, TYPE_PROC_REF(/obj/effect/landmark/gms_generator, Generate))
+	INVOKE_ASYNC(generator, TYPE_PROC_REF(/obj/effect/landmark/gms_generator, Generate))
 

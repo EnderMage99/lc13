@@ -1,12 +1,23 @@
 {
 	"version": 1,
-	"map_name": "Grand Magasin Sisyphe - 1F",
+	"map_name": "Grand Magasin Sisyphe",
 	"map_path": "map_files/gms",
 	"map_file": [
-		"gms_1f.dmm"
+		"gms_1f.dmm",
+		"gms_2f.dmm"
 	],
 	"space_ruin_levels": 0,
 	"space_empty_levels": 0,
+	"traits": [
+		{
+			"Up": 1,
+			"Baseturf": "/turf/open/indestructible/gms"
+		},
+		{
+			"Down": -1,
+			"Baseturf": "/turf/open/indestructible/gms"
+		}
+	],
 	"minetype": "none",
 	"maptype": "gms"
 }
