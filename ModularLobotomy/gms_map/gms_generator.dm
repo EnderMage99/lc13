@@ -467,13 +467,16 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 	rooms = list()
 	doors = list()
 
-// Landmarks are kept, since the generator itself may stand in a cell that gets cleared.
+// Landmarks are kept, since the generator itself may stand in a cell that gets cleared. Foe spawns go with their room,
+// taking their foes along; foes are deleted rather than moved to safety with everyone else.
 /obj/effect/landmark/gms_generator/proc/EmptyTurf(turf/T, turf/safe_spot)
 	for(var/mob/living/L in T)
-		if(safe_spot)
+		if(istype(L, /mob/living/simple_animal/hostile/gms_foe))
+			qdel(L)
+		else if(safe_spot)
 			L.forceMove(safe_spot)
 	for(var/obj/O in T)
-		if(!istype(O, /obj/effect/landmark))
+		if(!istype(O, /obj/effect/landmark) || istype(O, /obj/effect/landmark/gms_foe_spawn))
 			qdel(O)
 
 /obj/effect/landmark/gms_generator/proc/Report(plans_made, joined)

@@ -1,0 +1,132 @@
+//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"a" = (
+/turf/open/indestructible/gms,
+/area/gms)
+"k" = (
+/turf/closed/indestructible/reinforced/gms,
+/area/gms)
+"v" = (
+/obj/effect/mapping_helpers/gms_door_slot,
+/turf/closed/indestructible/reinforced/gms,
+/area/gms)
+"V" = (
+/obj/effect/landmark/gms_foe_spawn/leather_glove,
+/turf/open/indestructible/gms,
+/area/gms)
+"Y" = (
+/obj/effect/landmark/gms_foe_spawn/denim_wallet,
+/turf/open/indestructible/gms,
+/area/gms)
+
+(1,1,1) = {"
+k
+k
+k
+v
+k
+k
+k
+k
+k
+k
+v
+k
+k
+k
+"}
+(2,1,1) = {"
+k
+V
+a
+a
+a
+k
+Y
+a
+a
+a
+a
+a
+Y
+k
+"}
+(3,1,1) = {"
+k
+a
+a
+a
+a
+k
+a
+a
+k
+a
+a
+a
+a
+k
+"}
+(4,1,1) = {"
+v
+a
+a
+a
+a
+k
+a
+a
+k
+a
+a
+a
+a
+v
+"}
+(5,1,1) = {"
+k
+a
+a
+a
+a
+k
+a
+a
+k
+a
+a
+a
+a
+k
+"}
+(6,1,1) = {"
+k
+Y
+a
+a
+a
+a
+a
+Y
+k
+a
+a
+a
+V
+k
+"}
+(7,1,1) = {"
+k
+k
+k
+v
+k
+k
+k
+k
+k
+k
+v
+k
+k
+k
+"}
