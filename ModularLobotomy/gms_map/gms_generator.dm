@@ -332,6 +332,7 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 			if(!other_room.template)
 				continue
 		OpenDoorway(cell, door[3], other == TRUE)
+		CHECK_TICK
 
 /// Cuts one doorway out of a room cell's edge. into_base runs it on as a corridor to the base floor.
 /obj/effect/landmark/gms_generator/proc/OpenDoorway(list/cell, dir, into_base)
@@ -399,6 +400,7 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 			if(next && !reached[next] && isopenturf(next))
 				reached[next] = TRUE
 				queue += next
+		CHECK_TICK
 	return reached
 
 /// Any floor turf of the room, to test whether it can be reached. Layouts may put a pillar in the middle.
@@ -460,6 +462,7 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 	for(var/turf/T as anything in base_changes)
 		EmptyTurf(T, safe_spot)
 		T.ChangeTurf(base_changes[T])
+		CHECK_TICK
 	base_changes = list()
 	rooms = list()
 	doors = list()

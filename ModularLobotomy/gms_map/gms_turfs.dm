@@ -5,6 +5,16 @@
 	requires_power = FALSE
 	has_gravity = STANDARD_GRAVITY
 	dynamic_lighting = DYNAMIC_LIGHTING_DISABLED
+	/// Set once the area's size has been counted. See update_areasize().
+	var/size_counted = FALSE
+
+/// Every template load recounts each area it touches, turf by turf. GMS areas span whole floors and the floor
+/// builder loads hundreds of rooms, so counting every time took most of the build. Count once, at map load.
+/area/gms/update_areasize()
+	if(size_counted)
+		return FALSE
+	size_counted = TRUE
+	return ..()
 
 // Empty grid space the floor generator may build rooms in. Anything in another area counts as the base.
 /area/gms/unbuilt
