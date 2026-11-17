@@ -86,6 +86,8 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 	var/void_type = /turf/closed/indestructible/gms_void
 	/// Placed in the middle of each doorway if set.
 	var/door_type
+	/// Placed in the middle of each doorway from the base into a room, so the lit base does not open onto pitch black.
+	var/entrance_light_type = /obj/effect/gms_ceiling_light/double
 	/// Cells the current plan's rooms cover, and how many it should cover.
 	var/room_cell_count = 0
 	var/fill_target = 0
@@ -309,7 +311,23 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 		room.template = pickweight(options)
 		used[room.template]++
 		room.template.load(CellCorner(room.cell_x, room.cell_y))
+		DarkenRoom(room)
 		CHECK_TICK
+
+/// Moves a loaded room out of the plain GMS area into the dark room area, building its lighting as it goes.
+/// The map loader skips change_area(), so a room loaded straight into a lit area would never get its lighting.
+/// Turfs a room maps into an area of its own keep that area.
+/obj/effect/landmark/gms_generator/proc/DarkenRoom(datum/gms_room/room)
+	var/area/gms/room/dark = GLOB.areas_by_type[/area/gms/room]
+	if(!dark)
+		dark = new
+	for(var/list/cell as anything in room.cells)
+		for(var/turf/T as anything in CellTurfs(cell[1], cell[2]))
+			var/area/old_area = T.loc
+			if(old_area.type != /area/gms)
+				continue
+			dark.contents += T
+			T.change_area(old_area, dark)
 
 /obj/effect/landmark/gms_generator/proc/CellsUnbuilt(datum/gms_room/room)
 	for(var/list/cell as anything in room.cells)
@@ -334,7 +352,8 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 		OpenDoorway(cell, door[3], other == TRUE)
 		CHECK_TICK
 
-/// Cuts one doorway out of a room cell's edge. into_base runs it on as a corridor to the base floor.
+/// Cuts one doorway out of a room cell's edge. into_base runs it on as a corridor to the base floor and lights
+/// the doorway's room side.
 /obj/effect/landmark/gms_generator/proc/OpenDoorway(list/cell, dir, into_base)
 	var/half_width = round(doorway_width / 2)
 	var/turf/slot = SlotTurf(cell[1], cell[2], dir)
@@ -349,6 +368,8 @@ GLOBAL_LIST_INIT(gms_room_shapes, list(
 		lane.ChangeTurf(FloorBeside(lane, turn(dir, 180)))
 	if(door_type)
 		new door_type(slot)
+	if(into_base && entrance_light_type)
+		new entrance_light_type(slot)
 
 /// The floor one step into the room from a wall tile, so a doorway matches the room it opens into.
 /obj/effect/landmark/gms_generator/proc/FloorBeside(turf/wall, inward_dir)

@@ -108,6 +108,7 @@
 	// Set when a wall, a blocker or a body stops the charge, rather than running out of distance.
 	var/crashed = FALSE
 	var/hit_someone = FALSE
+	var/steps_taken = 0
 	for(var/i in 1 to charge_max_distance)
 		var/turf/next = get_step(src, charge_dir)
 		if(!next || next.density)
@@ -128,8 +129,10 @@
 			crashed = TRUE
 			SmashStructures(next)
 			break
+		steps_taken++
 		new /obj/effect/temp_visual/gms_wallet_dust(left_behind)
 		SLEEP_CHECK_DEATH(charge_step_delay)
+	BackOff(charge_dir, steps_taken)
 	charging = FALSE
 	rushing = FALSE
 	if(crashed)
@@ -138,6 +141,23 @@
 	SLEEP_CHECK_DEATH(recover_time)
 	scanning = TRUE
 	BuildLanes()
+
+/// A charge passes through its own side, so it can stop on top of one. It then steps back along the way it came,
+/// at most as far as it charged, until no other mob shares its tile, landing beside them instead.
+/mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/BackOff(charge_dir, steps_taken)
+	var/back_dir = turn(charge_dir, 180)
+	for(var/i in 1 to steps_taken)
+		if(!SharesTile())
+			break
+		if(!Move(get_step(src, back_dir), back_dir))
+			break
+	setDir(charge_dir)
+
+/mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/SharesTile()
+	for(var/mob/living/L in loc)
+		if(L != src)
+			return TRUE
+	return FALSE
 
 /// The tiles a charge in that direction would cross: up to charge_max_distance, stopping at the first wall.
 /mob/living/simple_animal/hostile/gms_foe/denim_wallet/proc/ChargeTurfs(charge_dir)

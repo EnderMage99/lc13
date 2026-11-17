@@ -8,6 +8,14 @@
 	/// Key of GLOB.gms_room_shapes this template fills.
 	var/shape = "1x1"
 
+/datum/map_template/random_room/gms/room_1x1_glove
+	name = "GMS Room 1x1_glove"
+	room_id = "gms_1x1_glove"
+	mappath = "_maps/RandomRooms/gms/rooms/1x1_glove.dmm"
+	template_width = 7
+	template_height = 7
+	shape = "1x1"
+
 /datum/map_template/random_room/gms/room_1x1_plain
 	name = "GMS Room 1x1_plain"
 	room_id = "gms_1x1_plain"
@@ -15,6 +23,22 @@
 	template_width = 7
 	template_height = 7
 	shape = "1x1"
+
+/datum/map_template/random_room/gms/room_1x1_wallet
+	name = "GMS Room 1x1_wallet"
+	room_id = "gms_1x1_wallet"
+	mappath = "_maps/RandomRooms/gms/rooms/1x1_wallet.dmm"
+	template_width = 7
+	template_height = 7
+	shape = "1x1"
+
+/datum/map_template/random_room/gms/room_2x1_crossfire
+	name = "GMS Room 2x1_crossfire"
+	room_id = "gms_2x1_crossfire"
+	mappath = "_maps/RandomRooms/gms/rooms/2x1_crossfire.dmm"
+	template_width = 14
+	template_height = 7
+	shape = "2x1"
 
 /datum/map_template/random_room/gms/room_2x1_foes
 	name = "GMS Room 2x1_foes"
@@ -32,10 +56,26 @@
 	template_height = 7
 	shape = "2x1"
 
+/datum/map_template/random_room/gms/room_2x1_spin_aisles
+	name = "GMS Room 2x1_spin_aisles"
+	room_id = "gms_2x1_spin_aisles"
+	mappath = "_maps/RandomRooms/gms/rooms/2x1_spin_aisles.dmm"
+	template_width = 14
+	template_height = 7
+	shape = "2x1"
+
 /datum/map_template/random_room/gms/room_1x2_foes
 	name = "GMS Room 1x2_foes"
 	room_id = "gms_1x2_foes"
 	mappath = "_maps/RandomRooms/gms/rooms/1x2_foes.dmm"
+	template_width = 7
+	template_height = 14
+	shape = "1x2"
+
+/datum/map_template/random_room/gms/room_1x2_kaki_chase
+	name = "GMS Room 1x2_kaki_chase"
+	room_id = "gms_1x2_kaki_chase"
+	mappath = "_maps/RandomRooms/gms/rooms/1x2_kaki_chase.dmm"
 	template_width = 7
 	template_height = 14
 	shape = "1x2"
@@ -48,6 +88,14 @@
 	template_height = 14
 	shape = "1x2"
 
+/datum/map_template/random_room/gms/room_2x2_leatherfather
+	name = "GMS Room 2x2_leatherfather"
+	room_id = "gms_2x2_leatherfather"
+	mappath = "_maps/RandomRooms/gms/rooms/2x2_leatherfather.dmm"
+	template_width = 14
+	template_height = 14
+	shape = "2x2"
+
 /datum/map_template/random_room/gms/room_2x2_plain
 	name = "GMS Room 2x2_plain"
 	room_id = "gms_2x2_plain"
@@ -55,6 +103,22 @@
 	template_width = 14
 	template_height = 14
 	shape = "2x2"
+
+/datum/map_template/random_room/gms/room_2x2_sale_floor
+	name = "GMS Room 2x2_sale_floor"
+	room_id = "gms_2x2_sale_floor"
+	mappath = "_maps/RandomRooms/gms/rooms/2x2_sale_floor.dmm"
+	template_width = 14
+	template_height = 14
+	shape = "2x2"
+
+/datum/map_template/random_room/gms/room_l_top_left_gauntlet
+	name = "GMS Room l_top_left_gauntlet"
+	room_id = "gms_l_top_left_gauntlet"
+	mappath = "_maps/RandomRooms/gms/rooms/l_top_left_gauntlet.dmm"
+	template_width = 14
+	template_height = 14
+	shape = "l_missing_top_left"
 
 /datum/map_template/random_room/gms/room_l_top_left_plain
 	name = "GMS Room l_top_left_plain"

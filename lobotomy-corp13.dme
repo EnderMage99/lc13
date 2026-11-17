@@ -4652,6 +4652,7 @@
 #include "ModularLobotomy\gms_map\gms_escalator.dm"
 #include "ModularLobotomy\gms_map\gms_foe_spawns.dm"
 #include "ModularLobotomy\gms_map\gms_generator.dm"
+#include "ModularLobotomy\gms_map\gms_lighting.dm"
 #include "ModularLobotomy\gms_map\gms_rooms.dm"
 #include "ModularLobotomy\gms_map\gms_turfs.dm"
 #include "ModularLobotomy\hiding\abnormality.dm"
