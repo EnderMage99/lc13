@@ -26,15 +26,49 @@
 	var/list/warnings = list()
 	/// TRUE during a charge or dash, when foes of the same faction let it through instead of stopping it.
 	var/rushing = FALSE
+	/// It drops a random number of eyeballs between these two when it dies.
+	var/eyeballs_low = 8
+	var/eyeballs_high = 12
+	/// The eyeballs fly out up to this many tiles from where it died.
+	var/eyeball_spread = 2
+	/// The fewest and most piles its eyeballs fly out in, before the 30-a-pile cap adds more.
+	var/eyeball_piles_min = 3
+	var/eyeball_piles_max = 12
 
 /mob/living/simple_animal/hostile/gms_foe/Destroy()
 	ClearWarnings()
 	return ..()
 
 /mob/living/simple_animal/hostile/gms_foe/death(gibbed)
+	if(stat != DEAD)
+		DropEyeballs()
 	if(length(death_sounds))
 		playsound(src, pick(death_sounds), 50, TRUE)
 	return ..()
+
+/// Its eyeballs burst out of the body: split into small piles of loose coins, each flung to a random tile up to
+/// eyeball_spread away.
+/// About one pile per 6 coins, within the min and max, and never more than 30 coins to a pile.
+/mob/living/simple_animal/hostile/gms_foe/proc/DropEyeballs()
+	var/amount = rand(eyeballs_low, eyeballs_high)
+	var/turf/origin = get_turf(src)
+	if(amount <= 0 || !origin)
+		return
+	var/piles = clamp(CEILING(amount / 6, 1), min(eyeball_piles_min, amount), eyeball_piles_max)
+	piles = max(piles, CEILING(amount / 30, 1))
+	var/list/landing_spots = RANGE_TURFS(eyeball_spread, origin)
+	// One burst of coins for the lot; the piles land without their own sounds.
+	playsound(origin, initial(/obj/item/stack/gms_eyeball::burst_sound), 50, TRUE)
+	for(var/i in piles to 1 step -1)
+		// Share what is left evenly between the piles still to go, give or take one.
+		var/pile_size = round(amount / i)
+		if(i > 1 && pile_size > 1)
+			pile_size = clamp(pile_size + rand(-1, 1), 1, 30)
+		amount -= pile_size
+		// Not merged on creation, or each pile would join the last one before it could fly.
+		var/obj/item/stack/gms_eyeball/coins = new(origin, pile_size, FALSE)
+		coins.Scatter()
+		coins.Fling(pick(landing_spots))
 
 // Inside a body, it holds still and leaves everyone alone until the kill is over.
 /mob/living/simple_animal/hostile/gms_foe/Move()

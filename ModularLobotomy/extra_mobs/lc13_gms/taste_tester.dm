@@ -10,6 +10,8 @@
 	icon_dead = "mouth_taste_tester_dead"
 	maxHealth = 90
 	health = 90
+	eyeballs_low = 16
+	eyeballs_high = 24
 	move_to_delay = 4
 	ranged = TRUE
 	ranged_cooldown_time = 3 SECONDS

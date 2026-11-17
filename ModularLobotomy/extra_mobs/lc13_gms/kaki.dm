@@ -9,6 +9,8 @@
 	icon_dead = "hungry_kaki_dead"
 	maxHealth = 80
 	health = 80
+	eyeballs_low = 25
+	eyeballs_high = 35
 	move_to_delay = 3
 	ranged = TRUE
 	retreat_distance = 10

@@ -9,6 +9,8 @@
 	icon_dead = "hungry_kaki_sunshone_dead"
 	maxHealth = 110
 	health = 110
+	eyeballs_low = 16
+	eyeballs_high = 24
 	move_to_delay = 5
 	melee_damage_type = RED_DAMAGE
 	melee_damage_lower = 10

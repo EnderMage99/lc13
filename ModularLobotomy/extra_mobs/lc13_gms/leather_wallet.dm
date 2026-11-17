@@ -10,6 +10,8 @@
 	AIStatus = AI_ON
 	can_have_ai = TRUE
 	move_to_delay = 4
+	eyeballs_low = 16
+	eyeballs_high = 24
 	ranged = TRUE
 	ranged_cooldown_time = 0.5 SECONDS
 	/// Each step it walks squashes it down by this much, then it bounces up this many pixels and settles.

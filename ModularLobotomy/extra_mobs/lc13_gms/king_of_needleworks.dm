@@ -13,6 +13,9 @@
 	base_pixel_x = -48
 	maxHealth = 3000
 	health = 3000
+	eyeballs_low = 450
+	eyeballs_high = 550
+	eyeball_spread = 4
 	move_to_delay = 5
 	melee_damage_type = RED_DAMAGE
 	melee_damage_lower = 20

@@ -17,6 +17,9 @@
 	offsets_pixel_y = list("south" = -32, "north" = -32, "west" = -32, "east" = -32)
 	maxHealth = 3000
 	health = 3000
+	eyeballs_low = 450
+	eyeballs_high = 550
+	eyeball_spread = 4
 	// He shrugs off most of every blow, save from those with Gratitude for Listening.
 	damage_coeff = list(RED_DAMAGE = 0.2, WHITE_DAMAGE = 0.2, BLACK_DAMAGE = 0.2, PALE_DAMAGE = 0.2)
 	move_to_delay = 4
