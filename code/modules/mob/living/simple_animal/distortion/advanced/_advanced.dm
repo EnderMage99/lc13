@@ -9,7 +9,7 @@
 	melee_damage_upper = 15
 	melee_damage_type = RED_DAMAGE
 	obj_damage = 50
-	can_patrol = FALSE
+	patrol_cooldown_time = 8 SECONDS
 	var/datum/distortion_territory/territory
 	//Self explainatory, how much territory do we start with.
 	var/territory_start_size = 25
@@ -30,12 +30,25 @@
 	var/flee_time = 3 SECONDS
 	var/flee_distance = 64
 	var/sin_reward
+	//Stuff related to patroling.
+	var/leashed = TRUE
+	var/leash_slack = 7
+	var/return_pause = 3 SECONDS
+	var/turf/leash_exit
+	var/returning = FALSE
+	var/next_return_attempt = 0
+	// Do we want the distortion to ignore getting damaged while returning to it's home?
+	var/hard_return = FALSE
+	var/return_interrupted = FALSE
+	var/list/provoked_by = list()
 
 /mob/living/simple_animal/hostile/distortion/advanced/Initialize(mapload)
 	. = ..()
 	var/turf/origin = NearestOpenTurf(get_turf(src))
 	if(!origin)
 		return INITIALIZE_HINT_QDEL
+	access_card = new(src)
+	access_card.access = get_all_accesses()
 	territory = new /datum/distortion_territory(src, origin)
 	territory.Claim(territory_start_size)
 	territory.StartGrowing(territory_growth_interval)
@@ -93,6 +106,14 @@
 	Teardown()
 	return ..()
 
+// UpdateLeash is in patrol.dm, and handles all of the stuff that allows it to walk a
+// bit outside it's territory to chase some people, but not too far away.
+/mob/living/simple_animal/hostile/distortion/advanced/Life()
+	. = ..()
+	if(!. || client)
+		return
+	UpdateLeash()
+
 //Getting rid of all of territory, has a check to not trigger multiple times since it can be called from both death and Destroy.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/Teardown()
 	if(torn_down)
@@ -103,6 +124,8 @@
 	for(var/atom/thing in owned)
 		qdel(thing)
 	owned.Cut()
+	provoked_by.Cut()
+	QDEL_NULL(access_card)
 
 //Marks an object as owned by the distortion.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/Own(atom/movable/thing)

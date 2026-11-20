@@ -72,6 +72,9 @@
 /obj/machinery/door/city/proc/stop_refusing()
 	denying = FALSE
 
+/obj/machinery/door/city/CanAStarPass(ID, dir, requester)
+	return ..() || check_access(ID)
+
 // open() and close() are rewritten rather than chained, because the parent
 // sleeps five ticks between starting to move and another five before it
 // updates the sprite. That gap exists to let an airlock's travel frames play.
