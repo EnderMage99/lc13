@@ -16,7 +16,7 @@
 		return FALSE
 	return TRUE
 
-// Overrides the default Destroy() to make use of the new DistortionReachable proc.
+// Overrides the default patrol_to() to make use of the new DistortionReachable proc.
 /mob/living/simple_animal/hostile/distortion/advanced/patrol_to(turf/target_location)
 	if(isnull(target_location))
 		return FALSE
@@ -73,7 +73,7 @@
 
 // This is called every life tick, and handles the leash system for the distortion.
 /mob/living/simple_animal/hostile/distortion/advanced/proc/UpdateLeash()
-	// Hey! Are we within out terrioty? Mark this spot as where we should return to if we leave our territory.
+	// Hey! Are we within out territory? Mark this spot as where we should return to if we leave our territory.
 	if(territory.Contains(loc))
 		leash_exit = loc
 		if(returning)
