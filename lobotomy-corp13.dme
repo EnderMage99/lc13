@@ -5013,6 +5013,7 @@
 #include "ModularLobotomy\tegu_legacy\tegu_weaponry\melee\nano_blade.dm"
 #include "ModularLobotomy\tegu_legacy\tegu_xenobio_blackcross\black_extracts.dm"
 #include "ModularLobotomy\tegu_legacy\tegu_xenobio_blackcross\slime_code.dm"
+#include "ModularLobotomy\tunnel_rats\tunnel_rats.dm"
 #include "ModularLobotomy\typing_indicator\code\mob.dm"
 #include "ModularLobotomy\wcorp\berets.dm"
 #include "ModularLobotomy\wcorp\enemies.dm"
